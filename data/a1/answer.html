@@ -1,0 +1,641 @@
+<div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;1/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 13.8889%; top: 10.8586%; width: 72.2222%; height: 2.90404%;">CMPT 409/981: Optimization for Machine Learning
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.6863%; top: 14.1414%; width: 18.6275%; height: 2.65152%;">Assignment 1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.5033%; top: 19.1919%; width: 16.9935%; height: 1.64141%;">Total marks: 275
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 30.0654%; top: 22.8535%; width: 39.8693%; height: 2.0202%;">Due: 11.59 pm, Thursday, 26 September
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.4706%; top: 24.7475%; width: 47.0588%; height: 2.0202%;">Late Submission: 11.59 pm, Tuesday, 1 October
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 30.5556%; width: 43.4641%; height: 1.76768%;">General Assignment Submission Instructions
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 33.5859%; width: 83.8235%; height: 1.89394%;">• Assignments typed in Latex (the Latex source is provided) are preferred, but can be handwritten.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 36.7424%; width: 83.6601%; height: 1.76768%;">• For coding questions, you can write the code in any language, but are NOT allowed to make use of
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 38.5101%; width: 81.5359%; height: 1.89394%;">automatic differentiation (using Numpy + Python is preferred). Store all code files and plots in a
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 40.404%; width: 29.5752%; height: 1.76768%;">directory and zip it for submission.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 43.4343%; width: 83.4967%; height: 1.89394%;">• Submission: Assignment (PDF + separate zip file for code and plots) is to be submitted online
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.4379%; top: 45.3283%; width: 10.6209%; height: 1.76768%;">via Coursys.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 48.3586%; width: 73.2026%; height: 1.76768%;">• For some flexibility, each student is allowed 1 late-submission for Assignments 1 &amp; 2.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 52.2727%; width: 52.6144%; height: 1.89394%;">(1) [25 marks] We have seen the L-smoothness condition:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.902%; top: 55.5556%; width: 40.1961%; height: 1.89394%;">(i) ∀x, y ∈ D, ∥∇f(x) − ∇f(y)∥ ≤ L ∥x − y∥ .
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 58.9646%; width: 79.7386%; height: 1.76768%;">The smoothness condition can be expressed in alternative, but not necessarily equivalent ways:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 7.84314%; top: 61.9949%; width: 30.5556%; height: 1.89394%;">(ii) f(y) ≥ f(x) + ⟨∇f(x), y − x⟩ +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.2157%; top: 61.8687%; width: 0.816993%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.5621%; top: 63.0051%; width: 2.12418%; height: 1.0101%;">2L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.0131%; top: 61.9949%; width: 14.8693%; height: 1.89394%;">∥∇f(y) − ∇f(x)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 55.719%; top: 61.7424%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 7.18954%; top: 65.2778%; width: 35.1307%; height: 1.89394%;">(iii) ⟨∇f(x) − ∇f(y), x − y⟩ ≤ L ∥x − y∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.1569%; top: 65.0253%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 68.4343%; width: 24.5098%; height: 1.76768%;">Prove the following relations:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 71.4646%; width: 43.1373%; height: 1.89394%;">• Inequality (ii) implies Inequality (i) [15 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 73.9899%; width: 3.26797%; height: 1.51515%;">Sol:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.6601%; top: 77.5253%; width: 26.634%; height: 1.89394%;">f(v) ≥ f(u) + ⟨∇f(u), v − u⟩ +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.4379%; top: 76.6414%; width: 1.14379%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.6209%; top: 78.6616%; width: 2.61438%; height: 1.38889%;">2L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 63.5621%; top: 77.5253%; width: 15.0327%; height: 1.89394%;">∥∇f(v) − ∇f(u)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 78.4314%; top: 77.2727%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.6275%; top: 79.9242%; width: 24.6732%; height: 1.89394%;">(Using (ii) with y = v, x = u)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.4967%; top: 83.0808%; width: 26.634%; height: 1.76768%;">f(u) ≥ f(v) + ⟨∇f(v), u − v⟩ +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.2745%; top: 82.0707%; width: 0.980392%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.4575%; top: 84.2172%; width: 2.61438%; height: 1.38889%;">2L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 63.3987%; top: 83.0808%; width: 14.8693%; height: 1.76768%;">∥∇f(v) − ∇f(u)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 78.268%; top: 82.702%; width: 0.980392%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.6275%; top: 85.4798%; width: 24.6732%; height: 1.89394%;">(Using (ii) with y = u, x = v)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.5098%; top: 97.2222%; width: 0.980392%; height: 1.38889%;">1
+</p></div>
+
+<div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;2/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.4379%; top: 5.55556%; width: 24.183%; height: 1.76768%;">Adding the above equations,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 27.451%; top: 9.84848%; width: 46.5686%; height: 1.89394%;">f(v) + f(u) ≥ f(u) + f(v) + ⟨∇f(u) − ∇f(v), v − u⟩ +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 74.5098%; top: 8.96465%; width: 1.14379%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 74.3464%; top: 10.9848%; width: 1.63399%; height: 1.38889%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 76.3072%; top: 9.84848%; width: 14.8693%; height: 1.89394%;">∥∇f(v) − ∇f(u)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 91.0131%; top: 9.59596%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 13.2353%; top: 12.5%; width: 28.1046%; height: 2.77778%;">=⇒ ⟨∇f(u) − ∇f(v), u − v⟩ ≥ 1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 14.5202%; width: 1.63399%; height: 1.38889%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.9935%; top: 13.3838%; width: 14.8693%; height: 1.89394%;">∥∇f(v) − ∇f(u)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.6993%; top: 13.1313%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 15.6863%; top: 16.0354%; width: 25.6536%; height: 2.77778%;">∥∇f(u) − ∇f(v)∥ ∥u − v∥ ≥ 1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 18.0556%; width: 1.63399%; height: 1.38889%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.9935%; top: 16.9192%; width: 14.8693%; height: 1.89394%;">∥∇f(v) − ∇f(u)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.6993%; top: 16.6667%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 77.451%; top: 16.9192%; width: 15.8497%; height: 1.89394%;">(Cauchy Schwartz)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 18.1373%; top: 19.697%; width: 75.1634%; height: 1.89394%;">=⇒ ∥∇f(v) − ∇f(u)∥ ≤ L ∥u − v∥ (Equal to (i))
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 23.7374%; width: 43.6275%; height: 1.89394%;">• Inequality (i) implies Inequality (iii) [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 26.2626%; width: 3.26797%; height: 1.38889%;">Sol:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.1765%; top: 29.5455%; width: 77.1242%; height: 1.76768%;">LHS of (iii) = ⟨∇f(x) − ∇f(y), x − y⟩ ≤ ∥∇f(x) − ∇f(y)∥ ∥x − y∥ (Cauchy Schwartz)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.8562%; top: 31.9444%; width: 10.1307%; height: 1.89394%;">≤ L ∥x − y∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.8235%; top: 31.6919%; width: 34.4771%; height: 2.14646%;">2 = RHS of (iii) (Using (i))
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 35.8586%; width: 67.9739%; height: 1.89394%;">(2) [20 marks] For gradient descent with step-size η on L-smooth functions,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 39.0152%; width: 28.5948%; height: 1.89394%;">• Prove that any step-size η ∈ (0,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.7255%; top: 38.8889%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.5621%; top: 39.899%; width: 1.30719%; height: 1.13636%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.7059%; top: 39.0152%; width: 49.5098%; height: 1.89394%;">) will guarantee that f(wk+1) ≤ f(wk) for all k. [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 41.5404%; width: 41.9935%; height: 1.76768%;">Sol: Using L-smoothness with y = wk+1, x = wk,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.0458%; top: 45.5808%; width: 26.3072%; height: 1.89394%;">f(wk+1) ≤ f(wk) − η ∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.1895%; top: 45.3283%; width: 3.10458%; height: 1.89394%;">2 +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.6209%; top: 44.4444%; width: 3.26797%; height: 2.0202%;">Lη2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.6013%; top: 46.7172%; width: 1.30719%; height: 1.38889%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.3791%; top: 45.5808%; width: 8.33333%; height: 1.89394%;">∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 72.549%; top: 45.3283%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 50.2525%; width: 22.8758%; height: 1.76768%;">For descent, we want −η +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 34.8039%; top: 49.7475%; width: 2.61438%; height: 1.51515%;">Lη2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.6209%; top: 50%; width: 20.4248%; height: 2.14646%;">2 &lt; 0, and hence η &lt; 2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 54.902%; top: 51.1364%; width: 1.30719%; height: 1.0101%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.2092%; top: 51.1364%; width: 0.653595%; height: 0.505051%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 57.8283%; width: 54.7386%; height: 1.89394%;">• Using the above result, prove that GD with a step-size η ∈ (0,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.8693%; top: 57.702%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.7059%; top: 58.8384%; width: 1.30719%; height: 1.0101%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.8497%; top: 57.8283%; width: 27.451%; height: 1.89394%;">) converges to an ε-approximate
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 59.596%; width: 21.5686%; height: 1.89394%;">stationary point at an O(
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.0065%; top: 59.596%; width: 16.6667%; height: 1.89394%;">1/ε) rate. [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 62.3737%; width: 18.1373%; height: 1.76768%;">Sol: Define α := η −
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 30.2288%; top: 61.8687%; width: 2.61438%; height: 1.51515%;">Lη2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.0458%; top: 62.3737%; width: 33.6601%; height: 1.89394%;">2 &gt; 0, and repeating the proof in class,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.5621%; top: 65.7828%; width: 26.7974%; height: 1.89394%;">f(wk+1) ≤ f(wk) − α ∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.1961%; top: 65.5303%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 69.8232%; width: 80.3922%; height: 2.0202%;">By summing from k = 0 to T −1, dividing by T and denoting wˆT := arg mink∈[0,1,...,T −1] ∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 91.8301%; top: 69.4444%; width: 0.980392%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 92.6471%; top: 70.7071%; width: 0.816993%; height: 0.883838%;">,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.4379%; top: 71.7172%; width: 33.1699%; height: 1.64141%;">we obtain the desired convergence rate.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 79.2929%; width: 86.6013%; height: 1.89394%;">(3) [55 marks] Logistic regression is a commonly used machine learning model for binary classification.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 81.1869%; width: 59.3137%; height: 1.64141%;">Given n d-dimensional inputs in the form of the feature matrix: X ∈ R
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.8497%; top: 80.9343%; width: 27.2876%; height: 2.0202%;">n×d and the corresponding labels
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 82.9545%; width: 9.96732%; height: 1.89394%;">y ∈ {−1, 1}
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.3399%; top: 83.0808%; width: 1.30719%; height: 0.757576%;">n
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 17.4837%; top: 82.9545%; width: 65.8497%; height: 1.89394%;">, the logistic loss (as a function of the parameters w to be learned) is given as:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 34.4771%; top: 86.2374%; width: 9.80392%; height: 3.40909%;">f(w) = Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.3399%; top: 89.6465%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.281%; top: 87.3737%; width: 16.6667%; height: 1.89394%;">log (1 + exp(−yi⟨Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.7843%; top: 87.3737%; width: 4.57516%; height: 1.89394%;">, w⟩))
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 92.298%; width: 11.9281%; height: 1.64141%;">where Xi ∈ R
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 18.1373%; top: 92.0455%; width: 1.14379%; height: 1.13636%;">d
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 19.6078%; top: 92.298%; width: 52.7778%; height: 1.64141%;">is the feature vector for point i and corresponds to row i of X.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 97.2222%; width: 1.30719%; height: 1.38889%;">2
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/8f3e5443-0631-4c05-9287-f2fecb130db6" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;2/7페이지" aria-hidden="true"></div>
+
+<div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;3/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 5.42929%; width: 14.2157%; height: 1.64141%;">• Show that ∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.5294%; top: 5.55556%; width: 66.8301%; height: 1.89394%;">f(w) = XTDX. Here, D is a diagonal matrix s.t. Di,i = pi (1 − pi) where pi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 90.8497%; top: 6.06061%; width: 2.28758%; height: 1.0101%;">:=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.5033%; top: 7.19697%; width: 0.980392%; height: 1.13636%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.7647%; top: 8.33333%; width: 10.4575%; height: 1.38889%;">1+exp(−⟨Xi,w⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.7124%; top: 7.32323%; width: 57.6797%; height: 1.89394%;">is the probability of predicting the label to be equal to 1. [20 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 9.84848%; width: 3.26797%; height: 1.51515%;">Sol:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 27.2876%; top: 12.5%; width: 11.4379%; height: 3.40909%;">∇f(w) = Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.7843%; top: 15.9091%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.0523%; top: 12.6263%; width: 17.1569%; height: 1.89394%;">−yi exp (−yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.0523%; top: 14.7727%; width: 17.1569%; height: 1.89394%;">1 + exp (−yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.3725%; top: 13.7626%; width: 4.57516%; height: 1.64141%;">Xi =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.2745%; top: 12.5%; width: 2.94118%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.4379%; top: 15.9091%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 70.7516%; top: 13.1313%; width: 3.26797%; height: 1.38889%;">−yi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.5425%; top: 14.7727%; width: 15.6863%; height: 1.89394%;">1 + exp (yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 80.3922%; top: 13.7626%; width: 2.45098%; height: 1.64141%;">Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.634%; top: 18.4343%; width: 2.61438%; height: 1.64141%;">∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.9216%; top: 17.4242%; width: 9.80392%; height: 3.28283%;">f(w) = Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.7843%; top: 20.8333%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.7255%; top: 18.6869%; width: 2.12418%; height: 1.38889%;">X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.3595%; top: 18.5606%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.3595%; top: 19.4444%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.3007%; top: 18.0556%; width: 1.30719%; height: 1.26263%;">y
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.281%; top: 17.4242%; width: 1.14379%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.281%; top: 18.4343%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.4248%; top: 17.5505%; width: 12.4183%; height: 1.89394%;">exp (yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.9935%; top: 18.6869%; width: 20.098%; height: 3.0303%;">[1 + exp (yi⟨w, Xi⟩)]2 Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.6601%; top: 23.9899%; width: 1.63399%; height: 0.757576%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.6209%; top: 22.2222%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.7843%; top: 25.6313%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.7255%; top: 23.4848%; width: 2.12418%; height: 1.51515%;">X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.3595%; top: 23.4848%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.3595%; top: 24.2424%; width: 0.816993%; height: 1.13636%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.183%; top: 22.601%; width: 1.14379%; height: 1.26263%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.8301%; top: 24.4949%; width: 15.6863%; height: 1.89394%;">1 + exp (yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 66.0131%; top: 22.601%; width: 1.14379%; height: 1.26263%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.0065%; top: 24.4949%; width: 17.1569%; height: 1.89394%;">1 + exp (−yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75.4902%; top: 23.4848%; width: 12.9085%; height: 1.89394%;">Xi (y
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 88.0719%; top: 23.3586%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 87.9085%; top: 23.4848%; width: 5.39216%; height: 1.89394%;">i = 1)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.3856%; top: 28.1566%; width: 6.86275%; height: 1.76768%;">=⇒ ∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.9216%; top: 27.1465%; width: 9.80392%; height: 3.40909%;">f(w) = Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.7843%; top: 30.5556%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.7255%; top: 28.4091%; width: 2.12418%; height: 1.38889%;">X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.3595%; top: 28.2828%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.3595%; top: 29.1667%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.5033%; top: 28.2828%; width: 15.3595%; height: 1.89394%;">pi (1 − pi) Xi = X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.5359%; top: 28.2828%; width: 4.90196%; height: 1.51515%;">TDX.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 33.3333%; width: 13.7255%; height: 1.64141%;">• Show that ∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.2026%; top: 33.4596%; width: 69.9346%; height: 1.89394%;">f(w) is positive semi-definite and hence logistic regression is a convex problem. [10
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 35.2273%; width: 5.71895%; height: 1.89394%;">marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 37.7525%; width: 3.26797%; height: 1.38889%;">Sol:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 30.2288%; top: 41.2879%; width: 1.30719%; height: 1.0101%;">v
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.2092%; top: 40.6566%; width: 3.43137%; height: 1.64141%;">T∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 34.4771%; top: 40.7828%; width: 8.49673%; height: 1.89394%;">f(x)v = v
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.6471%; top: 40.7828%; width: 2.94118%; height: 1.51515%;">TX
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.2614%; top: 40.7828%; width: 8.98693%; height: 1.51515%;">TDXv = v
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.9216%; top: 40.7828%; width: 2.94118%; height: 1.51515%;">TX
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.5359%; top: 40.7828%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.5163%; top: 40.7828%; width: 2.28758%; height: 1.89394%;">[D
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 59.4771%; top: 40.5303%; width: 2.45098%; height: 1.38889%;">1/2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.6013%; top: 40.7828%; width: 0.816993%; height: 1.89394%;">]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 62.0915%; top: 40.7828%; width: 2.77778%; height: 1.51515%;">TD
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.7059%; top: 40.5303%; width: 5.06536%; height: 1.76768%;">1/2Xv
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 47.0588%; top: 42.5505%; width: 46.2418%; height: 1.89394%;">(Since D is a diagonal matrix with all positive entries.)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.7059%; top: 45.3283%; width: 4.57516%; height: 1.89394%;">= [D
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.9542%; top: 45.0758%; width: 5.55556%; height: 2.14646%;">1/2Xv]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 45.3283%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.6536%; top: 45.3283%; width: 2.28758%; height: 1.89394%;">[D
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.6144%; top: 45.0758%; width: 7.84314%; height: 2.14646%;">1/2Xv] =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.7647%; top: 45.3283%; width: 1.96078%; height: 1.51515%;">D
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 63.3987%; top: 45.0758%; width: 5.22876%; height: 1.76768%;">1/2Xv
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 69.281%; top: 44.8232%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 70.7516%; top: 45.4545%; width: 3.75817%; height: 1.51515%;">≥ 0.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 48.8636%; width: 45.5882%; height: 1.89394%;">• Show that the logistic regression loss function is 1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 54.2484%; top: 50%; width: 1.14379%; height: 1.0101%;">4
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 55.2288%; top: 48.9899%; width: 38.0719%; height: 1.89394%;">λmax[XTX]-smooth, where λmax[XTX] is the
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 50.7576%; width: 33.9869%; height: 1.89394%;">maximum eigenvalue of XTX [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 53.2828%; width: 32.3529%; height: 1.89394%;">Sol: Note that Di,i = pi (1 − pi) ≤
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.7712%; top: 53.1566%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.7712%; top: 54.1667%; width: 0.980392%; height: 1.13636%;">4
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.7516%; top: 53.1566%; width: 8.00654%; height: 1.89394%;">, and ∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.4314%; top: 53.2828%; width: 16.0131%; height: 1.89394%;">f(w) = XTDX ⪯
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 70.2614%; top: 53.1566%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 70.2614%; top: 53.2828%; width: 7.84314%; height: 2.0202%;">4XTX ⪯
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 79.7386%; top: 53.1566%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 79.7386%; top: 54.1667%; width: 1.14379%; height: 1.13636%;">4
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 80.719%; top: 53.2828%; width: 9.15033%; height: 1.89394%;">λmax[XTX]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 89.7059%; top: 53.0303%; width: 0.980392%; height: 2.27273%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 91.0131%; top: 53.2828%; width: 2.45098%; height: 1.76768%;">Id,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 55.1768%; width: 15.3595%; height: 1.64141%;">meaning that L =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 27.451%; top: 54.9242%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 27.451%; top: 56.0606%; width: 0.980392%; height: 1.0101%;">4
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.268%; top: 55.0505%; width: 9.96732%; height: 1.89394%;">λmax[XTX].
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 57.9545%; width: 48.0392%; height: 2.0202%;">• Prove that ln(f(w)) is λmax(XT X)-smooth. [15 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 60.6061%; width: 3.26797%; height: 1.38889%;">Sol:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.1438%; top: 64.2677%; width: 2.61438%; height: 1.64141%;">∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.5948%; top: 63.1313%; width: 9.64052%; height: 3.40909%;">f(w) = Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.4575%; top: 66.5404%; width: 2.61438%; height: 1.13636%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.2353%; top: 64.5202%; width: 2.12418%; height: 1.38889%;">X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 64.3939%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.8693%; top: 65.2778%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.6928%; top: 63.5101%; width: 1.14379%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.5033%; top: 65.404%; width: 15.5229%; height: 1.89394%;">1 + exp (yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.6863%; top: 63.5101%; width: 1.14379%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.6797%; top: 65.404%; width: 17.1569%; height: 1.89394%;">1 + exp (−yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75%; top: 64.5202%; width: 2.45098%; height: 1.64141%;">Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.1699%; top: 69.4444%; width: 1.79739%; height: 1.51515%;">⪯
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.2941%; top: 68.0556%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.4575%; top: 71.4646%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.3987%; top: 69.3182%; width: 1.96078%; height: 1.38889%;">X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 69.1919%; width: 1.14379%; height: 1.0101%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.8693%; top: 70.0758%; width: 0.980392%; height: 1.13636%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.8562%; top: 68.3081%; width: 0.980392%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.5033%; top: 70.3283%; width: 15.6863%; height: 1.89394%;">1 + exp (yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.3529%; top: 69.3182%; width: 28.268%; height: 1.76768%;">Xi (
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 86.7647%; top: 69.0657%; width: 0.980392%; height: 1.13636%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 85.4575%; top: 70.202%; width: 2.77778%; height: 1.13636%;">1+e
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 87.9085%; top: 69.3182%; width: 5.39216%; height: 1.76768%;">x ≤ 1)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.1699%; top: 74.7475%; width: 1.79739%; height: 0.631313%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.2941%; top: 72.9798%; width: 2.94118%; height: 3.28283%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.4575%; top: 76.3889%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.2353%; top: 74.2424%; width: 2.12418%; height: 1.38889%;">X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 74.1162%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.8693%; top: 75%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.9739%; top: 73.1061%; width: 13.8889%; height: 1.89394%;">exp (−yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.5033%; top: 75.1263%; width: 17.1569%; height: 1.89394%;">1 + exp (−yi⟨w, Xi⟩)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.8235%; top: 74.2424%; width: 2.45098%; height: 1.64141%;">Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.1699%; top: 79.1667%; width: 1.79739%; height: 1.51515%;">⪯
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.2941%; top: 77.7778%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.4575%; top: 81.1869%; width: 2.61438%; height: 1.13636%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.3987%; top: 79.1667%; width: 1.96078%; height: 1.38889%;">X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 79.0404%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.8693%; top: 79.798%; width: 0.980392%; height: 1.13636%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.1765%; top: 79.0404%; width: 16.6667%; height: 1.89394%;">log (1 + exp(−yi⟨Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.6797%; top: 79.0404%; width: 21.8954%; height: 1.89394%;">, w⟩)) Xi (
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 80.3922%; top: 79.0404%; width: 1.14379%; height: 0.883838%;">x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 79.5752%; top: 79.0404%; width: 13.7255%; height: 2.14646%;">1+x ≤ ln(1 + x))
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.1699%; top: 82.702%; width: 14.0523%; height: 1.89394%;">⪯ f(w) · λmax(X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.8954%; top: 82.5758%; width: 5.88235%; height: 2.0202%;">T X) Id
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 21.5686%; top: 86.3636%; width: 3.43137%; height: 1.13636%;">=⇒
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 25.9804%; top: 84.8485%; width: 2.61438%; height: 1.64141%;">∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.4314%; top: 84.9747%; width: 4.24837%; height: 1.89394%;">f(w)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 27.1242%; top: 86.9949%; width: 4.24837%; height: 1.89394%;">f(w)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.1699%; top: 85.9848%; width: 8.66013%; height: 1.89394%;">⪯ λmax(X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.5033%; top: 85.8586%; width: 5.88235%; height: 2.0202%;">T X) Id
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 18.6275%; top: 89.899%; width: 6.86275%; height: 1.76768%;">=⇒ ∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 25.4902%; top: 89.0152%; width: 17.9739%; height: 3.0303%;">ln(f(w)) = f(w) · ∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.3007%; top: 89.1414%; width: 12.2549%; height: 1.89394%;">f(w) − ∇f(w)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 55.3922%; top: 89.1414%; width: 6.69935%; height: 1.89394%;">T∇f(w)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.5882%; top: 91.1616%; width: 6.53595%; height: 1.89394%;">(f(w))2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 62.7451%; top: 90.2778%; width: 1.63399%; height: 1.51515%;">⪯
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.8693%; top: 89.0152%; width: 2.61438%; height: 1.64141%;">∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.3203%; top: 89.1414%; width: 4.24837%; height: 1.89394%;">f(w)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 66.0131%; top: 91.1616%; width: 4.24837%; height: 1.89394%;">f(w)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 72.2222%; top: 90.1515%; width: 8.49673%; height: 1.89394%;">⪯ λmax(X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 80.3922%; top: 89.899%; width: 6.20915%; height: 2.14646%;">T X) Id.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 97.2222%; width: 1.30719%; height: 1.38889%;">3
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/8dd1ef39-ff51-4559-b400-f3b2e83e000b" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;3/7페이지" aria-hidden="true"></div>
+
+<div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;4/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 5.55556%; width: 86.2745%; height: 1.89394%;">(4) [45 marks] We are interested in minimizing L-smooth and μ-strongly convex functions that
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 7.44949%; width: 20.2614%; height: 1.76768%;">are lower-bounded by f
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.7974%; top: 7.44949%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.268%; top: 7.32323%; width: 23.6928%; height: 1.89394%;">i.e. for all w ∈ D, f(w) ≥ f
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.634%; top: 7.44949%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.451%; top: 7.44949%; width: 40.6863%; height: 1.76768%;">. The class of functions we care about is special
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 9.21717%; width: 26.1438%; height: 1.76768%;">because we know the value of f
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.5163%; top: 9.34343%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.3333%; top: 9.21717%; width: 59.8039%; height: 1.76768%;">. In order to minimize this function using gradient descent, and compute
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 11.4899%; width: 1.79739%; height: 1.0101%;">w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 8.16993%; top: 11.1111%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 8.98693%; top: 11.1111%; width: 84.3137%; height: 1.76768%;">, Professor Polyak has developed a new method to set the step-size. At iteration k, the GD step-size
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 12.8788%; width: 13.7255%; height: 1.51515%;">is set as follows:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.3203%; top: 15.6566%; width: 4.08497%; height: 1.26263%;">ηk =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 47.3856%; top: 14.1414%; width: 8.82353%; height: 1.89394%;">f(wk) − f
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 55.8824%; top: 14.2677%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.8954%; top: 16.2879%; width: 9.64052%; height: 1.89394%;">c ∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.3725%; top: 16.0354%; width: 1.14379%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 18.8131%; width: 86.4379%; height: 1.76768%;">where c &gt; 0 is a hyper-parameter. In order to help Professor Polyak ascertain whether this step-size
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 20.5808%; width: 65.0327%; height: 1.76768%;">would result in convergence to the minimizer, prove the following statements:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 23.7374%; width: 6.04575%; height: 1.76768%;">• ηk ≥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.9935%; top: 23.4848%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.1765%; top: 23.6111%; width: 41.6667%; height: 2.0202%;">2cL i.e. the step-size is lower-bounded. [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 26.1364%; width: 19.9346%; height: 1.76768%;">Sol: By L-smoothness,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.6601%; top: 30.0505%; width: 26.7974%; height: 1.76768%;">f(y) ≥ f(x) + ⟨∇f(x), y − x⟩ +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.4379%; top: 29.0404%; width: 1.14379%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.7843%; top: 31.1869%; width: 2.61438%; height: 1.38889%;">2L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 63.7255%; top: 30.0505%; width: 14.8693%; height: 1.76768%;">∥∇f(y) − ∇f(x)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 78.4314%; top: 29.6717%; width: 1.14379%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 34.2172%; width: 10.7843%; height: 1.64141%;">Using x = w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.0588%; top: 34.2172%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.8758%; top: 34.596%; width: 7.67974%; height: 1.26263%;">, y = wk,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 25.1634%; top: 38.3838%; width: 10.9477%; height: 1.89394%;">f(wk) − f(w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.7843%; top: 38.3838%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.6013%; top: 38.3838%; width: 2.94118%; height: 1.89394%;">) ≥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.8497%; top: 37.5%; width: 1.14379%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 39.5202%; width: 2.61438%; height: 1.38889%;">2L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.9739%; top: 38.3838%; width: 8.49673%; height: 1.89394%;">∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.3072%; top: 38.1313%; width: 10.1307%; height: 2.0202%;">2 =⇒ ηk ≥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 63.0719%; top: 37.5%; width: 1.14379%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.9281%; top: 39.5202%; width: 3.43137%; height: 1.38889%;">2cL
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 43.1818%; width: 8.49673%; height: 1.64141%;">• For c ≥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 18.6275%; top: 42.9293%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 18.6275%; top: 44.0657%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 19.6078%; top: 43.0556%; width: 19.4444%; height: 1.89394%;">, prove that ∥wk+1 − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.7255%; top: 43.0556%; width: 1.79739%; height: 1.89394%;">∗∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.3595%; top: 42.803%; width: 10.7843%; height: 2.14646%;">2 ≤ ∥wk − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.817%; top: 43.0556%; width: 1.96078%; height: 1.89394%;">∗∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.6144%; top: 42.803%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.9216%; top: 43.1818%; width: 39.3791%; height: 1.38889%;">i.e. the distance to the minimizer shrinks after
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 44.8232%; width: 22.7124%; height: 1.89394%;">one step of GD. [15 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 47.3485%; width: 56.5359%; height: 1.76768%;">Sol: Expanding the iterates as in class and using strong-convexity,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 21.0784%; top: 50.6313%; width: 8.82353%; height: 1.89394%;">∥wk+1 − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.7386%; top: 50.7576%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 30.5556%; top: 50.6313%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.3725%; top: 50.3788%; width: 10.7843%; height: 2.14646%;">2 ≤ ∥wk − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.8301%; top: 50.7576%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.6471%; top: 50.6313%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.4641%; top: 50.3788%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.7712%; top: 50.6313%; width: 24.183%; height: 1.89394%;">(1 − μηk) − 2ηk[f(wk) − f(w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.6275%; top: 50.7576%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 69.4444%; top: 50.6313%; width: 4.90196%; height: 1.89394%;">)] + η
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 74.0196%; top: 50.5051%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 73.8562%; top: 50.6313%; width: 9.80392%; height: 1.89394%;">k ∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 83.4967%; top: 50.3788%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.8431%; top: 53.4091%; width: 9.31373%; height: 1.89394%;">≤ ∥wk − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.8301%; top: 53.4091%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.6471%; top: 53.4091%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.4641%; top: 53.1566%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.7712%; top: 53.4091%; width: 24.183%; height: 1.89394%;">(1 − μηk) − 2ηk[f(wk) − f(w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.6275%; top: 53.4091%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 69.4444%; top: 52.7778%; width: 5.71895%; height: 2.52525%;">)] + ηk
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 73.6928%; top: 54.9242%; width: 1.14379%; height: 1.0101%;">c
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75.3268%; top: 53.4091%; width: 11.2745%; height: 1.89394%;">[f(wk) − f(w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 86.2745%; top: 53.4091%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 87.0915%; top: 53.4091%; width: 1.30719%; height: 1.89394%;">)]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 70.5882%; top: 55.8081%; width: 22.7124%; height: 1.89394%;">(Using the definition of ηk)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.6797%; top: 59.0909%; width: 9.31373%; height: 1.89394%;">= ∥wk − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.8301%; top: 59.0909%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.6471%; top: 59.0909%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.4641%; top: 58.8384%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.7712%; top: 59.0909%; width: 23.2026%; height: 1.89394%;">(1 − μηk) − ηk[f(wk) − f(w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.6471%; top: 59.0909%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.4641%; top: 57.9545%; width: 3.26797%; height: 4.0404%;">)] 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.4052%; top: 59.2172%; width: 3.10458%; height: 1.38889%;">2 −
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75%; top: 58.2071%; width: 1.14379%; height: 1.38889%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75%; top: 60.6061%; width: 1.30719%; height: 1.0101%;">c
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 76.1438%; top: 57.9545%; width: 1.47059%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.6667%; top: 62.3737%; width: 13.2353%; height: 1.89394%;">=⇒ ∥wk+1 − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.7386%; top: 62.3737%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 30.5556%; top: 62.3737%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.3725%; top: 62.1212%; width: 10.7843%; height: 2.14646%;">2 ≤ ∥wk − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.8301%; top: 62.3737%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.6471%; top: 62.3737%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.4641%; top: 62.1212%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 83.8235%; top: 62.3737%; width: 7.18954%; height: 1.89394%;">(For c ≥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 91.5033%; top: 62.2475%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 91.5033%; top: 63.3838%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 92.3203%; top: 62.3737%; width: 0.980392%; height: 1.89394%;">)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 66.2879%; width: 83.6601%; height: 1.89394%;">• Using the above results, prove that GD with this new step-size scheme (with c = 1/2) converges to
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 68.1818%; width: 42.3203%; height: 1.89394%;">the minimizer at an O (κ log (1/ε)) rate. [20 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 70.5808%; width: 31.6993%; height: 1.89394%;">Sol: Continuing as above, if c = 1/2,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 37.9085%; top: 73.9899%; width: 8.82353%; height: 1.89394%;">∥wk+1 − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 73.9899%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 47.3856%; top: 73.9899%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.2026%; top: 73.7374%; width: 19.1176%; height: 2.14646%;">2 ≤ (1 − μηk) ∥wk − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 66.9935%; top: 73.9899%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.9739%; top: 73.9899%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.7908%; top: 73.7374%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 77.7778%; width: 8.98693%; height: 1.76768%;">Since ηk ≥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 21.8954%; top: 77.5253%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 21.0784%; top: 78.2828%; width: 4.90196%; height: 1.38889%;">2cL =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.4706%; top: 77.5253%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.3072%; top: 78.6616%; width: 1.30719%; height: 1.0101%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 27.6144%; top: 78.6616%; width: 0.653595%; height: 0.757576%;">,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.6732%; top: 82.0707%; width: 1.63399%; height: 1.64141%;">≤
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.9608%; top: 81.3131%; width: 1.14379%; height: 3.15657%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.9412%; top: 82.0707%; width: 2.94118%; height: 1.38889%;">1 −
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.3725%; top: 81.4394%; width: 1.47059%; height: 1.26263%;">μ
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.3725%; top: 83.0808%; width: 1.63399%; height: 1.38889%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.8431%; top: 81.3131%; width: 1.14379%; height: 3.15657%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 59.4771%; top: 81.9444%; width: 7.18954%; height: 1.89394%;">∥wk − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 66.3399%; top: 81.9444%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.3203%; top: 81.9444%; width: 0.816993%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.9739%; top: 81.6919%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.1307%; top: 84.8485%; width: 11.6013%; height: 1.89394%;">=⇒ ∥wT − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 84.8485%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 47.3856%; top: 84.8485%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.2026%; top: 84.596%; width: 19.6078%; height: 2.14646%;">2 ≤ exp (−T/κ) ∥w0 − w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.4837%; top: 84.8485%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.3007%; top: 84.8485%; width: 0.980392%; height: 1.89394%;">∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 69.1176%; top: 84.596%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 97.2222%; width: 1.30719%; height: 1.38889%;">4
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/cc2fad3e-136b-4535-b6e2-ca1c72fb74cb" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;4/7페이지" aria-hidden="true"></div>
+
+<div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;5/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 5.55556%; width: 68.7908%; height: 1.89394%;">(5) [40 marks] Consider robust regression on a dataset with features X ∈ R
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75.1634%; top: 5.42929%; width: 13.2353%; height: 1.89394%;">n×d and y ∈ Rn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 88.2353%; top: 5.68182%; width: 5.06536%; height: 1.38889%;">. The
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 7.44949%; width: 54.085%; height: 1.76768%;">corresponding loss function with respect to the parameters w is:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.5425%; top: 10.6061%; width: 9.64052%; height: 3.40909%;">f(w) = Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.4052%; top: 14.0152%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.5098%; top: 11.7424%; width: 3.43137%; height: 1.89394%;">|⟨Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.7778%; top: 11.7424%; width: 7.18954%; height: 1.89394%;">, w⟩ − yi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 59.8039%; top: 11.7424%; width: 0.490196%; height: 1.89394%;">|
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 16.4141%; width: 86.2745%; height: 1.89394%;">Since f(w) is non-smooth, it is helpful to construct a smooth approximation to the function and optimize
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 18.3081%; width: 41.1765%; height: 1.89394%;">that instead. A common approximation to |x| is:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 37.5817%; top: 21.5909%; width: 24.6732%; height: 1.89394%;">g(x) = ln (exp(x) + exp(−x))
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 25%; width: 48.6928%; height: 1.76768%;">• Prove that this is indeed a good approximation in that:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.6667%; top: 28.2828%; width: 21.2418%; height: 1.89394%;">g(x) − ln(2) ≤ |x| ≤ g(x)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 31.5657%; width: 67.9739%; height: 1.89394%;">i.e. the value of |x| can be upper and lower-bounded in terms of g(x) [20 marks].
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 34.0909%; width: 48.8562%; height: 1.76768%;">Sol: Let us prove a stronger result that for x1, x2, . . . , xn,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.1438%; top: 37.1212%; width: 7.35294%; height: 4.92424%;">log X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.5359%; top: 40.7828%; width: 0.980392%; height: 1.13636%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.4967%; top: 38.6364%; width: 6.37255%; height: 1.89394%;">exp(xi)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.7059%; top: 37.1212%; width: 1.47059%; height: 4.92424%;">!
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.6667%; top: 38.6364%; width: 12.7451%; height: 1.89394%;">− ln(n) ≤ max
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.9608%; top: 40.0253%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 54.085%; top: 37.1212%; width: 13.5621%; height: 4.92424%;">{xi} ≤ log X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.6863%; top: 40.7828%; width: 0.816993%; height: 1.13636%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.6471%; top: 38.6364%; width: 6.20915%; height: 1.89394%;">exp(xi)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 73.6928%; top: 37.1212%; width: 1.47059%; height: 4.92424%;">!
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75.6536%; top: 39.6465%; width: 0.653595%; height: 0.505051%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 43.6869%; width: 57.1895%; height: 1.64141%;">If we prove this, we can set n = 2, x1 = x and x2 = −x, and obtain,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.2222%; top: 47.3485%; width: 60.2941%; height: 1.76768%;">log (exp(x) + exp(−x)) − ln(2) ≤ max{x, −x} ≤ log (exp(x) + exp(−x))
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.6601%; top: 49.4949%; width: 59.6405%; height: 1.89394%;">=⇒ g(x) − ln(2) ≤ |x| ≤ g(x) (Since |x| = max{x, −x})
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 52.7778%; width: 35.2941%; height: 1.89394%;">Let us first prove that maxi{xi} ≤ log (P
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 53.7879%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 47.3856%; top: 52.7778%; width: 13.0719%; height: 1.89394%;">exp(xi)). Let x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.1307%; top: 52.904%; width: 0.980392%; height: 0.883838%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.6013%; top: 52.7778%; width: 15.8497%; height: 1.89394%;">:= maxi{xi}, then,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.3725%; top: 56.9444%; width: 1.47059%; height: 1.0101%;">x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.5163%; top: 56.5657%; width: 4.73856%; height: 1.38889%;">∗ = x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.9281%; top: 56.4394%; width: 11.1111%; height: 1.89394%;">∗ =⇒ exp(x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 47.7124%; top: 56.5657%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.5294%; top: 56.4394%; width: 8.33333%; height: 1.89394%;">) = exp(x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.5359%; top: 56.5657%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.3529%; top: 56.4394%; width: 11.1111%; height: 1.89394%;">) =⇒ exp(x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.1373%; top: 56.5657%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.9542%; top: 56.4394%; width: 2.94118%; height: 1.89394%;">) ≤
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 72.2222%; top: 56.1869%; width: 3.10458%; height: 2.52525%;">X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 73.366%; top: 58.7121%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75.3268%; top: 56.4394%; width: 6.37255%; height: 1.89394%;">exp(xi)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.0392%; top: 61.4899%; width: 8.33333%; height: 1.89394%;">log(exp(x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.0458%; top: 61.6162%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.8627%; top: 59.9747%; width: 11.4379%; height: 4.92424%;">)) ≤ log X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.3399%; top: 63.7626%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.3007%; top: 61.4899%; width: 6.37255%; height: 1.89394%;">exp(xi)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 59.9747%; width: 1.47059%; height: 4.92424%;">!
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.1242%; top: 61.8687%; width: 8.00654%; height: 1.26263%;">=⇒ max
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.6797%; top: 62.8788%; width: 0.980392%; height: 1.13636%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 59.8039%; top: 59.9747%; width: 13.5621%; height: 4.92424%;">{xi} ≤ log X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.4052%; top: 63.7626%; width: 0.980392%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 73.366%; top: 61.4899%; width: 6.37255%; height: 1.89394%;">exp(xi)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 79.5752%; top: 59.9747%; width: 1.47059%; height: 4.92424%;">!
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 66.1616%; width: 24.6732%; height: 1.89394%;">Now let us prove that log (P
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.9477%; top: 67.0455%; width: 0.980392%; height: 1.13636%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.9281%; top: 66.1616%; width: 24.5098%; height: 1.89394%;">exp(xi)) − ln(n) ≤ maxi{xi}.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.6209%; top: 70.9596%; width: 5.55556%; height: 1.51515%;">xi ≤ x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.8497%; top: 70.7071%; width: 19.9346%; height: 1.89394%;">∗ =⇒ exp(xi) ≤ exp(x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.4575%; top: 70.8333%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.1111%; top: 70.7071%; width: 5.22876%; height: 1.89394%;">) =⇒
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.1569%; top: 69.5707%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.4837%; top: 72.9798%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 70.2614%; top: 70.7071%; width: 15.5229%; height: 1.89394%;">exp(xi) ≤ n exp(x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 85.6209%; top: 70.8333%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 86.2745%; top: 70.7071%; width: 0.980392%; height: 1.89394%;">)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 17.9739%; top: 74.2424%; width: 11.6013%; height: 4.92424%;">=⇒ log X
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 27.6144%; top: 78.0303%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.5752%; top: 75.7576%; width: 6.37255%; height: 1.89394%;">exp(xi)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.6209%; top: 74.2424%; width: 1.63399%; height: 4.92424%;">!
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 37.9085%; top: 75.7576%; width: 12.0915%; height: 1.89394%;">≤ log(n exp(x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.6732%; top: 75.8838%; width: 0.980392%; height: 0.757576%;">∗
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.3268%; top: 75.7576%; width: 12.9085%; height: 1.89394%;">)) = log(n) + x
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 62.9085%; top: 75.7576%; width: 14.8693%; height: 1.89394%;">∗ = log(n) + max
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75.3268%; top: 77.1465%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 77.451%; top: 75.7576%; width: 3.75817%; height: 1.89394%;">{xi}
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 81.0606%; width: 72.8758%; height: 1.76768%;">• In order to use GD to minimize the smooth approximation, compute the gradient of
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.6732%; top: 84.2172%; width: 10.1307%; height: 3.40909%;">g(w) := Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.0261%; top: 87.6263%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 34.8039%; top: 85.3535%; width: 9.64052%; height: 1.89394%;">ln (exp(⟨Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.281%; top: 85.3535%; width: 20.5882%; height: 1.89394%;">, w⟩ − yi) + exp(yi − ⟨Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.7059%; top: 85.3535%; width: 15.1961%; height: 1.89394%;">, w⟩)). [10 marks].
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 97.2222%; width: 1.30719%; height: 1.38889%;">5
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/a097f91f-8085-43e8-ba20-7b0cc66bbc9a" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;5/7페이지" aria-hidden="true"></div>
+
+<div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;6/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 5.55556%; width: 43.6275%; height: 1.89394%;">Sol: Let f(z) = ln(exp(z) + exp(−z)) and zi = ⟨Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 55.0654%; top: 5.55556%; width: 7.02614%; height: 1.89394%;">, w⟩ − yi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.9281%; top: 5.55556%; width: 16.0131%; height: 1.89394%;">. Since g(w) = Pn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 76.7974%; top: 5.55556%; width: 7.51634%; height: 2.0202%;">i=1 f(zi),
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.6601%; top: 8.58586%; width: 11.1111%; height: 3.40909%;">∇g(w) = Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.9935%; top: 11.9949%; width: 2.45098%; height: 1.13636%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.2614%; top: 8.71212%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.2418%; top: 8.83838%; width: 2.61438%; height: 1.76768%;">∂f
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.0784%; top: 10.8586%; width: 2.77778%; height: 1.76768%;">∂zi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 8.83838%; width: 2.77778%; height: 1.76768%;">∂zi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 8.71212%; width: 3.75817%; height: 4.0404%;">∂w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.7059%; top: 15.2778%; width: 1.79739%; height: 0.757576%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.6667%; top: 13.5101%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.9935%; top: 16.9192%; width: 2.45098%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.2614%; top: 13.6364%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.2418%; top: 13.7626%; width: 2.61438%; height: 1.76768%;">∂f
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.0784%; top: 15.7828%; width: 2.77778%; height: 1.64141%;">∂zi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.183%; top: 14.7727%; width: 2.28758%; height: 1.64141%;">Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.3072%; top: 13.6364%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.7059%; top: 20.202%; width: 1.79739%; height: 0.631313%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.6667%; top: 18.4343%; width: 3.10458%; height: 3.28283%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.9935%; top: 21.8434%; width: 2.45098%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.2614%; top: 18.5606%; width: 0.980392%; height: 3.91414%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.2418%; top: 18.5606%; width: 11.7647%; height: 1.89394%;">1 − exp(−2zi)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.8954%; top: 20.5808%; width: 10.2941%; height: 1.89394%;">1 + exp(2zi)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.1699%; top: 19.697%; width: 2.45098%; height: 1.64141%;">Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.2941%; top: 18.5606%; width: 0.980392%; height: 3.91414%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.7059%; top: 25%; width: 1.79739%; height: 0.757576%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.6667%; top: 23.2323%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.9935%; top: 26.6414%; width: 2.45098%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.2614%; top: 23.3586%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.2418%; top: 23.4848%; width: 13.0719%; height: 1.76768%;">1 − exp(−2[⟨Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 59.1503%; top: 23.4848%; width: 7.02614%; height: 1.76768%;">, w⟩ − yi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.8497%; top: 23.4848%; width: 1.47059%; height: 1.76768%;">])
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.2418%; top: 25.5051%; width: 13.0719%; height: 1.89394%;">1 + exp(−2[⟨Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.9869%; top: 25.5051%; width: 7.18954%; height: 1.89394%;">, w⟩ − yi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.8497%; top: 24.4949%; width: 4.24837%; height: 2.90404%;">]) Xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 69.7712%; top: 23.3586%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 29.4192%; width: 34.3137%; height: 1.89394%;">• Prove that g(w) is convex. [10 marks].
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 31.8182%; width: 81.6993%; height: 1.89394%;">Sol: If f(z) = ln(exp(z) + exp(−z)), g(w) is a sum of linear compositions with f(z). By using the
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 33.7121%; width: 57.3529%; height: 1.89394%;">operations that preserve convexity, if f(z) is convex, g(w) is convex.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.1765%; top: 37.6263%; width: 1.47059%; height: 1.76768%;">f
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 17.3203%; top: 37.5%; width: 0.816993%; height: 0.883838%;">′
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 17.8105%; top: 36.4899%; width: 20.098%; height: 2.90404%;">(z) = exp(z) − exp(−z)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.0392%; top: 38.6364%; width: 14.8693%; height: 1.89394%;">exp(z) + exp(−z)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 15.8497%; top: 41.9192%; width: 1.47059%; height: 1.76768%;">f
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.8301%; top: 40.5303%; width: 43.4641%; height: 3.28283%;">′′(z) = (exp(z) + exp(−z))2 − ((exp(z) − exp(−z))2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 59.9673%; top: 40.9091%; width: 0.980392%; height: 1.89394%;">)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.4967%; top: 42.9293%; width: 16.9935%; height: 1.89394%;">(exp(z) + exp(−z))2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.6013%; top: 41.9192%; width: 31.6993%; height: 1.89394%;">≥ 0 (Since exp(−z) ≥ 0 for all z.)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 46.3384%; width: 86.2745%; height: 1.89394%;">(6) [25 marks] A common way to measure distance between two probability distributions is by using
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 48.2323%; width: 86.6013%; height: 1.76768%;">the KL-divergence. For a fixed reference distribution q ∈ ∆n, the reverse KL-divergence of p ∈ ∆n w.r.t
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 50.1263%; width: 18.9542%; height: 1.64141%;">q can be computed as:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.7843%; top: 51.7677%; width: 19.6078%; height: 3.28283%;">KL(p||q) = f(p) := Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.451%; top: 55.1768%; width: 2.61438%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 55.2288%; top: 53.4091%; width: 1.96078%; height: 1.26263%;">pi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.1895%; top: 51.8939%; width: 3.75817%; height: 3.91414%;">ln 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.6209%; top: 52.399%; width: 1.96078%; height: 1.26263%;">pi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.7843%; top: 54.4192%; width: 1.63399%; height: 1.38889%;">qi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 62.4183%; top: 51.8939%; width: 1.47059%; height: 3.91414%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 56.8182%; width: 26.1438%; height: 1.89394%;">For x ∈ ∆n, define φ(x) := Pn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.6993%; top: 57.3232%; width: 4.57516%; height: 1.38889%;">i=1 xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.4379%; top: 56.8182%; width: 35.6209%; height: 1.89394%;">ln(xi) to be the negative entropy function.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 59.596%; width: 45.7516%; height: 1.89394%;">• Prove that φ(x) is a convex function in x. [5 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 62.1212%; width: 81.5359%; height: 1.76768%;">Sol: Since the function is separable w.r.t to the coordinates, the Hessian is a diagonal matrix D
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.4379%; top: 64.1414%; width: 9.80392%; height: 1.89394%;">with Di,i =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 21.5686%; top: 63.7626%; width: 1.30719%; height: 1.13636%;">∂
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.3856%; top: 63.6364%; width: 3.59477%; height: 1.51515%;">2φ(x)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.549%; top: 64.899%; width: 2.61438%; height: 1.26263%;">∂x2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.183%; top: 65.5303%; width: 0.816993%; height: 0.883838%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 47.0588%; top: 67.5505%; width: 1.63399%; height: 1.51515%;">∂
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.2026%; top: 67.4242%; width: 4.73856%; height: 1.89394%;">2φ(x)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.366%; top: 69.4444%; width: 3.26797%; height: 1.64141%;">∂x2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.6536%; top: 70.4545%; width: 0.816993%; height: 1.0101%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.4314%; top: 69.0657%; width: 1.79739%; height: 0.757576%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.0458%; top: 67.6768%; width: 1.14379%; height: 1.26263%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 55.719%; top: 69.9495%; width: 1.79739%; height: 1.38889%;">xi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 72.9798%; width: 10.9477%; height: 1.64141%;">Since xi ≥ 0,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.0392%; top: 72.601%; width: 1.30719%; height: 1.0101%;">∂
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.8562%; top: 72.3485%; width: 3.75817%; height: 1.51515%;">2φ(x)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.0196%; top: 73.7374%; width: 2.61438%; height: 1.13636%;">∂x2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 25.6536%; top: 74.3687%; width: 0.816993%; height: 0.883838%;">i
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.1046%; top: 72.8535%; width: 41.1765%; height: 1.89394%;">≥ 0 and D is PSD, implying that φ(x) is convex.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 76.1364%; width: 51.634%; height: 1.89394%;">• Prove that f(p) = φ(p) − φ(q) − ⟨∇φ(q), p − q⟩. [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 78.6616%; width: 3.26797%; height: 1.51515%;">Sol:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 20.2614%; top: 82.4495%; width: 26.1438%; height: 1.89394%;">φ(p) − φ(q) − ⟨∇φ(q), p − q⟩ =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 81.1869%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.8954%; top: 84.596%; width: 2.45098%; height: 1.13636%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.8366%; top: 82.4495%; width: 2.12418%; height: 1.89394%;">[pi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.1242%; top: 82.4495%; width: 8.66013%; height: 1.89394%;">ln(pi) − qi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.7843%; top: 82.4495%; width: 23.5294%; height: 1.89394%;">ln(qi) − [1 + ln(qi)] (pi − qi)]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.6078%; top: 87.8788%; width: 1.79739%; height: 0.757576%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 86.1111%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.8954%; top: 89.5202%; width: 2.45098%; height: 1.0101%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.8366%; top: 87.2475%; width: 2.12418%; height: 1.89394%;">[pi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.1242%; top: 87.2475%; width: 8.66013%; height: 1.89394%;">ln(pi) − pi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.9477%; top: 87.2475%; width: 12.4183%; height: 1.89394%;">ln(qi) − pi + qi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 73.0392%; top: 87.2475%; width: 0.653595%; height: 1.89394%;">]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.6078%; top: 92.803%; width: 1.79739%; height: 0.631313%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 90.9091%; width: 3.10458%; height: 3.40909%;">Xn
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.8954%; top: 94.3182%; width: 2.45098%; height: 1.13636%;">i=1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.1634%; top: 91.1616%; width: 0.980392%; height: 3.91414%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.6536%; top: 92.6768%; width: 1.79739%; height: 1.26263%;">pi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.6144%; top: 91.1616%; width: 3.59477%; height: 3.91414%;">ln 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.0458%; top: 91.6667%; width: 1.79739%; height: 1.26263%;">pi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.2092%; top: 93.6869%; width: 1.63399%; height: 1.26263%;">qi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.8431%; top: 91.1616%; width: 15.5229%; height: 3.91414%;"> − 1 + 1 = f(p)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 97.2222%; width: 1.30719%; height: 1.38889%;">6
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/c6418601-c1ce-46c8-8aa2-6c893a2b7f3b" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;6/7페이지" aria-hidden="true"></div>
+
+<div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"><a href="https://colab.research.google.com/drive/11AFh2z8PYZVC8jDyOr2nvZPE2j9ZehlQ?usp=sharing" target="_blank" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-hSRGPd" tabindex="0" role="link" aria-label="https://colab.research.google.com/drive/11AFh2z8PYZVC8jDyOr2nvZPE2j9ZehlQ?usp=sharing" data-saferedirecturl="https://www.google.com/url?q=https://colab.research.google.com/drive/11AFh2z8PYZVC8jDyOr2nvZPE2j9ZehlQ?usp%3Dsharing&amp;sa=D&amp;source=apps-viewer-frontend&amp;ust=1732838446678513&amp;usg=AOvVaw16AmnJqXmYu7IRt-CdSZHJ&amp;hl=ko" rel="noreferrer" style="left: 13.3987%; top: 44.697%; width: 85.7843%; height: 1.76768%;"></a></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;7/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 5.55556%; width: 71.8954%; height: 1.89394%;">• Using the above results, prove that f(p) is non-negative for all p, q ∈ ∆n. [5 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 7.95455%; width: 61.1111%; height: 1.89394%;">Sol: Since φ(x) is convex, φ(p) ≥ φ(q) + ⟨∇φ(q), p − q⟩, hence f(p) ≥ 0.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 11.1111%; width: 62.0915%; height: 1.89394%;">• Using the above results, prove that f(p) is a convex function. [5 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 13.5101%; width: 6.53595%; height: 1.64141%;">Sol: ∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 17.9739%; top: 13.5101%; width: 16.0131%; height: 1.89394%;">f(p) = ∇2φ(p) ⪰ 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 17.4242%; width: 86.4379%; height: 1.89394%;">(7) [65 marks] The data.zip file consists of two .csv files – X.csv containing the n × d feature matrix
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 19.3182%; width: 86.4379%; height: 1.89394%;">(X) and y.csv containing the n × 1 vector of labels (y). For ridge regression on this dataset, let us
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 20.9596%; width: 43.4641%; height: 2.0202%;">minimize the l-2 regularized squared-loss: f(w) := 1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.183%; top: 22.096%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.6536%; top: 21.0859%; width: 8.49673%; height: 1.89394%;">∥Xw − y∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.9869%; top: 20.8333%; width: 2.94118%; height: 1.89394%;">2 +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 62.7451%; top: 20.9596%; width: 0.980392%; height: 1.13636%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 62.2549%; top: 22.096%; width: 1.96078%; height: 1.0101%;">2n
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.8693%; top: 21.0859%; width: 3.26797%; height: 1.89394%;">∥w∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.9739%; top: 20.8333%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 69.4444%; top: 21.0859%; width: 24.0196%; height: 1.89394%;">using gradient descent (GD).
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 24.6212%; width: 58.1699%; height: 1.89394%;">• Compute the smoothness L for f(w), and implement GD with η =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.4641%; top: 24.4949%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 68.3007%; top: 25.5051%; width: 1.30719%; height: 1.13636%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 69.4444%; top: 24.6212%; width: 10.1307%; height: 1.89394%;">. [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 27.6515%; width: 83.6601%; height: 1.89394%;">• Write the code for computing the step-size found using the exact line-search (similar to Lecture 2)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 29.5455%; width: 73.2026%; height: 1.89394%;">at iteration k, and implement GD with this choice of the adaptive step-size. [15 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 32.5758%; width: 61.7647%; height: 1.89394%;">• Write code for the back-tracking Armijo line-search with ηmax = 10, c =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.732%; top: 32.4495%; width: 0.980392%; height: 1.0101%;">1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.732%; top: 33.5859%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 72.7124%; top: 32.702%; width: 20.5882%; height: 1.64141%;">, β = 0.9 and implement
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 34.3434%; width: 47.8758%; height: 1.89394%;">GD with this choice of the adaptive step-size. [25 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 37.5%; width: 83.4967%; height: 1.89394%;">• For T = 5000 (number of iterations), compare the three step-size choices by plotting the gradient
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 39.2677%; width: 81.5359%; height: 1.89394%;">norm and function values as a function of the (i) number of iterations and (ii) the number of calls
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 41.1616%; width: 74.0196%; height: 1.89394%;">to the zero-order (evaluating f(w)) + first-order (evaluating ∇f(w)) oracles. [15 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 44.697%; width: 89.5425%; height: 1.76768%;">Sol: https://colab.research.google.com/drive/11AFh2z8PYZVC8jDyOr2nvZPE2j9ZehlQ?usp=sharing
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 97.2222%; width: 1.30719%; height: 1.38889%;">7
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/1019a74a-f404-4e3b-a1cd-19c8b34a40ce" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;7/7페이지" aria-hidden="true"></div>
+
+

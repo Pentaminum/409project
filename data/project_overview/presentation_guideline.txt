@@ -1,0 +1,36 @@
+Project Presentation Guidelines
+Hi everyone, 
+
+The guidelines for the presentation are as follows:
+
+- Each presentation should be a maximum of 20 minutes, followed by a 5 - 10 min QA
+
+- Each member of the group is required to present a part of the project. 
+
+- Since some of the topics go beyond what we have learned in class, please cover the required background material in your presentation (the presentation is not for me, but for the class to learn something new). 
+
+- The presentation should follow a rough outline (not necessary, but encouraged):
+
+(a) Motivation (why should we care),
+
+(b) Problem Formulation (a systematic mathematical formulation of the problem with all symbols clearly explained),
+
+(c) Related Work (what has been the recent progress in this subtopic),
+
+(d) Project Contributions (what is your precise contribution to the topic) - what is the methodology that you followed, the new theory you developed, the experimental setup, and corresponding results? Or if you are doing a survey, how do the various methods compare - both theoretically and empirically.  
+
+(e) Conclusion and Future Work (what was the conclusion of the project and what are the things to be done in the short/long term for this project). 
+
+- Grading will depend on the content, how well the group presented the content, how clear was your individual part of the presentation, and how well you answered questions and engaged with the class. 
+
+- There will also be marks for class participation, such as asking thoughtful questions or, even better, giving ideas to the presenters so that they can improve their final report. 
+
+
+Marking scheme:
+
+a: Introduction, Motivation, Survey of related work - 4%
+b: Presentation of contributions, Conclusion, Future work - 4%
+c: Q & A - 3%
+d: Individual part of the presentation - 2%
+e: Project Milestone & Discussion - 1%
+f: Class participation during presentations - 1%

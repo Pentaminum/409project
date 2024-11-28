@@ -1,0 +1,40 @@
+Final Project Report Guidelines
+Hi everyone, 
+
+The final report is due at 11.59 p.m. PST on 17th December. Since I need to mark the reports and submit your grades, this is a hard deadline, and there are no late days or flexibility for this specific deadline. 
+
+We will use the same (modified) NeurIPS format we used for the proposal. The maximum length of the report is 8 pages excluding references. If you would like to give some additional details (e.g. specifics of the experiments) beyond the 8 pages, you can include them in the Appendix (no page limit for the Appendix).
+
+The final report should be a conference-style submission. For some examples, see https://arxiv.org/abs/1905.09997 or https://arxiv.org/abs/2208.00088 for possible ways to structure the paper.  The report should include the following: (it is not necessary to follow this specific format but all the things below need to be included). 
+
+(a) Title: The (technical) title of the submission (please do not have the title as "final report") 
+
+(b) Authors: Team members and their emails
+
+(c) Abstract (a one-paragraph explanation describing the problem, what is your contribution/conclusion)
+
+(d) Motivation (why are you planning to study this particular topic - E.g. "it is useful in so and so places, and solving this will result in so and so")
+
+(e) Problem formulation (a precise mathematical description of the problem you are solving. All symbols need to be described, please give intuition wherever possible). This is also a good place to give the technical background of the paper (standard things like the definition of regret for example). If the amount of technical terms is too much (for example, definitions of convexity, smoothness, etc), you might want to defer some of this to the Appendix. 
+
+(f) Related Work (survey and cite the most relevant papers and include a brief description highlighting the things you are focusing on/how your work differs from this past literature)
+
+(g) Methodology/Theory/Experiments: Beyond surveying the related work, this is the additional main contribution of the project. Depending on the project, you might want to split the main contribution into Algorithms/Theory/Experiments.
+
+This part should clearly say what is the hypothesis that you are evaluating, what is the main idea of the project, what are the algorithms you devised/implemented/compared, the main theoretical results you derived/compared, what is experimental setup, the experimental results, and the resulting conclusions. 
+
+- For the algorithms, it is good to include pseudo-code and analyze the space/time complexity of the resulting algorithm.
+
+- For the theory, it is good to provide an intuitive (in plain words) interpretation of the results.
+
+- For the experiments, it is good to have an interpretation of the plots in the caption and have a short list of the main takeaways.
+
+- For all of this, make sure to only include the most important things. For example, additional corollaries, ablation studies, and runtime plots should all be included in the Appendix (make sure to refer to the Appendix from the main paper) 
+
+(h) Conclusion and Future Work: What is the overall conclusion of your project - what is missing and can be done as part of future work? Include both short-term (that can in principle be accomplished in the next month) and long-term work (more ambitious things that would be cool to look into, but would require significantly more time)
+
+(i) References: Auto-generated from the .bib file. Make sure the special characters are taken care of and the correct versions of the papers are cited. 
+
+(j) Author Contributions: In order to disentangle the contributions of individual team members, please include a section on what each author/team member contributed - for example, "XYZ was responsible for running this specific experiments, while ABC and QPR derived the convergence rate for.."
+
+Grading will be on the basis of the content (what you accomplish in the project), the structure and clarity of the report (including the survey of the related work), your individual contribution to the project, and how well you incorporated feedback from the project proposal and presentation.

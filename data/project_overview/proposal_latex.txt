@@ -1,0 +1,227 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2022
+
+% ready for submission
+%\usepackage{neurips_2022}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2022}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+     \usepackage[final]{neurips_2022}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2022}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsmath}        % math symbols
+\usepackage{amssymb}        % more math symbols
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+\title{Comparative Study of Optimization Techniques for Accelerating Temporal Difference Learning}
+
+\author{%
+  Jiin Kim \\
+  Department of Computer Science\\
+  Simon Fraser University\\
+  \texttt{jka273@sfu.ca} \\
+  \And
+  Jusung Scott Park \\
+  Department of Computer Science\\
+  Simon Fraser University \\
+  \texttt{jpa118@sfu.ca} \\
+  \And
+  Seunghwan Kim \\
+  Department of Computer Science\\
+  Simon Fraser University \\
+  \texttt{ska215@sfu.ca} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Temporal Difference (TD) learning is a fundamental algorithm in reinforcement learning for policy evaluation. However, TD learning can suffer from slow convergence, especially in high-dimensional or complex environments. This project proposes to investigate the existing optimization techniques to speed up policy evaluation in TD learning and compare their performance under various conditions.
+\end{abstract}
+
+\section{Motivation}
+Temporal Difference (TD) learning is a widely used algorithm for policy evaluation in reinforcement learning (RL), but it faces significant challenges in terms of stability, scalability, and convergence speed, especially when combined with function approximation and off-policy learning. Solving these issues could lead to significant advancements in RL.
+
+According to the study of \cite{liu2015sparsereinforcement}, TD for policy evaluation can be treated as an optimization problem. Several studies have proposed algorithms to optimize TD learning, addressing various challenges such as instability in off-policy learning, slow convergence in high-dimensional environments, and poor sample efficiency. By comparing these methods, we aim to identify the most suitable algorithm under specific conditions. Ultimately, the insights gained from this comparison will provide guidance on choosing the appropriate optimization method for TD learning based on the characteristics of the RL task at hand.
+
+
+\section{Related Work}
+
+Several studies have explored the optimization aspects of TD learning:
+
+\begin{itemize}
+    \item \citet{bhandari2018finite} introduced **Gradient Temporal Difference (GTD)** methods, which minimize the Mean-Squared Projected Bellman Error (MSPBE). These methods are specifically designed to handle the instability that arises in off-policy TD learning, providing a theoretical framework for convergence with linear function approximation..
+    \item \citet{liu2021proximal} proposed **Proximal Gradient TD** learning, which uses L1 regularization to enforce sparsity in the value function approximation. This method is particularly effective in high-dimensional environments, where feature selection becomes crucial for efficient learning.
+    \item \citet{daskalakis2018training} introduced a **Primal-Dual Saddle-Point Formulation** for TD learning, solving it as a convex-concave optimization problem. This method improves stability in complex reinforcement learning tasks and is effective for off-policy learning.
+    \item \citet{nesterov1983method}  have been applied to TD learning to improve convergence speed. These methods incorporate momentum, which makes them well-suited for large-scale RL problems.
+\end{itemize}
+
+\section{Problem Formulation}
+
+In this section, we define the problem of \textit{temporal difference (TD) learning} and the optimization challenges associated with it, followed by the mathematical formulations for comparing the different optimization methods: \textit{Gradient Temporal Difference (GTD) Methods}, \textit{Proximal Gradient Methods}, \textit{Primal-Dual Saddle-Point Formulations}, and \textit{Accelerated Gradient Methods}. Each of these methods addresses specific issues in stability, convergence, and computational efficiency, particularly in the context of \textit{reinforcement learning (RL)}.
+
+\subsection{Reinforcement Learning and Temporal Difference Learning}
+
+We consider the standard setting of \textit{Reinforcement Learning (RL)}, where an agent interacts with an environment modeled as a \textit{Markov Decision Process (MDP)}. An MDP is defined as a tuple \((\mathcal{S}, \mathcal{A}, P, R, \gamma)\), where:
+\begin{itemize}
+    \item \(\mathcal{S}\) is the set of states.
+    \item \(\mathcal{A}\) is the set of actions.
+    \item \(P(s'|s,a)\) is the state transition probability function.
+    \item \(R(s,a)\) is the reward function.
+    \item \(\gamma \in [0, 1)\) is the discount factor that prioritizes immediate rewards over future rewards.
+\end{itemize}
+
+The agent’s goal is to learn an optimal \textit{policy} \(\pi : \mathcal{S} \rightarrow \mathcal{A}\) that maximizes the expected cumulative discounted reward. A key step in learning an optimal policy is estimating the \textit{value function}, which represents the long-term value of being in a certain state under a specific policy.
+
+In \textit{policy evaluation}, the value function \(V^\pi(s)\) for a given policy \(\pi\) is the unique fixed point of the \textit{Bellman equation}:
+\[
+V^\pi(s) = \mathbb{E}_{\pi} \left[ R(s,a) + \gamma V^\pi(s') \right].
+\]
+
+\subsection{Problem Statement: TD Learning and Its Challenges}
+
+\textit{Temporal Difference (TD) Learning} is a fundamental method used to estimate the value function \(V^\pi\) from sample transitions. However, when \textit{function approximation} is used, such as \textit{linear function approximation}, where the value function is approximated as:
+\[
+V(s; \theta) = \theta^\top \phi(s),
+\]
+with \(\theta \in \mathbb{R}^d\) being the parameter vector and \(\phi(s) \in \mathbb{R}^d\) being a feature vector for state \(s\), several challenges arise. In particular:
+\begin{itemize}
+    \item \textbf{Instability}: Standard TD learning methods (like TD(0)) can diverge when used in off-policy learning.
+    \item \textbf{Scalability}: Large-scale RL tasks with high-dimensional state spaces require efficient and scalable optimization methods.
+    \item \textbf{Convergence}: Ensuring convergence to the correct value function is non-trivial, particularly in \textit{off-policy} settings or when approximating complex value functions \cite{sutton2018reinforcement}.
+\end{itemize}
+
+\subsection{Objective}
+
+The goal of this study is to \textit{compare} several \textit{optimization methods} for solving the TD learning problem, particularly in \textit{off-policy learning} and with \textit{function approximation}. Specifically, we will investigate:
+\begin{itemize}
+    \item How well these methods stabilize TD learning.
+    \item How efficiently they converge (both asymptotically and in finite-time).
+    \item The computational trade-offs in terms of per-iteration complexity.
+\end{itemize}
+
+\section{Plan}
+
+\subsection{Benchmark Tasks}
+
+We will evaluate the optimization methods on several standard reinforcement learning benchmark environments from OpenAI Gym. These benchmarks are designed to cover both small and large-scale RL tasks, as well as environments with different levels of complexity.
+\begin{itemize}
+    \item **CartPole**: A classic control problem that is widely used for testing RL algorithms.
+    \item **MountainCar**: Another control task with sparse rewards, often used to test an algorithm's ability to handle long horizons.
+    \item **Inverted Pendulum**: A more challenging control task that involves balancing a pendulum upright.
+    \item **Continuous Control Tasks** (e.g., Pendulum-v0, BipedalWalker-v3): Tasks with continuous action spaces to test how well the optimization algorithms handle large action and state spaces.
+\end{itemize}
+
+\subsection{Implementation of Optimization Methods}
+
+The following optimization methods will be implemented:
+\begin{itemize}
+    \item **GTD and GTD2**: These methods will be implemented following the theoretical formulations in \cite{bhandari2018finite}. GTD aims to minimize the Mean-Squared Projected Bellman Error (MSPBE) and will be tested both on-policy and off-policy.
+    \item **Proximal Gradient Methods**: Proximal gradient methods will be applied to implement sparse TD learning with L1 regularization. The algorithm will be implemented using the proximal operator as described in \cite{liu2021proximal}.
+    \item **Primal-Dual Saddle-Point Formulation**: This will be implemented by solving the TD learning problem as a saddle-point optimization using mirror descent and extragradient techniques, following the setup in \cite{daskalakis2018training}.
+    \item **Accelerated Gradient Methods**: We will implement accelerated methods like Nesterov’s Accelerated Gradient (NAG) to speed up convergence, as outlined in \cite{nesterov1983method}.
+\end{itemize}
+
+\subsection{Evaluation Metrics}
+
+We will evaluate the performance of the optimization methods using the following metrics:
+\begin{itemize}
+    \item **Convergence Speed**: Measured by the number of iterations required for the algorithms to reach a stable value of the value function \(V(s)\).
+    \item **Stability**: Evaluated by the variance in the value function updates over time, particularly for off-policy tasks where instability is more common.
+    \item **Sample Efficiency**: The number of environment interactions needed to achieve a given level of performance. This is crucial in large-scale tasks where sample efficiency is important.
+    \item **Computational Efficiency**: Measured by the time complexity (in terms of computation per iteration) and memory footprint of each algorithm.
+\end{itemize}
+
+\section{References}
+
+\bibliographystyle{plainnat}
+\bibliography{ref}
+
+\appendix
+
+\section{Appendix}
+
+\subsection{Mathematical Formulation and Assumptions}
+
+\subsubsection{Gradient Temporal Difference (GTD) Methods}
+
+GTD methods aim to minimize the \textit{Mean-Squared Projected Bellman Error (MSPBE)}:
+\[
+\text{MSPBE}(\theta) = \| V^\pi - \Pi T^\pi V^\pi \|^2_{\xi},
+\]
+where \(\Pi\) is the projection operator onto the space of approximated value functions and \(T^\pi\) is the Bellman operator. The objective is to find the parameter vector \(\theta\) that minimizes this error.
+
+The key assumption is that the \textit{function approximation} \(\phi(s)\) is linear and the data is generated either \textit{on-policy} or \textit{off-policy}. In the off-policy case, the behavior policy \(\pi_b\) is different from the target policy \(\pi\) \cite{maei2011gradient}.
+
+Mathematically, the GTD update rule is given by:
+\[
+\theta_{t+1} = \theta_t + \alpha_t \left( \phi(s_t) \left( R(s_t,a_t) + \gamma \phi(s_{t+1})^\top \theta_t - \phi(s_t)^\top \theta_t \right) \right),
+\]
+where \(\alpha_t\) is the learning rate, and additional corrections are used to account for the off-policy nature of the data.
+
+\subsubsection{Proximal Gradient Methods}
+
+Proximal gradient methods are used in the context of \textit{sparse TD learning} where the value function approximation includes a \textit{regularization term}, such as an \textit{L1 penalty} to promote sparsity. The problem can be formulated as minimizing the following objective:
+\[
+\min_{\theta} \frac{1}{2} \sum_{t=1}^T \left( R_t + \gamma \phi(s_{t+1})^\top \theta - \phi(s_t)^\top \theta \right)^2 + \lambda \|\theta\|_1,
+\]
+where \(\lambda\) controls the strength of the regularization \cite{liu2015sparsereinforcement}.
+
+The \textit{proximal operator} for the L1 penalty, denoted as \(\text{prox}_{\lambda}(\cdot)\), is applied after each gradient update to induce sparsity:
+\[
+\theta_{t+1} = \text{prox}_{\lambda} \left( \theta_t - \alpha_t \nabla_\theta f(\theta_t) \right),
+\]
+where \(f(\theta)\) is the TD loss function.
+
+The key assumption here is that the value function can be sparsely represented using the features \(\phi(s)\), and that the proximal updates can handle the non-smooth L1 regularization efficiently \cite{parikh2014proximal}.
+
+\subsubsection{Primal-Dual Saddle-Point Formulation}
+
+In this formulation, the TD learning problem is expressed as a \textit{saddle-point problem}. Specifically, we aim to minimize a convex-concave objective of the form:
+\[
+\min_{\theta} \max_{\lambda} \mathcal{L}(\theta, \lambda),
+\]
+where \(\mathcal{L}(\theta, \lambda)\) is a \textit{Lagrangian} function that combines the TD learning objective and a set of constraints or regularization terms. The variable \(\lambda\) plays the role of a dual variable enforcing constraints such as sparsity or stability in off-policy learning.
+
+The primal-dual algorithm alternates between updating the primal variable \(\theta\) (which represents the value function approximation) and the dual variable \(\lambda\) (which enforces the regularization or constraints). The updates are typically performed using methods like \textit{mirror descent} or \textit{extragradient}:
+\[
+\theta_{t+1} = \theta_t - \alpha_t \nabla_\theta \mathcal{L}(\theta_t, \lambda_t),
+\]
+\[
+\lambda_{t+1} = \lambda_t + \beta_t \nabla_\lambda \mathcal{L}(\theta_t, \lambda_t).
+\]
+
+The key assumption is that the problem is convex in \(\theta\) and concave in \(\lambda\), which ensures that saddle-point algorithms can be applied effectively \cite{daskalakis2018training}.
+
+\subsubsection{Accelerated Gradient Methods}
+
+\textit{Accelerated Gradient Methods} aim to improve the convergence speed of TD learning by introducing \textit{momentum-based updates}. These methods can be used to solve the TD optimization problem faster than standard gradient descent.
+
+The acceleration is typically achieved by incorporating a \textit{momentum term}:
+\[
+v_{t+1} = \beta v_t + \alpha \nabla_\theta f(\theta_t),
+\]
+\[
+\theta_{t+1} = \theta_t - v_{t+1}.
+\]
+
+Here, \(\beta\) is a parameter controlling the momentum, and \(f(\theta)\) is the TD loss function. The key assumption is that the loss function \(f(\theta)\) is smooth and convex, which allows for accelerated methods like \textit{Nesterov’s Accelerated Gradient} (NAG) to achieve faster convergence rates \cite{nesterov1983method}.
+
+\end{document}

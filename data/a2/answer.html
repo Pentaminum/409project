@@ -1,0 +1,295 @@
+<div class="ndfHFb-c4YZDc-cYSp0e-Oz6c3e ndfHFb-c4YZDc-neVct-RCfa3e ndfHFb-c4YZDc-cYSp0e-DARUcf-gSKZZ" role="document" tabindex="0" style="margin-top: 64px; margin-bottom: 64px; width: 800px; left: 92px;"><div class="ndfHFb-c4YZDc-cYSp0e-BIzmGd ndfHFb-c4YZDc-LgbsSe-OWB6Me"><div class="ndfHFb-c4YZDc-BIzmGd-Bz112c ndfHFb-c4YZDc-Bz112c"></div></div><div class="ndfHFb-c4YZDc-wvGCSb-gkA7Yd" dir="ltr" style="text-align: left;"><div class="wvGCSb-iQd6Fc wvGCSb wvGCSb-gkA7Yd-nUpftc ocLVN-di8rgd-O1htCb-aGxpHf-di8rgd-nupQLb wvGCSb-RDNXzf-P7Vtfd wvGCSb-gkA7Yd-nUpftc-NBtyUd HB1eCd-UMrnmb HB1eCd-MqDS2b-uoC0bf wvGCSb-neVct-uNfmef wvGCSb-neVct-BvBYQ" id="wvGCSb-gkA7Yd-nUpftc" role="list"></div><div class="wvGCSb-AznF2e-DTMEae"></div></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;1/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 13.8889%; top: 10.8586%; width: 72.2222%; height: 2.90404%;">CMPT 409/981: Optimization for Machine Learning
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.6863%; top: 14.1414%; width: 18.6275%; height: 2.65152%;">Assignment 2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.5033%; top: 19.1919%; width: 16.9935%; height: 1.64141%;">Total marks: 300
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.3725%; top: 22.8535%; width: 37.4183%; height: 2.0202%;">Due: 11.59 pm, Thursday, 24 October
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 25.817%; top: 24.7475%; width: 48.366%; height: 2.0202%;">Late Submission: 11.59 pm, Tuesday, 29 October
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 30.5556%; width: 43.4641%; height: 1.76768%;">General Assignment Submission Instructions
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 33.5859%; width: 83.8235%; height: 1.89394%;">• Assignments typed in Latex (the Latex source is provided) are preferred, but can be handwritten.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 36.7424%; width: 83.6601%; height: 1.76768%;">• For coding questions, you can write the code in any language, but are NOT allowed to make use of
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 38.5101%; width: 81.5359%; height: 1.89394%;">automatic differentiation (using Numpy + Python is preferred). Store all code files and plots in a
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 40.404%; width: 29.5752%; height: 1.76768%;">directory and zip it for submission.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 43.4343%; width: 80.3922%; height: 1.89394%;">• Data: The data.zip file consists of two .csv files – X.csv containing the feature matrix (X ∈ R
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 89.7059%; top: 43.3081%; width: 2.94118%; height: 1.13636%;">n×d
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 92.4837%; top: 43.4343%; width: 0.816993%; height: 1.89394%;">)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 45.202%; width: 46.5686%; height: 1.89394%;">and y.csv containing the vector of labels (y ∈ {−1, +1}
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.8431%; top: 45.3283%; width: 1.30719%; height: 0.883838%;">n
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.8235%; top: 45.202%; width: 1.47059%; height: 1.89394%;">).
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 48.3586%; width: 83.4967%; height: 1.89394%;">• Submission: Assignment (PDF + separate zip file for code and plots) is to be submitted online
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.4379%; top: 50.2525%; width: 10.6209%; height: 1.76768%;">via Coursys.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 53.2828%; width: 73.2026%; height: 1.76768%;">• For some flexibility, each student is allowed 1 late-submission for Assignments 1 &amp; 2.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 57.197%; width: 86.2745%; height: 1.89394%;">(1) [40 marks] In the proof for Polyak momentum in Lecture 6, we used some facts about the
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 59.0909%; width: 69.7712%; height: 1.76768%;">spectral radius of a matrix. Recall that the spectral radius of matrix B is given as:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.1895%; top: 62.3737%; width: 35.4575%; height: 1.89394%;">ρ(B) := max{|λ1[B]| , |λ2[B]| , . . . , |λd[B]|}
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 65.7828%; width: 29.085%; height: 1.38889%;">and the matrix norm is defined as:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.7059%; top: 68.4343%; width: 12.2549%; height: 4.0404%;">∥B∥2 = max 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.1242%; top: 68.4343%; width: 5.39216%; height: 2.0202%;">∥Bv∥2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.9412%; top: 70.4545%; width: 3.75817%; height: 2.0202%;">∥v∥2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.6797%; top: 68.4343%; width: 1.30719%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 59.6405%; top: 70.4545%; width: 0.653595%; height: 0.883838%;">,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 73.7374%; width: 63.8889%; height: 1.76768%;">for all vectors v ̸= 0. Derive the following statements to complete the proof.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 76.7677%; width: 33.3333%; height: 1.89394%;">• If B is symmetric, then ρ(B) = ∥B∥2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.8105%; top: 76.7677%; width: 9.15033%; height: 1.89394%;">. [5 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 79.1667%; width: 81.6993%; height: 1.89394%;">Sol: We will prove that ∥B∥ ≥ ρ(B) for all B. If B is symmetric, we need to prove that ∥B∥ ≤ ρ(B)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 81.0606%; width: 81.6993%; height: 1.76768%;">and hence ∥B∥ = ρ(B). For this, consider the SVD of B = UDU T where U is an orthonormal
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 82.8283%; width: 32.8431%; height: 1.76768%;">matrix such that UU T = Id. For any w
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.0196%; top: 86.1111%; width: 40.1961%; height: 1.89394%;">∥Bw∥ = ∥UDU Tw∥ ≤ ∥U∥ ∥DU Tw∥ = ∥DU Tw∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 13.5621%; top: 89.6465%; width: 57.3529%; height: 1.89394%;">(∥U∥ = 1 since for a unit-vector v s.t. ∥v∥ = 1, ∥U∥ = maxv ∥Uv∥ =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.2418%; top: 88.8889%; width: 2.28758%; height: 3.0303%;">q
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 73.2026%; top: 89.6465%; width: 4.57516%; height: 1.89394%;">∥Uv∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 77.6144%; top: 89.3939%; width: 3.10458%; height: 1.64141%;">2 =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 80.8824%; top: 89.5202%; width: 2.12418%; height: 1.89394%;">√
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 82.5163%; top: 89.6465%; width: 10.7843%; height: 1.89394%;">vUU Tv = 1.)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.5098%; top: 97.2222%; width: 0.980392%; height: 1.38889%;">1
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/43e3ebb1-c68e-44c0-847f-7d16deb31ef2" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;1/7페이지" aria-hidden="true" style="opacity: 1;"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;2/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 5.68182%; width: 13.5621%; height: 1.64141%;">Defining ν := U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.8366%; top: 5.68182%; width: 3.10458%; height: 1.64141%;">Tw,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.0196%; top: 9.09091%; width: 59.6405%; height: 1.89394%;">∥Bw∥ ≤ ∥Dν∥ ≤ |λmax[D]| ∥ν∥ = |λmax[D]| ∥w∥ (Since ∥U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 83.1699%; top: 9.09091%; width: 10.1307%; height: 1.89394%;">Tw∥ = ∥w∥)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 12.6263%; width: 22.0588%; height: 1.76768%;">Hence, for every vector w,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.8562%; top: 15.7828%; width: 4.90196%; height: 1.89394%;">∥Bw∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.5098%; top: 17.803%; width: 3.43137%; height: 1.89394%;">∥w∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.4118%; top: 16.7929%; width: 25.6536%; height: 1.89394%;">≤ |λmax[D]| =⇒ ∥B∥ ≤ ρ(B).
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 21.3384%; width: 54.7386%; height: 1.89394%;">• If B is not necessarily symmetric, then ∥B∥ ≥ ρ(B) [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 23.7374%; width: 48.8562%; height: 1.89394%;">Sol: If (λ, ν) is an eigenvector-eigenvalue pair of B, then,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.549%; top: 26.8939%; width: 59.4771%; height: 1.89394%;">Bν = λν =⇒ ∥Bν∥ = |λ| ∥ν∥ =⇒ ∥B∥ ∥ν∥ ≥ |λ| ∥ν∥ =⇒ ∥B∥ ≥ |λ|
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 30.0505%; width: 62.0915%; height: 1.89394%;">Since this is true for all λ, it is also true for λmax, and hence ρ(B) ≤ ∥B∥.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 33.0808%; width: 65.3595%; height: 1.76768%;">• In the proof, we reasoned about the spectral radius of the following matrix,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.6993%; top: 36.9949%; width: 4.08497%; height: 1.51515%;">H =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.4379%; top: 35.8586%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 37.0915%; top: 36.1111%; width: 1.79739%; height: 1.38889%;">U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.5621%; top: 36.1111%; width: 4.41176%; height: 1.38889%;">T 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 37.7451%; top: 37.8788%; width: 5.06536%; height: 1.51515%;">0 U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.4837%; top: 37.8788%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 43.1373%; top: 35.8586%; width: 21.4052%; height: 4.0404%;"> (1 + β)Id − ηΛ −βId
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.3072%; top: 37.8788%; width: 11.6013%; height: 1.64141%;">Id 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.2157%; top: 35.8586%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.7712%; top: 39.5202%; width: 21.0784%; height: 1.26263%;">| {z }
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.7582%; top: 40.6566%; width: 3.10458%; height: 1.13636%;">:=H
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 66.3399%; top: 35.8586%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 66.9935%; top: 36.1111%; width: 4.73856%; height: 1.38889%;">U 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.3203%; top: 37.8788%; width: 4.73856%; height: 1.51515%;">0 U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.5686%; top: 35.8586%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 42.9293%; width: 30.719%; height: 1.89394%;">Prove that ρ(H) = ρ(H). [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 45.202%; width: 23.2026%; height: 4.0404%;">Sol: Consider the vector 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 34.3137%; top: 45.8333%; width: 1.96078%; height: 1.26263%;">v1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 34.3137%; top: 47.601%; width: 1.96078%; height: 1.26263%;">v2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.1111%; top: 45.202%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 18.6275%; top: 51.3889%; width: 2.12418%; height: 1.51515%;">H
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 21.4052%; top: 50.2525%; width: 1.14379%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.0588%; top: 50.8838%; width: 1.96078%; height: 1.26263%;">v1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 22.0588%; top: 52.6515%; width: 1.96078%; height: 1.26263%;">v2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.6928%; top: 50.2525%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 25.3268%; top: 51.8939%; width: 1.79739%; height: 0.757576%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 27.7778%; top: 50.2525%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.4314%; top: 50.5051%; width: 1.79739%; height: 1.38889%;">U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.902%; top: 50.5051%; width: 4.41176%; height: 1.38889%;">T 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.085%; top: 52.2727%; width: 5.06536%; height: 1.51515%;">0 U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.8235%; top: 52.2727%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 34.6405%; top: 50.2525%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.2745%; top: 51.3889%; width: 2.12418%; height: 1.38889%;">H
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.0523%; top: 50.2525%; width: 1.14379%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.8693%; top: 50.5051%; width: 4.57516%; height: 1.38889%;">U 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 52.2727%; width: 4.73856%; height: 1.51515%;">0 U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.281%; top: 50.2525%; width: 4.73856%; height: 4.0404%;"> v1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 47.0588%; top: 52.6515%; width: 1.96078%; height: 1.26263%;">v2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.6928%; top: 50.2525%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.3268%; top: 51.8939%; width: 1.79739%; height: 0.757576%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.7778%; top: 50.2525%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.4314%; top: 50.5051%; width: 1.79739%; height: 1.38889%;">U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 54.902%; top: 50.5051%; width: 4.41176%; height: 1.38889%;">T 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 54.085%; top: 52.2727%; width: 5.06536%; height: 1.51515%;">0 U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.8235%; top: 52.2727%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 59.6405%; top: 50.2525%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 61.2745%; top: 51.3889%; width: 2.12418%; height: 1.38889%;">H
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.0523%; top: 50.2525%; width: 1.14379%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.7059%; top: 50.8838%; width: 1.96078%; height: 1.26263%;">y1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.7059%; top: 52.6515%; width: 1.96078%; height: 1.38889%;">y2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 66.3399%; top: 50.2525%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 74.5098%; top: 51.2626%; width: 18.7908%; height: 1.89394%;">(y1 := Uv1, y2 := Uv2)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 55.6818%; width: 3.26797%; height: 4.0404%;">If 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 14.5425%; top: 56.3131%; width: 1.96078%; height: 1.38889%;">y1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 14.5425%; top: 58.0808%; width: 1.96078%; height: 1.38889%;">y2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 16.1765%; top: 55.6818%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 17.8105%; top: 56.8182%; width: 54.902%; height: 1.76768%;">is an eigenvector of H corresponding to the eigenvalue λ, then H
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 73.366%; top: 55.6818%; width: 1.14379%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 74.0196%; top: 56.3131%; width: 1.96078%; height: 1.38889%;">y1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 74.0196%; top: 58.0808%; width: 1.96078%; height: 1.38889%;">y2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75.6536%; top: 55.6818%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 77.2876%; top: 56.8182%; width: 3.59477%; height: 1.51515%;">= λ
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 81.2092%; top: 55.6818%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 81.8627%; top: 56.3131%; width: 1.96078%; height: 1.38889%;">y1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 81.8627%; top: 58.0808%; width: 1.96078%; height: 1.38889%;">y2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 83.4967%; top: 55.6818%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 25.3268%; top: 62.2475%; width: 3.59477%; height: 1.51515%;">= λ
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.2484%; top: 61.1111%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.902%; top: 61.3636%; width: 1.79739%; height: 1.51515%;">U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 31.3725%; top: 61.3636%; width: 4.41176%; height: 1.51515%;">T 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 30.5556%; top: 63.2576%; width: 5.06536%; height: 1.38889%;">0 U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.2941%; top: 63.1313%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.1111%; top: 61.1111%; width: 4.57516%; height: 4.0404%;"> y1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.7255%; top: 63.5101%; width: 1.96078%; height: 1.38889%;">y2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.5229%; top: 61.1111%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.1569%; top: 62.7525%; width: 1.63399%; height: 0.757576%;">=
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.4444%; top: 61.1111%; width: 1.14379%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.2614%; top: 61.3636%; width: 1.79739%; height: 1.51515%;">U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 61.3636%; width: 4.24837%; height: 1.64141%;">TUv1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.2614%; top: 63.2576%; width: 1.79739%; height: 1.38889%;">U
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 63.1313%; width: 4.24837%; height: 1.76768%;">TUv2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.6536%; top: 61.1111%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.2876%; top: 62.2475%; width: 3.43137%; height: 1.51515%;">= λ
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.0458%; top: 61.1111%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.6993%; top: 61.7424%; width: 1.96078%; height: 1.26263%;">v1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.6993%; top: 63.5101%; width: 1.96078%; height: 1.38889%;">v2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.3333%; top: 61.1111%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.6209%; top: 61.1111%; width: 7.84314%; height: 4.0404%;">=⇒ H 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.9739%; top: 61.7424%; width: 1.96078%; height: 1.26263%;">v1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.9739%; top: 63.5101%; width: 2.12418%; height: 1.38889%;">v2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 69.7712%; top: 61.1111%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.4052%; top: 62.2475%; width: 3.43137%; height: 1.51515%;">= λ
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 75.4902%; top: 61.1111%; width: 1.14379%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 76.1438%; top: 61.7424%; width: 1.96078%; height: 1.26263%;">v1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 76.1438%; top: 63.5101%; width: 1.96078%; height: 1.38889%;">v2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 77.7778%; top: 61.1111%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 66.1616%; width: 7.67974%; height: 4.0404%;">Hence, 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 18.9542%; top: 66.7929%; width: 1.96078%; height: 1.26263%;">v1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 18.9542%; top: 68.6869%; width: 1.96078%; height: 1.26263%;">v2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 20.5882%; top: 66.1616%; width: 0.980392%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 67.298%; width: 81.2092%; height: 4.54545%;">is an eigenvector of H with the same eigenvalue λ. This is true for all eigenvector-
+eigenvalue pairs. Hence the two matrices share the same eigenvalues and hence ρ(H) = ρ(H).
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 73.1061%; width: 65.3595%; height: 1.64141%;">• In the proof, we reasoned about the spectral radius of the following matrix,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.0392%; top: 79.1667%; width: 12.7451%; height: 1.51515%;">B = P H P T =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.6013%; top: 75.8838%; width: 1.14379%; height: 3.0303%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.6013%; top: 78.5354%; width: 0.490196%; height: 1.26263%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.6013%; top: 79.4192%; width: 0.490196%; height: 1.26263%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.6013%; top: 80.303%; width: 0.490196%; height: 1.38889%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 36.6013%; top: 81.3131%; width: 1.14379%; height: 3.0303%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 37.2549%; top: 76.1364%; width: 13.8889%; height: 1.64141%;">H1 0 . . . 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 37.9085%; top: 78.0303%; width: 13.2353%; height: 1.64141%;">0 H2 . . . 0
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.2353%; top: 80.303%; width: 0.653595%; height: 0.631313%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.2353%; top: 80.8081%; width: 0.653595%; height: 0.505051%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 38.2353%; top: 81.3131%; width: 0.653595%; height: 0.505051%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.5033%; top: 80.4293%; width: 0.653595%; height: 0.631313%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.3203%; top: 80.8081%; width: 0.653595%; height: 0.505051%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.9739%; top: 81.1869%; width: 0.653595%; height: 0.505051%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 37.9085%; top: 82.3232%; width: 13.8889%; height: 1.64141%;">0 0 Hd
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.4706%; top: 75.8838%; width: 1.14379%; height: 3.0303%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.9608%; top: 78.5354%; width: 0.653595%; height: 1.26263%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.9608%; top: 79.4192%; width: 0.653595%; height: 1.26263%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.9608%; top: 80.303%; width: 0.653595%; height: 1.38889%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.4706%; top: 81.3131%; width: 1.14379%; height: 3.0303%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.1046%; top: 79.2929%; width: 10.6209%; height: 1.64141%;">where, Hi =
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.3791%; top: 78.1566%; width: 0.980392%; height: 3.91414%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.0327%; top: 78.2828%; width: 15.6863%; height: 1.89394%;">(1 + β) − ηλi −β
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 70.098%; top: 78.1566%; width: 11.1111%; height: 3.91414%;">1 0 
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 85.3535%; width: 29.5752%; height: 1.89394%;">Prove that ρ(H) = ρ(B). [5 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 87.8788%; width: 81.6993%; height: 1.76768%;">Sol: Permutation matrices are orthonormal i.e. P P T = Id. Using the same reasoning as above, if
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 89.7727%; width: 10.9477%; height: 1.64141%;">v is a vector,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.281%; top: 92.803%; width: 10.7843%; height: 1.51515%;">Bv = P HP T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 54.902%; top: 92.803%; width: 36.1111%; height: 1.89394%;">v = P Hy (y := P
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 90.5229%; top: 92.803%; width: 1.14379%; height: 0.883838%;">T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 91.3399%; top: 92.803%; width: 1.96078%; height: 1.89394%;">v)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 97.2222%; width: 1.30719%; height: 1.38889%;">2
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/26590c1c-16dc-48a2-bca5-cbd84d864d2d" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;2/7페이지" aria-hidden="true"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"><h2 class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-tJHJj" tabindex="0">&nbsp;3/7페이지</h2><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 5.68182%; width: 46.5686%; height: 1.64141%;">If y is an eigenvector of H with eigenvalue λ, Hy = λy,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 9.21717%; width: 20.7516%; height: 1.89394%;">=⇒ Bv = λP y = λP P T
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 60.4575%; top: 9.72222%; width: 4.90196%; height: 1.0101%;">v = v
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 12.6263%; width: 81.5359%; height: 1.76768%;">Hence, v is an eigenvector of B with the same eigenvalue λ. This is true for all eigenvector-eigenvalue
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 14.3939%; width: 69.281%; height: 1.89394%;">pairs. Hence the two matrices share the same eigenvalues and hence ρ(B) = ρ(H).
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 17.5505%; width: 83.6601%; height: 1.76768%;">• Finally, in the proof, we reasoned about the spectral radius of the block diagonal matrix B. Prove
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 19.3182%; width: 15.0327%; height: 1.89394%;">that ρ(B) = maxi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.634%; top: 19.3182%; width: 15.6863%; height: 1.89394%;">[ρ(Hi)]. [10 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 21.8434%; width: 81.5359%; height: 1.76768%;">Sol: To compute the eigenvalues of B, we need to solve the characteristic equation. For all
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 23.6111%; width: 81.5359%; height: 1.89394%;">eigenvalues λ, det(B − λI) = 0. Matrix B − λI is a block diagonal matrix, and for a block diagonal
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 25.1263%; width: 22.3856%; height: 2.14646%;">matrix, det(B − λI) = Qd
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.8431%; top: 25.3788%; width: 60.4575%; height: 2.0202%;">i=1 det(Hi − λI). Hence, every eigenvalue of B satisfies the relation that
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 27.2727%; width: 81.6993%; height: 1.89394%;">for at least one block i, det(Hi − λI) = 0. Hence, the eigenvalues of B are the eigenvalues of at
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 29.1667%; width: 10.2941%; height: 1.64141%;">least one Hi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 21.732%; top: 29.1667%; width: 64.8693%; height: 1.76768%;">, and thus its spectral radius is the largest of the spectral radii amongst all Hi
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 86.4379%; top: 29.1667%; width: 7.02614%; height: 1.76768%;">. Hence,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 30.9343%; width: 18.7908%; height: 2.0202%;">ρ(B) = maxi∈[d] ρ(Hi).
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.86275%; top: 34.8485%; width: 86.4379%; height: 1.89394%;">(2) [40 marks] In Phase 1 of the Newton method, we used Backtracking Armijo line-search. For a
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 36.6162%; width: 59.8039%; height: 1.89394%;">prospective step-size η ̃k, we check the (more general) Armijo condition,
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.5163%; top: 40.0253%; width: 34.8039%; height: 1.89394%;">f(wk − η ̃kdk) ≤ f(wk) − c η ̃k ⟨∇f(wk), dk⟩
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 6.69935%; top: 43.3081%; width: 42.9739%; height: 1.89394%;">where c ∈ (0, 1) is a hyper-parameter and dk = [∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.5098%; top: 43.1818%; width: 34.1503%; height: 2.0202%;">f(wk)]−1∇f(wk) is the Newton direction.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 9.64052%; top: 46.8434%; width: 83.6601%; height: 1.76768%;">• Prove that the step-size returned by the exact backtracking procedure at iteration k is lower-bounded
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 48.3586%; width: 12.4183%; height: 3.0303%;">as: ηk ≥ min n
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.0196%; top: 48.6111%; width: 5.55556%; height: 1.38889%;">2μ (1−c)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.1438%; top: 49.8737%; width: 1.30719%; height: 1.13636%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.5752%; top: 48.3586%; width: 5.88235%; height: 3.0303%;">, ηmaxo
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.2941%; top: 48.9899%; width: 10.1307%; height: 1.89394%;">. [20 marks]
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 51.7677%; width: 3.26797%; height: 1.51515%;">Sol:
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 13.0719%; top: 55.5556%; width: 35.2941%; height: 1.89394%;">f(wk − η ̃kdk) ≤ f(wk) − ⟨∇f(wk), η ̃kdk⟩ +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 48.6928%; top: 54.6717%; width: 2.61438%; height: 1.76768%;">Lη ̃
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.9804%; top: 54.4192%; width: 1.14379%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 50.9804%; top: 55.4293%; width: 1.14379%; height: 1.0101%;">k
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.8366%; top: 56.6919%; width: 1.14379%; height: 1.38889%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.451%; top: 55.5556%; width: 3.75817%; height: 1.89394%;">∥dk∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 56.0458%; top: 55.303%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.5098%; top: 59.2172%; width: 22.2222%; height: 2.0202%;">= f(wk) − η ̃k⟨∇f(wk), [∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 46.5686%; top: 59.2172%; width: 16.0131%; height: 2.0202%;">f(wk)]−1∇f(wk)⟩ +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 62.9085%; top: 58.4596%; width: 2.77778%; height: 1.64141%;">Lη ̃
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.1961%; top: 58.2071%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.1961%; top: 59.0909%; width: 1.14379%; height: 1.13636%;">k
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 64.0523%; top: 60.4798%; width: 1.30719%; height: 1.38889%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 67.8105%; top: 59.2172%; width: 3.10458%; height: 2.0202%;">[∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 70.5882%; top: 59.2172%; width: 13.3987%; height: 2.0202%;">f(wk)]−1∇f(wk)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 84.8039%; top: 58.9646%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.5098%; top: 63.1313%; width: 19.9346%; height: 1.89394%;">≤ f(wk) − η ̃k ∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.281%; top: 62.7525%; width: 0.980392%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.281%; top: 63.3838%; width: 10.1307%; height: 1.89394%;">[∇2f(wk)]−1 +
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 54.7386%; top: 62.1212%; width: 2.61438%; height: 1.76768%;">Lη ̃
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.0261%; top: 61.9949%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.0261%; top: 62.8788%; width: 0.980392%; height: 1.13636%;">k
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 55.719%; top: 64.2677%; width: 1.30719%; height: 1.38889%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.0065%; top: 62.8788%; width: 7.51634%; height: 2.14646%;">λmax[[∇2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 65.1961%; top: 63.0051%; width: 7.02614%; height: 2.0202%;">f(wk)]−1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.8954%; top: 63.1313%; width: 9.47712%; height: 1.89394%;">] ∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 81.2092%; top: 62.7525%; width: 0.980392%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 81.3725%; top: 63.8889%; width: 7.84314%; height: 1.38889%;">[∇2f(wk)]−1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 13.0719%; top: 66.7929%; width: 20.4248%; height: 1.89394%;">f(wk − η ̃kdk) ≤ f(wk) −
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.9869%; top: 65.7828%; width: 1.47059%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.1307%; top: 66.9192%; width: 3.92157%; height: 1.76768%;">η ̃k −
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.5425%; top: 65.9091%; width: 2.61438%; height: 1.76768%;">Lη ̃
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.8301%; top: 65.7828%; width: 0.980392%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.8301%; top: 66.6667%; width: 0.980392%; height: 1.0101%;">k
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 40.0327%; top: 68.0556%; width: 2.45098%; height: 1.64141%;">2μ
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 42.8105%; top: 65.7828%; width: 1.47059%; height: 4.0404%;">
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 44.7712%; top: 66.7929%; width: 8.33333%; height: 1.89394%;">∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 52.9412%; top: 66.5404%; width: 1.14379%; height: 1.13636%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.1046%; top: 67.6768%; width: 8.00654%; height: 1.38889%;">[∇2f(wk)]−1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 33.6601%; top: 69.4444%; width: 27.7778%; height: 1.26263%;">| {z }
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 45.2614%; top: 70.5808%; width: 4.24837%; height: 1.38889%;">h1( ̃ηk)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 62.2549%; top: 66.7929%; width: 31.0458%; height: 1.89394%;">(Quadratic bound using smoothness)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 13.0719%; top: 72.4747%; width: 58.4967%; height: 1.89394%;">f(wk − η ̃kdk) ≤ f(wk) − (cη ̃k)⟨∇f(wk), dk⟩ = f(wk) − (cη ̃k) ∥∇f(wk)∥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.4052%; top: 72.2222%; width: 1.14379%; height: 1.0101%;">2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 71.5686%; top: 73.2323%; width: 8.00654%; height: 1.51515%;">[∇2f(wk)]−1
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 58.4967%; top: 74.3687%; width: 21.4052%; height: 1.26263%;">| {z }
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 66.9935%; top: 75.5051%; width: 4.24837%; height: 1.38889%;">h2( ̃ηk)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 77.451%; top: 76.8939%; width: 15.8497%; height: 1.89394%;">(Armijo condition)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 80.1768%; width: 72.8758%; height: 1.76768%;">If the Armijo condition is satisfied, the back-tracking line-search procedure terminates.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 81.9444%; width: 18.3007%; height: 1.89394%;">Case (i): For ηmax ≤
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 30.3922%; top: 81.6919%; width: 5.39216%; height: 1.38889%;">2μ (1−c)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.5163%; top: 82.9545%; width: 1.30719%; height: 1.0101%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 35.7843%; top: 81.9444%; width: 33.1699%; height: 1.89394%;">, f(wk − ηmaxdk) ≤ h1(ηmax) ≤ h2(ηmax)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 84.2172%; width: 11.9281%; height: 1.76768%;">=⇒ if ηmax ≤
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 24.0196%; top: 83.7121%; width: 5.39216%; height: 1.38889%;">2μ (1−c)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.1438%; top: 85.101%; width: 1.30719%; height: 1.0101%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 29.5752%; top: 84.2172%; width: 50.817%; height: 1.76768%;">, then the line-search terminates immediately and ηk = ηmax.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 86.2374%; width: 16.5033%; height: 1.89394%;">Case (ii): If ηmax &gt;
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 28.5948%; top: 85.8586%; width: 5.71895%; height: 1.38889%;">2 μ (1−c)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 30.8824%; top: 87.2475%; width: 1.30719%; height: 1.0101%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 34.6405%; top: 86.2374%; width: 58.4967%; height: 1.89394%;">and the Armijo condition is satisfied for step-size ηk, then f(wk−ηkdk) ≤
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 88.5101%; width: 27.2876%; height: 1.89394%;">h2(ηk) ≤ h1(ηk) =⇒ cηk ≥ ηk −
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.2157%; top: 88.0051%; width: 2.77778%; height: 1.38889%;">Lη2
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 41.0131%; top: 88.6364%; width: 0.980392%; height: 1.0101%;">k
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 39.7059%; top: 88.7626%; width: 11.6013%; height: 2.0202%;">2μ =⇒ ηk ≥
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 51.7974%; top: 88.2576%; width: 5.39216%; height: 1.26263%;">2μ (1−c)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 53.9216%; top: 89.5202%; width: 1.30719%; height: 1.0101%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 57.1895%; top: 89.5202%; width: 0.653595%; height: 0.505051%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 90.404%; width: 81.5359%; height: 1.76768%;">Putting the two cases together, the step-size ηk returned by the Armijo line-search satisfies
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 11.6013%; top: 91.9192%; width: 9.31373%; height: 3.0303%;">ηk ≥ min n
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 20.915%; top: 92.1717%; width: 5.71895%; height: 1.38889%;">2 μ (1−c)
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 23.2026%; top: 93.4343%; width: 1.30719%; height: 1.13636%;">L
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 26.634%; top: 91.9192%; width: 5.88235%; height: 3.0303%;">, ηmaxo
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 32.3529%; top: 93.5606%; width: 0.816993%; height: 0.505051%;">.
+</p><p class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-eEGnhe" style="left: 49.3464%; top: 97.2222%; width: 1.30719%; height: 1.38889%;">3
+</p></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-gvZm2b"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-vWsuo-fmcmS-G0jgYd"></div><div class="ndfHFb-c4YZDc-vWsuo-fmcmS-IDNFyf ndfHFb-c4YZDc-cYSp0e-oYxtQd-gvZm2b"></div><div class="ndfHFb-c4YZDc-dZssN-qkEl5b"></div><div class="ndfHFb-c4YZDc-dZssN-G0KQoc"></div><img src="blob:https://drive.google.com/eaab6e5d-4320-4dd7-8b41-0d898085e936" class="ndfHFb-c4YZDc-cYSp0e-DARUcf-RJLb9c" alt="&nbsp;3/7페이지" aria-hidden="true"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf" style="padding-bottom: 129.375%;"><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-PLDbbf"></div><div class="ndfHFb-c4YZDc-cYSp0e-DARUcf-Df1ZY-bN97Pc-haAclf"></div><div class="ndfHFb-c4YZDc-cYSp0e-wxLEad-sn54Q" style="display: none;"></div></div></div>

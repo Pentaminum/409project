@@ -1,0 +1,19 @@
+Hi everyone,
+
+The project proposal is due on 22nd October at 11.59 pm. Let us use the (modified) NeurIPS format (Proposal.zip) for the proposal as well as the final report. For the proposal, the maximum length is 3 pages excluding references. If you would like to give some additional details (e.g. specifics of the experiments) beyond the 3 pages, you can include them in the Appendix (no page limit for the Appendix).
+
+The proposal should include the title, team members, abstract, related work, problem formulation, and a plan. Please use the following structure:
+
+- Abstract (a one-paragraph explanation of what you are planning to study/do in your course project)
+
+- Motivation (why are you planning to study this particular topic - E.g. “It is useful in so and so places, and solving this will result in so and so”)
+
+- Related Work (cite the most relevant papers and include a brief description highlighting the things you are focusing on),
+
+- Problem Formulation (state the assumptions and problem statement, give mathematical and other details about the problem you are planning to solve.)
+
+- Plan (starting from high-level ambitious ideas and drilling down into the details of what you plan to achieve in the course project. It is completely fine to deviate from this plan as the project proceeds, but it is good to have spent some time thinking about what the desired outcome would be. This will also clarify things in your head.)
+
+- References
+
+Logistics: One member of the group should submit the proposal via Coursys. I will try to give you feedback quickly. 

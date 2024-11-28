@@ -1,0 +1,24 @@
+Course Project: Expectations, Potential Topics & Logistics
+Hi everyone, 
+This document: https://docs.google.com/document/d/19hgH-H2ETy9t0jDa2-AUI8vzXHFViN0tNGJ9k8ClCU8/edit?usp=sharing consists of a list of project topics that could result in a good course project. I'll keep updating this list if I think of more topics or see something interesting.  
+
+For each topic, I am posting the initial set of papers, and I can send you other details/related papers if you decide to choose one of these topics. You are free to pursue any direction within these topics (just ask me so that I can tell you if it makes sense, or if someone has done a related thing). You are also free to choose any other relevant topic. 
+
+Expectations: 
+The goal is for everyone to get a taste of how it is to work on Optimization for ML. The standard recommendation is to start small - aim to write a review of some results of interest, and then as you see fit, add new results (either theoretical/empirical). It is expected that you will go through these and other related papers in the literature, and demonstrate a thorough understanding of the topic by the end of term.
+
+Starting from a review of some results of interest (e.g. does the problem setting make sense, what are the assumptions, what are the results, what is the technique, what are the important practical things that the bounds fail to capture), the project can be (a combination) of the following types:
+
+- Experimentally implement an existing paper, evaluate its claims, and extend its results in a small way (e.g. design systematic experiments to verify the claims of a new technique such as sharpness aware minimization, when does it work, what are the (flawed) assumptions in the paper)
+
+- Do a survey of the field related to a particular paper (e.g. papers that prove theoretical results for policy gradient in RL)
+
+- Extend the theoretical results for a given paper (e.g. extend results from quadratics to strongly-convex functions)
+
+Logistics:
+To discuss potential topics, you can send a private message on Piazza or we can chat before/after class. If you are an undergrad and need additional help with choosing a topic, please feel free to ask me, and try to pair up with grad students since it will enrich your learning experience. 
+
+If you are interested in a potential topic(s), please write your name in front of the corresponding topic. You can initially choose at most 2-3 topics, and then narrow it down. Please maintain the order of names. If there are too many people interested in a given topic,  we can split into two related projects on similar topics. If you have chosen your own project topic, please create a new entry and add your names. 
+
+For groups, enter the names in a tuple surrounded by [] so that it is clear that you will be doing the project together. Comma-separated names for a specific project are not in a group, and maybe you should chat and form a group. 
+

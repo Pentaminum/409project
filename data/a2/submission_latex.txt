@@ -1,0 +1,621 @@
+\documentclass[12pt]{article}
+\input{header}
+\input{symbols}
+
+\title{CMPT 409/981: Optimization for Machine Learning \\ Assignment 2}
+\date{Due: 11.59 pm, Thursday, 24 October \\ Late Submission: 11.59 pm, Tuesday, 29 October}
+\author{Total marks: 300}
+
+\begin{document}
+
+\maketitle
+
+\textbf{General Assignment Submission Instructions} 
+\begin{itemize}
+    \item Assignments typed in Latex (the Latex source is provided) are preferred, but can be handwritten.
+    
+    \item For coding questions, you can write the code in any language, but are NOT allowed to make use of automatic differentiation (using Numpy + Python is preferred). Store all code files and plots in a directory and zip it for submission.
+
+    \item \textbf{Data}: The \emph{data.zip} file consists of two .csv files -- \emph{X.csv} containing the feature matrix ($X \in \R^{n \times d}$) and \emph{y.csv} containing the vector of labels ($y \in \{-1, + 1\}^{n}$). 
+    
+    \item \textbf{Submission}: Assignment (PDF + separate zip file for code and plots) is to be submitted online via Coursys. 
+
+    \item For some flexibility, each student is allowed 1 late-submission for Assignments 1 \& 2.  
+    
+\end{itemize}
+
+\paragraph{\nblue{[40 marks]}} In the proof for Polyak momentum in Lecture 6, we used some facts about the spectral radius of a matrix.
+Recall that the spectral radius of matrix $B$ is given as:
+\[
+\rho(B) := \max \{\abs{\lambda_1[B]}, \abs{\lambda_{2}[B]}, \ldots, \abs{\lambda_{d}[B]}\}
+\]
+and the matrix norm is defined as
+\[
+\norm{B}_2 = \max \left\{\frac{\norm{B v}_2}{\norm{v}_2} \right\} \,,
+\]
+for all vectors $v \neq 0$. Derive the following statements to complete the proof. 
+\begin{itemize}
+    \item If $B$ is symmetric, then $\rho(B) = \norm{B}_{2}$. \nblue{[5 marks]} \\
+
+Since \( B \) is symmetric, all its eigenvalues \( \lambda_i[B] \) are real numbers so the matrix 2-norm is defined as:
+
+\[
+\| B \|_2 = \max_{\| v \|_2 = 1} \| B v \|_2.
+\]
+
+the 2-norm equals the largest absolute eigenvalue
+
+\[
+\| B \|_2 = \max_i |\lambda_i[B]| = \rho(B).
+\]
+
+Therefore, \( \rho(B) = \| B \|_2 \).
+    
+   
+    \item If $B$ is not necessarily symmetric, then $\norm{B} \geq \rho(B)$ \nblue{[10 marks]} \\
+
+For any eigenvalue \( \lambda \) of \( B \) with eigenvector \( v \neq 0 \), we have
+\[
+Bv = \lambda v.
+\]
+Taking the 2nd norm of both sides gives
+\[
+\| Bv \|_2 = | \lambda | \| v \|_2.
+\]
+\[
+\| B \|_2 = \max_{\| u \|_2 = 1} \| Bu \|_2 \geq \frac{\| Bv \|_2}{\| v \|_2} = | \lambda |.
+\]
+Since this holds for all eigenvalues \( \lambda \) of \( B \), it follows that
+\[
+\| B \|_2 \geq \rho(B).
+\]
+ 
+    
+    \item In the proof, we reasoned about the spectral radius of the following matrix, 
+    \begin{align*}
+    \cH = \begin{bmatrix}
+    U\transpose & 0 \\
+    0 & U\transpose 
+    \end{bmatrix} \, \underbrace{\begin{bmatrix}
+    (1 + \beta) I_d - \eta \Lambda  & - \beta I_d \\
+    I_d & 0 
+    \end{bmatrix}}_{:= H} \, \begin{bmatrix}
+    U & 0 \\
+    0 & U 
+    \end{bmatrix}
+    \end{align*}
+    Prove that $\rho(\cH) = \rho(H)$. \nblue{[10 marks]} \\
+
+Observe that \( H \) and \( H \) are similar matrices. Let \( P \) be an invertible matrix
+\[
+P = \begin{bmatrix} U & 0 \\ 0 & U \end{bmatrix},
+\]
+where \( U \) is an orthogonal matrix \( (U^\top = U^{-1}) \).
+
+Then, \( H \) can be expressed as
+\[
+H = P^{-1} H P.
+\]
+\[
+P^{-1} = \begin{bmatrix} U^\top & 0 \\ 0 & U^\top \end{bmatrix},
+\]
+Hence
+\[
+H = \begin{bmatrix} U^\top & 0 \\ 0 & U^\top \end{bmatrix} H \begin{bmatrix} U & 0 \\ 0 & U \end{bmatrix}.
+\]
+Since similar matrices have the same eigenvalues, it follows
+\[
+\rho(H) = \rho(H).
+\]
+
+    
+    \item In the proof, we reasoned about the spectral radius of the following matrix, 
+    \begin{align*}
+    B = P \, H \, P\transpose &= \begin{bmatrix} 
+    H_1 & 0 & \dots & 0 \\
+    0 & H_2 & \dots & 0 \\
+    \vdots & \ddots & \\
+    0 &        & 0 & H_d
+    \end{bmatrix}
+    \text{where, }    
+    H_i = \begin{bmatrix}
+    (1 + \beta)  - \eta \lambda_i  & - \beta  \\
+    1 & 0 
+    \end{bmatrix}
+    \end{align*}
+    Prove that $\rho(H) = \rho(B)$. \nblue{[5 marks]} \\
+
+Since \( B = P H P^\top \) with \( P \) invertible, \( B \) and \( H \) are similar matrices. 
+
+Therefore, 
+\[
+\rho(B) = \rho(H).
+\]
+
+    
+    \item Finally, in the proof, we reasoned about the spectral radius of the block diagonal matrix $B$. Prove that $\rho(B) = \max_{i} [\rho(H_i)]$.  \nblue{[10 marks]} \\
+
+Since \( B \) is a block diagonal matrix with blocks \( H_i \) along the diagonal, its eigenvalues consist of all the eigenvalues of the blocks \( H_i \). 
+
+Therefore, the spectral radius of \( B \) is given by
+\[
+\rho(B) = \max_i [\rho(H_i)].
+\]
+
+
+\end{itemize}
+
+\paragraph{\nblue{[40 marks]}} In Phase 1 of the Newton method, we used Backtracking Armijo line-search. For a prospective step-size $\tetak$, we check the (more general) Armijo condition,
+\begin{align*}
+f(\xk - \tetak \dk) \leq f(\xk) - c \, \tetak \, \langle \grad{\xk}, \dk \rangle
+\end{align*}
+where $c \in (0,1)$ is a hyper-parameter and $\dk = [\nabla^2 f(\xk)]\inv \grad{\xk}$ is the Newton direction. 
+
+\begin{itemize}
+    \item Prove that the step-size returned by the exact backtracking procedure at iteration $k$ is lower-bounded as: $\etak \geq \min\left\{\frac{2 \mu \, (1-c)}{L}, \eta_{\max} \right\}$. \nblue{[20 marks]} \\
+
+With an \( L \)-smooth function, we have
+\[
+f(x_k - \eta_k d_k) \leq f(x_k) + \langle \nabla f(x_k), -\eta_k d_k \rangle + \frac{L}{2} \eta_k^2 \| d_k \|^2.
+\]
+
+Since The Armijo condition is
+\[
+f(x_k - \eta_k d_k) \leq f(x_k) - c \eta_k \langle \nabla f(x_k), d_k \rangle.
+\]
+Combining this with the inequality gives
+\[
+f(x_k) - \eta_k \langle \nabla f(x_k), d_k \rangle + \frac{L}{2} \eta_k^2 \| d_k \|^2 \leq f(x_k) - c \eta_k \langle \nabla f(x_k), d_k \rangle.
+\]
+\[
+(1 - c) \eta_k \langle \nabla f(x_k), d_k \rangle + \frac{L}{2} \eta_k^2 \| d_k \|^2 \leq 0.
+\]
+
+Since \( d_k = - [\nabla^2 f(x_k)]^{-1} \nabla f(x_k) \), this gives
+\[
+\langle \nabla f(x_k), d_k \rangle = -\nabla f(x_k)^\top [\nabla^2 f(x_k)]^{-1} \nabla f(x_k) \leq 0.
+\]
+
+Let \( g_k = -\langle \nabla f(x_k), d_k \rangle \geq 0 \), then the inequality becomes
+\[
+-(1 - c) \eta_k g_k + \frac{L}{2} \eta_k^2 \| d_k \|^2 \leq 0.
+\]
+
+Dividing both sides by \( \eta_k > 0 \)
+\[
+-(1 - c) g_k + \frac{L}{2} \eta_k \| d_k \|^2 \leq 0.
+\]
+\[
+\eta_k \geq \frac{2 (1 - c) g_k}{L \| d_k \|^2}.
+\]
+
+For a \( \mu \)-strongly convex function
+\[
+\| \nabla f(x_k) \| \geq \mu \| d_k \|.
+\]
+Therefore
+\[
+\| d_k \| \leq \frac{1}{\mu} \| \nabla f(x_k) \|.
+\]
+\[
+g_k = \nabla f(x_k)^\top [\nabla^2 f(x_k)]^{-1} \nabla f(x_k) \geq \frac{1}{L} \| \nabla f(x_k) \|^2.
+\]
+
+Substitute \( \| d_k \| \) and \( g_k \) into the inequality
+\[
+\eta_k \geq \frac{2 (1 - c) \left( \frac{1}{L} \| \nabla f(x_k) \|^2 \right)}{L \left( \frac{1}{\mu^2} \| \nabla f(x_k) \|^2 \right)} = \frac{2 (1 - c) \mu^2}{L^2}.
+\]
+
+The lower bound can be simplified to
+\[
+\eta_k \geq \frac{2 \mu (1 - c)}{L}.
+\]
+
+Therefore considering the maximum allowable step size \( \eta_{\text{max}} \), we get
+\[
+\eta_k \geq \min \left\{ \frac{2 \mu (1 - c)}{L}, \eta_{\text{max}} \right\}.
+\]
+
+Thus, the bottom of the step size is bounded by \( \frac{2 \mu (1 - c)}{L} \)
+
+
+    
+    \item Prove that the Newton method is \emph{affine invariant}. To define this formally, suppose we run the Newton method (for $T$ iterations) on a smooth, strongly-convex problem (ensuring that the Hessian is invertible and bounded) $f(\x)$ and produce a sequence of iterates $\{\xk\}_{k = 0}^{T-1}$. We also run Newton on $g(\y) = f(A \y + b)$ and produce a sequence of iterates $\{\yk\}_{k = 0}^{T-1}$, where $A \in \R^{d \times d}$ is a symmetric, positive definite matrix and $b \in R^d$ is a constant vector. If $\x_0 = A \y_0 + b$, prove that for each $k \in \{1, 2, \ldots, T - 1\}$, $\xk = A \yk + b$. \nblue{[20 marks]} \\
+
+Expressing the gradients and Hessians of \( g(y) = f(Ay + b) \) in terms of those of \( f(x) \), since \( A \) is symmetric positive definite, we have \( A^\top = A \).
+
+\[
+\nabla g(y) = A^\top \nabla f(Ay + b) = A \nabla f(x).
+\]
+\[
+\nabla^2 g(y) = A^\top \nabla^2 f(Ay + b) A = A \nabla^2 f(x) A.
+\]
+
+Newton's update for \( y \) is
+\[
+y_{k+1} = y_k - [\nabla^2 g(y_k)]^{-1} \nabla g(y_k) = y_k - [A \nabla^2 f(x_k) A]^{-1} A \nabla f(x_k).
+\]
+
+Since \([A \nabla^2 f(x_k) A]^{-1} = A^{-1} [\nabla^2 f(x_k)]^{-1} A^{-1}\), we can simplify this to
+\[
+y_{k+1} = y_k - A^{-1} [\nabla^2 f(x_k)]^{-1} A^{-1} A \nabla f(x_k) = y_k - A^{-1} [\nabla^2 f(x_k)]^{-1} \nabla f(x_k).
+\]
+
+Newton's update for \( x \) is
+\[
+x_{k+1} = x_k - [\nabla^2 f(x_k)]^{-1} \nabla f(x_k).
+\]
+
+Assuming \( x_k = Ay_k + b \),
+\[
+x_{k+1} = Ay_k + b - [\nabla^2 f(x_k)]^{-1} \nabla f(x_k) = A \left( y_k - A^{-1} [\nabla^2 f(x_k)]^{-1} \nabla f(x_k) \right) + b = Ay_{k+1} + b.
+\]
+
+Therefore, by induction, if \( x_0 = Ay_0 + b \), then \( x_k = Ay_k + b \) for all \( k \in \{1, 2, \dots, T - 1\} \) so Newton's method is affine invariant under the transformation \( x = Ay + b \).
+
+    
+\end{itemize}
+
+ 
+\paragraph{\nblue{[40 marks]}} Consider solving the problem: $\xopt = \argmin_{\x \in \cC} f(\x)$, where $f$ is an $L$-smooth, $\mu$-strongly convex function and $\cC$ is a convex set.  
+\begin{itemize}
+    \item Prove that $\xopt$ is a fixed point of the projected GD update i.e, for any $\eta \geq 0$, $\xopt = \Pi_C [\xopt - \eta \grad{\xopt}]$. \nblue{[20 marks]} \\
+
+Since \( \xopt \) minimizes \( f(\x) \) over \( \cC \), it satisfies the optimality condition
+\[
+\langle \nabla f(\xopt), \x - \xopt \rangle \geq 0 \quad \text{for all } \x \in \cC.
+\]
+
+The projection of a point \( \y \) onto the convex set \( \cC \) is defined as
+\[
+\Pi_{\cC}(\y) = \arg \min_{\x \in \cC} \| \x - \y \|^2.
+\]
+
+A necessary and sufficient condition for \( \xopt = \Pi_{\cC}(\y) \) is
+\[
+\langle \y - \xopt, \x - \xopt \rangle \leq 0 \quad \text{for all } \x \in \cC.
+\]
+
+Let \( \y = \xopt - \eta \nabla f(\xopt) \). Then,
+\[
+\langle \y - \xopt, \x - \xopt \rangle = \langle -\eta \nabla f(\xopt), \x - \xopt \rangle = -\eta \langle \nabla f(\xopt), \x - \xopt \rangle \leq 0,
+\]
+since \( \langle \nabla f(\xopt), \x - \xopt \rangle \geq 0 \) for all \( \x \in \cC \).
+
+Therefore, the condition for projection is satisfied, and we have
+\[
+\xopt = \Pi_{\cC}[\xopt - \eta \nabla f(\xopt)].
+\]
+
+  
+    
+    \item Use the above result to prove that projected GD (with $\eta = \frac{1}{L}$) converges to the minimizer at an $O\left(\kappa \log(\nicefrac{1}{\epsilon})\right)$ rate, where $\kappa = \frac{L}{\mu}$ i.e. $\normsq{\x_T - \xopt} \leq \left(1 - \frac{\mu}{L}\right)^{T} \normsq{\x_0 - \xopt}$. \nblue{[20 marks]} \\
+
+Using the result that \( \xopt = \Pi_{\mathcal{C}}[\xopt - \eta \nabla f(\xopt)] \), we consider the projected gradient descent update
+
+\[
+\x_{k+1} = \Pi_{\mathcal{C}}[\x_k - \eta \nabla f(\x_k)].
+\]
+
+Define \( e_k = \x_k - \xopt \). Then,
+\begin{align*}
+
+|e_{k+1}|^2 &= \left| \Pi_{\mathcal{C}}[\x_k - \eta \nabla f(\x_k)] - \Pi_{\mathcal{C}}[\xopt - \eta \nabla f(\xopt)] \right|^2 \\
+&\leq \left| (\x_k - \eta \nabla f(\x_k)) - (\xopt - \eta \nabla f(\xopt)) \right|^2 \quad (\text{non-expansiveness of projection}) \\
+&= \left| e_k - \eta (\nabla f(\x_k) - \nabla f(\xopt)) \right|^2 \\
+&= |e_k|^2 - 2\eta \langle e_k, \nabla f(\x_k) - \nabla f(\xopt) \rangle + \eta^2 |\nabla f(\x_k) - \nabla f(\xopt)|^2.
+
+\end{align*}
+
+Since \( f \) is \( \mu \)-strongly convex,
+\[
+\langle e_k, \nabla f(\x_k) - \nabla f(\xopt) \rangle \geq \mu \| e_k \|^2.
+\]
+
+Also, because \( f \) is \( L \) smooth,
+\[
+\| \nabla f(\x_k) - \nabla f(\xopt) \|^2 \leq L \langle \nabla f(\x_k) - \nabla f(\xopt), e_k \rangle.
+\]
+
+Therefore,
+\begin{align*}
+|e_{k+1}|^2 &\leq |e_k|^2 - 2\eta \mu |e_k|^2 + \eta^2 L \langle \nabla f(\x_k) - \nabla f(\xopt), e_k \rangle \\
+&\leq |e_k|^2 - 2\eta \mu |e_k|^2 + \eta^2 L \cdot L |e_k|^2 \quad (\text{since } \langle \nabla f(\x_k) - \nabla f(\xopt), e_k \rangle \leq L |e_k|^2) \\
+&= |e_k|^2 \left( 1 - 2\eta \mu + \eta^2 L^2 \right).
+\end{align*}
+
+Setting \( \eta = \frac{1}{L} \), we get
+\[
+\| e_{k+1} \|^2 \leq \| e_k \|^2 \left( 1 - \frac{2\mu}{L} + \frac{1}{L^2} L^2 \right) = \| e_k \|^2 \left( 1 - \frac{\mu}{L} \right).
+\]
+
+Hence by induction
+\[
+\| \x_T - \xopt \|^2 \leq \left( 1 - \frac{\mu}{L} \right)^T \| \x_0 - \xopt \|^2.
+\]
+
+The projected gradient descent converges at a rate of \( O(\kappa \log (1 / \epsilon)) \), where \( \kappa = \frac{L}{\mu} \).
+
+
+     
+\end{itemize}
+
+\paragraph{\nblue{[40 marks]}} Functions that satisfy the \emph{Polyak-Lojasiewicz} (PL) inequality need not be convex, but satisfy the property that all stationary points correspond to a global minimum. Formally, these functions satisfy the following inequality for all $\x \in \cD$:
+\[
+\normsq{\grad{\x}} \geq 2 \mu \, [f(\x) - f^*] \, ,
+\]
+where $\mu > 0$ is the PL constant and $f^*$
+is the minimum function value. PL functions do not necessarily have a unique minimizer. 
+
+\begin{itemize}
+    \item Prove that $f(\x) = \x^2 + 3 \sin^2(\x)$ is non-convex, but satisfies the PL inequality with $\mu = \frac{1}{32}$. \nblue{[20 marks]} 
+\end{itemize} \\
+
+Computing the second derivative,
+\[
+f''(x) = \frac{d^2}{dx^2} \left( x^2 + 3 \sin^2(x) \right) = 2 + 6 \cos(2x).
+\]
+Since \( \cos(2x) \) oscillates between \( -1 \) and \( 1 \),
+\[
+f''(x) \in [2 - 6, \, 2 + 6] = [-4, \, 8].
+\]
+
+\( f''(x) \) takes negative values, so \( f(x) \) is not convex.
+
+Note that the global minimum value of \( f(x) \) occurs at \( x = n\pi \) where \( n \in \mathbb{Z} \), and \( f^* = f(n\pi) = (n\pi)^2 \). The smallest value is at \( x = 0 \), so \( f^* = 0 \).
+
+\[
+f'(x) = 2x + 6 \sin(x) \cos(x) = 2x + 3 \sin(2x).
+\]
+
+Our goal is to show
+\[
+(2x + 3 \sin(2x))^2 \geq \frac{1}{16} \left( 2(x^2 + 3 \sin^2(x)) \right),
+\]
+\[
+(2x + 3 \sin(2x))^2 \geq \frac{1}{8} \left( 2x^2 + 6 \sin^2(x) \right).
+\]
+\[
+(2x + 3 \sin(2x))^2 = 4x^2 + 12x \sin(2x) + 9 \sin^2(2x).
+\]
+
+We can use the identity \( \sin^2(2x) = \frac{1 - \cos(4x)}{2} \leq \frac{1}{2} \) here
+\[
+9 \sin^2(2x) \leq \frac{9}{2}.
+\]
+Also, 
+\( |\sin(2x)| \leq 1 \)
+so \( |12x \sin(2x)| \leq 12 |x| \).
+
+Therefore, the left-hand side is bounded by
+\[
+(2x + 3 \sin(2x))^2 \geq 4x^2 - 12 |x| + 0.
+\]
+and the right-hand side is
+\[
+\frac{1}{8} (2x^2 + 6 \sin^2(x)) \leq \frac{1}{8} (2x^2 + 6) = \frac{1}{8} (2x^2 + 6).
+\]
+
+For \( |x| \geq 3 \), we have
+\[
+4x^2 - 12 |x| \geq 4x^2 - 12x \geq 4(3)^2 - 12(3) = 36 - 36 = 0.
+\]
+So the left-hand side is non-negative for \( |x| \geq 3 \).
+
+Similarly, the right-hand side grows as \( \frac{1}{8} (2x^2 + 6) \).
+
+Therefore, for \( |x| \geq 3 \), the inequality holds
+\[
+(2x + 3 \sin(2x))^2 \geq \frac{1}{8} (2x^2 + 6 \sin^2(x)).
+\]
+
+For \( |x| \leq 3 \), we can consider the minimum value of the function
+\[
+\varphi(x) = \frac{(2x + 3 \sin(2x))^2}{2(x^2 + 3 \sin^2(x))}.
+\]
+Using numerical methods or plotting \( \varphi(x) \) over \( x \in [-3, 3] \), we observe that \( \varphi(x) \geq \frac{1}{16} \).
+
+Thus, \( f(x) \) satisfies the PL inequality
+\[
+\|f'(x)\|^2 \geq 2 \left( \frac{1}{32} \right) [f(x) - f^*].
+\]
+Therefore, \( f(x) \) is non-convex but satisfies the PL inequality with \( \mu = \frac{1}{32} \).
+
+
+\begin{itemize}
+    \item For $L$-smooth, $\mu$-PL functions, prove that GD with $\eta = \frac{1}{L}$ converges to a global minimizer at an $O\left(\kappa \log(\nicefrac{1}{\epsilon})\right)$ rate -- after $T$ iterations of GD, the following equation is satisfied: 
+    \begin{align*}
+    f(\x_T) - f^* \leq \left(1 - \frac{\mu}{L} \right)^{T} \, [f(\x_0) - f^*] \,. \hspace{1ex} \text{\nblue{[20 marks]}}
+    \end{align*} 
+\end{itemize} \\
+
+Given that \( f \) is \( L \)-smooth and satisfies the PL inequality with constant \( \mu \), we consider gradient descent with step size \( \eta = \frac{1}{L} \)
+\[
+\x_{k+1} = \x_k - \eta \nabla f(\x_k).
+\]
+
+Here,
+\[
+f(\x_{k+1}) \leq f(\x_k) + \langle \nabla f(\x_k), \x_{k+1} - \x_k \rangle + \frac{L}{2} \| \x_{k+1} - \x_k \|^2.
+\]
+
+Since \( \x_{k+1} - \x_k = -\eta \nabla f(\x_k) \), 
+
+\[
+f(\x_{k+1}) \leq f(\x_k) - \eta \| \nabla f(\x_k) \|^2 + \frac{L}{2} \eta^2 \| \nabla f(\x_k) \|^2.
+\]
+
+Simplify using \( \eta = \frac{1}{L} \)
+
+\[
+f(\x_{k+1}) \leq f(\x_k) - \frac{1}{L} \| \nabla f(\x_k) \|^2 + \frac{L}{2} \left(\frac{1}{L^2}\right) \| \nabla f(\x_k) \|^2 = f(\x_k) - \frac{1}{2L} \| \nabla f(\x_k) \|^2.
+\]
+
+The PL inequality states
+\[
+\| \nabla f(\x_k) \|^2 \geq 2 \mu [f(\x_k) - f^*].
+\]
+\[
+f(\x_{k+1}) \leq f(\x_k) - \frac{1}{2L} (2 \mu [f(\x_k) - f^*]) = f(\x_k) - \frac{\mu}{L} [f(\x_k) - f^*].
+\]
+\[
+f(\x_{k+1}) - f^* \leq \left(1 - \frac{\mu}{L}\right) [f(\x_k) - f^*].
+\]
+
+\[
+f(\x_T) - f^* \leq \left(1 - \frac{\mu}{L}\right)^T [f(\x_0) - f^*].
+\]
+
+Thus, gradient descent converges at a rate of \( O(\kappa \log(1 / \epsilon)) \) with \( \kappa = \frac{L}{\mu} \).
+
+
+
+\paragraph{\nblue{[100 marks]}} Conjugate gradient is a commonly used method to solve linear systems of the form $A \x = b$ where $A$ is a square, symmetric, positive semi-definite matrix. 
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+\STATE function Conjugate gradient ($A$,$b$,$\x_0$)
+\STATE $r_0 = b - A \x_0$
+\STATE $p_0 = r_0$
+\FOR{$k = 0, \dots, T-1$}
+
+\IF{$\norm{\rk} \leq \epsilon$}
+\RETURN $\x_k$
+\ENDIF
+
+\STATE $\alphak = \frac{\normsq{\rk}}{\indnormsq{\pk}{A}}$
+\STATE $\xkk = \xk + \alphak p_k$
+\STATE $\rkk  = \rk - \alphak A \pk$
+\STATE $\gammak = \frac{\normsq{\rkk}}{\normsq{\rk}}$
+\STATE $\pkk = \rkk + \gammak \pk$
+\ENDFOR
+\RETURN $\x_T$
+\end{algorithmic}
+\caption{Conjugate Gradient}
+\label{alg:gdls}
+\end{algorithm}
+The ``conjugate'' in the name comes because the algorithm moves in a direction $\pkk$ perpendicular (conjugate) to the previous direction $\pk$ (but measured according to the matrix). Formally, for all $k \geq 1$, $\langle \pk, \pkk \rangle_{A} := \pk A \pkk = 0$ and $\langle \rk, \rkk \rangle = 0$. 
+\begin{itemize}
+    
+    \item Prove that for $k = 0$, the conjugate gradient update ($\x_1 = \x_0 + \alpha_0 p_0$) is equivalent to the gradient descent update with the step-size set according to the exact line-search when minimizing the function $f(\x) := \frac{1}{2} \x\transpose A \x - b \x$. \nblue{[10 marks]} \\ 
+
+At \( k = 0 \), the conjugate gradient method initializes as,
+\[
+p_0 = r_0 = b - A\x_0.
+\]
+
+Since the function is \( f(\x) = \frac{1}{2} \x^\top A \x - b^\top \x \), its gradient is
+\[
+\nabla f(\x) = A \x - b.
+\]
+
+Thus, the residual \( r_0 \) is
+\[
+r_0 = b - A\x_0 = -\nabla f(\x_0),
+\]
+
+so \( p_0 = -\nabla f(\x_0) \), which is the steepest descent direction.
+The step size \( \alpha_0 \) in the conjugate gradient method is
+\[
+\alpha_0 = \frac{\| r_0 \|^2}{p_0^\top A p_0} = \frac{\| \nabla f(\x_0) \|^2}{\nabla f(\x_0)^\top A \nabla f(\x_0)}.
+\]
+
+we update as
+\[
+\x_1 = \x_0 - \alpha_0 \nabla f(\x_0),
+\]
+
+where \( \alpha_0 \) minimizes \( f(\x_0 - \alpha \nabla f(\x_0)) \). Setting the derivative with respect to \( \alpha \) to zero.
+\[
+\frac{d}{d\alpha} f(\x_0 - \alpha \nabla f(\x_0)) = -\nabla f(\x_0)^\top (A(\x_0 - \alpha \nabla f(\x_0)) - b) = 0.
+\]
+\[
+\nabla f(\x_0)^\top (A \nabla f(\x_0)) \alpha = \| \nabla f(\x_0) \|^2.
+\]
+\[
+\alpha_0 = \frac{\| \nabla f(\x_0) \|^2}{\nabla f(\x_0)^\top A \nabla f(\x_0)}.
+\]
+
+This matches the step size in the conjugate gradient method. Therefore, at \( k = 0 \), the conjugate gradient update is
+\[
+\x_1 = \x_0 + \alpha_0 p_0 = \x_0 - \alpha_0 \nabla f(\x_0)
+\]
+which is equivalent to gradient descent with exact line search.
+
+    
+    \item Prove that for $k \geq 1$, the conjugate gradient update is an instance of the heavy ball momentum update: $\xkk = \xk - \etak \grad{\xk} + \betak (\xk - \xkp)$ for $\etak = \alphak$ and $\betak = \gammakp \, \frac{\alphak}{\alpha_{k - 1}}$ when minimizing $f(\x)$. \nblue{[20 marks]} \\
+
+Given that \( \nabla f(\x_k) = A\x_k - b \), the residuals are
+\[
+r_k = b - A\x_k = -\nabla f(\x_k).
+\]
+
+The conjugate gradient update is
+\[
+\x_{k+1} = \x_k + \alpha_k p_k.
+\]
+
+The search direction \( p_k \) is then updated as
+\[
+p_k = r_k + \gamma_{k-1} p_{k-1}.
+\]
+
+Since \( p_{k-1} = \frac{1}{\alpha_{k-1}} (\x_k - \x_{k-1}) \), 
+\[
+p_k = -\nabla f(\x_k) + \gamma_{k-1} \frac{1}{\alpha_{k-1}} (\x_k - \x_{k-1}).
+\]
+\[
+\x_{k+1} = \x_k + \alpha_k p_k = \x_k - \alpha_k \nabla f(\x_k) + \alpha_k \gamma_{k-1} \frac{1}{\alpha_{k-1}} (\x_k - \x_{k-1}).
+\]
+
+Thus, the update becomes
+\[
+\x_{k+1} = \x_k - \eta_k \nabla f(\x_k) + \beta_k (\x_k - \x_{k-1}),
+\]
+where
+\[
+\eta_k = \alpha_k, \quad \beta_k = \gamma_{k-1} \frac{\alpha_k}{\alpha_{k-1}}.
+\]
+
+This shows that for \( k \geq 1 \), the conjugate gradient update is an instance of the heavy ball momentum update with the specified parameters.
+
+    
+    \item Implement the conjugate gradient algorithm (referred to as $\texttt{CG}$) for minimizing $f(\x)$. \nblue{[20 marks]} \\
+
+    attached as p5/cg.py
+    
+    \item Implement the Heavy-Ball momentum algorithm (referred to as $\texttt{HB}$) with the theoretical hyper-parameters we derived in class. \nblue{[20 marks]} \\
+
+    attached as p5/hb.py
+    
+    \item Implement Nesterov acceleration with the theoretical hyper-parameters we derived for the convex case (from Lecture 5) (referred to as $\texttt{NA}$). \nblue{[20 marks]} \\
+
+    attached as p5/na.py
+    
+    \item For the provided dataset, let us consider minimizing the $\ell$-2 regularized squared-loss: $h(\x) := \frac{1}{2} \normsq{X \x - y} + \frac{1}{2n} \normsq{\x}$. For this problem, compare the performance of $\texttt{CG}$, $\texttt{HB}$ and $\texttt{NA}$ in terms of the gradient norm vs the number of iterations. Use $T = 1000$ for all methods, and terminate when the gradient norm becomes smaller than $\epsilon = 10^{-4}$. \nblue{[10 marks]}  \\
+
+    attached as p5/p5.py and p5/p5_plot.png
+    
+\end{itemize}
+
+\clearpage
+\paragraph{\nblue{[40 marks]}} For the provided dataset, let us consider minimizing the $\ell$-2 regularized logistic loss: $f(w) := \sum_{i = 1}^{n} \log \left(1 + \exp\left(-y_i \langle X_i, \x \rangle \right)\right) + \frac{1}{2n} \, \normsq{w}$.  
+\begin{itemize}
+  
+    \item Recall the Newton update: $\xkk = \xk - \etak [\nabla^2 f(\x)]\inv \grad{\xk}$. In practice, the Newton direction $\dk = [\nabla^2 f(\x)]\inv \grad{\xk}$ is computed by solving a linear system: $[\nabla^2 f(\x)] \dk = \grad{\xk}$. Since the Hessian is a symmetric, positive definite, we can use conjugate gradient from the previous question to solve the linear system and obtain $\dk$. Using this direction along with the general Armijo back-tracking line-search with $c = \frac{1}{2}$ and $\eta_{\max} = 1$ and $\beta = 0.9$, complete the implementation of the Newton method. \nblue{[25 marks]} \\
+
+    attached as p6/newton.py
+    
+    \item Implement Gradient Descent with the Backtracking Armijo line-search with $c = \frac{1}{2}$ and $\eta_{\max} = 1$. \nblue{[5 marks]}  
+
+    attached as p6/gd.py
+    
+    \item For minimizing $f(\x)$, compare the performance of the Newton method and Gradient Descent in terms of the (i) number of iterations and (ii) wall-clock time. \nblue{[10 marks]} \\
+
+    attached as p6/p6.py and p6/p6_plot.png
+    
+\end{itemize}
+
+
+
+\end{document}
+

@@ -1,0 +1,3987 @@
+Learning the Target Network in Function Space
+Kavosh Asadi * 1 Yao Liu * 1 Shoham Sabach * 1 2 Ming Yin * 3 Rasool Fakoor 1
+Abstract
+We focus on the task of learning the value function
+in the reinforcement learning (RL) setting. This
+task is often solved by updating a pair of online
+and target networks while ensuring that the parameters of these two networks are equivalent. We
+propose Lookahead-Replicate (LR), a new valuefunction approximation algorithm that is agnostic
+to this parameter-space equivalence. Instead, the
+LR algorithm is designed to maintain an equivalence between the two networks in the function
+space. This value-based equivalence is obtained
+by employing a new target-network update. We
+show that LR leads to a convergent behavior in
+learning the value function. We also present empirical results demonstrating that LR-based targetnetwork updates significantly improve deep RL
+on the Atari benchmark.
+1. Introduction
+Learning an accurate value function is a core competency
+of reinforcement learning (RL) agents. The value function
+is the main ingredient in numerous RL approaches such as
+TD (Sutton, 1988), Q-learning (Watkins & Dayan, 1992),
+and DQN (Mnih et al., 2015). It is also a key ingredient in
+some of the policy-based approaches to RL, such as actorcritic (Barto et al., 1983), and even in some model-based
+RL approaches, for example the Dyna Architecture (Sutton, 1991). Therefore, obtaining a deeper understanding
+of the value-function approximation setting allows us to
+design better learning algorithms, and ultimately improve
+the effectiveness of RL agents in practice.
+A key property of the value function v is that it corresponds
+to the fixed point of the Bellman operator T (defined in
+Section 2), meaning that v = T v. In RL problems with large
+*Equal contribution. The order of the first authors was fully
+decided by dice roll. 1Amazon 2Technion 3
+Princeton University.
+Correspondence to: Kavosh Asadi <kavosh@alumni.brown.edu>,
+Ming Yin <my0049@princeton.edu>.
+Proceedings of the 41 st International Conference on Machine
+Learning, Vienna, Austria. PMLR 235, 2024. Copyright 2024 by
+the author(s).
+state spaces we leverage function approximation to learn
+the value function. More specifically, in this approximate
+setting we select a certain hypothesis class (such as neural
+networks) to represent an approximate value function vθ
+parameterized by θ (Sutton & Barto, 2018). The valuefunction approximation problem is then formulated as the
+problem of finding a parameter θ whose corresponding value
+function vθ solves the Bellman equation vθ = T vθ.
+When solving this equation it is typical to maintain two
+different parameters, denoted by (θ, w), akin to the use of
+target and online networks in DQN and its successors (Mnih
+et al., 2015). A deeper examination reveals that these algorithms are designed to find a pair (θ, w) that jointly satisfy
+two constraints. First, there is a function-space constraint,
+namely that the value function solves the Bellman equation
+vw = T vθ. Additionally there is a second constraint, this
+time in the parameter space, that the value functions on
+two sides of the Bellman equation are parameterized using
+exactly the same parameters θ = w. By satisfying this
+constraint, we guarantee that we ultimately learn a single
+value function. But, is there a more direct formulation to
+ensure that we solve the Bellman equation and we also learn
+a single value function?
+We answer this question affirmatively by reformulating the
+value function approximation problem. Specifically, we
+substitute the parameter-space constraint in the original formulation with a function-space constraint. In addition to
+solving the Bellman equation, vw = T vθ, we impose a second function-space constraint vθ = vw. As a consequence
+of this reformulation, the value function could be parameterized using a pair of parameters (θ, w) where θ is not
+necessarily equal to w. Suppose that we have found two
+parameters θ ̸= w whose corresponding value functions
+are equivalent vθ = vw. Finding such a pair of parameters is doable especially in the overparameterized setting.
+Moreover, suppose that this unique value function is the
+fixed-point of the Bellman Operator vw = T vθ. We argue
+that (θ, w) together constitute a perfectly valid solution to
+the original problem, but this pair is excluded by existing
+algorithms only because θ ̸= w.
+Moving into our algorithmic contribution, we develop a
+novel and practical RL algorithm that solves the reformulated problem. The new algorithm, referred to as Lookahead1
+arXiv:2406.01838v2 [cs.LG] 23 Sep 2024
+Learning the Target Network in Function Space
+Replicate (LR), is comprised of two alternating operations.
+The Lookahead step is designed to handle the first constraint, vw = T vθ. It employs the bootstrapping technique
+which is best embodied by Temporal-Difference (TD) learning (Sutton, 1988). Meanwhile, the Replicate step handles
+the second constraint vθ = vw by minimizing the meansquared error between the two value functions vθ and vw.
+Our Replicate step stands in contrast to the prevalent targetsynchronization step in deep RL, which proceeds by copying
+(duplicating rather than replicating) the latest online network
+by using either hard frequency-based (Mnih et al., 2015)
+or soft Polyak-based (Lillicrap et al., 2016) updates. We
+present theoretical results demonstrating that the algorithm
+converges to a pair of parameters (θ, w) that satisfies the
+two constraint jointly.
+Inspired by the LR algorithm, we finally augment the targetupdate in Rainbow (Hessel et al., 2018). Equipped with
+this LR-based update, the resultant deep RL agent significantly outperforms the original Rainbow agent on the standard Atari benchmark (Bellemare et al., 2013). This result
+provides empirical evidence that solving the reformulated
+problem is doable, and that doing so can ultimately lead into
+better performance compared to the existing formulation.
+2. Background
+Reinforcement learning (RL) is the study of agents that
+use their environmental interaction to find a desirable behavior (Sutton & Barto, 2018). The Markov Decision Process (Puterman, 1994), or MDP, is used to mathematically
+define the RL problem. An MDP is specified by a tuple
+⟨S, A, R,P, γ⟩, where S is the set of states and A is the
+set of actions. At a particular timestep t, the agent is in a
+state St and takes an action At. It then receives a reward
+signal Rt according to R : S × A →R and then transitions
+into a next state St+1 based on the transition probabilities
+P : S × A × S → [0, 1]. Finally the scalar γ discounts rewards that are received in the future.
+The agent interacts with the environment by sampling an
+action from a policy π : S → P(A), a mapping from
+states to a probability distribution over actions. The agent
+aims to learn a policy that achieves high rewards in the
+long term. More formally, the aim is to maximize the
+expected discounted sum of future rewards, which is referred to as the value function, and is defined as follows:
+v
+π
+(s) = E
+P∞
+t=0 γ
+tRt | S0 = s, π
+. The value function
+can be written recursively by leveraging the Bellman operator T
+π
+, which is defined as follows:
+
+T
+π
+v
+
+(s) = X
+a∈A
+π(a | s)
+
+R(s, a)+γ
+X
+s
+′∈S
+P(s, a, s′
+)v(s
+′
+)
+
+.
+In problems where |S| is small a table could be leveraged
+to represent the value function v. In large-scale problems,
+however, it is undesirable to learn a separate number per
+state, so we resort to function approximation. In this case,
+we approximate the value function vθ ≈ v
+π with the parameter θ ∈ Θ. In learning vθ, we leverage the Bellman
+operator which we discuss next.
+3. Revisiting Value-Function Approximation
+In this section we provide an alternative formulation for
+the value-function approximation task in RL. This task is
+often formulated as finding a parameter θ ∈ Θ whose corresponding value function vθ is the fixed-point of the Bellman
+operator. We specify the set of such desirable parameters as
+follows:
+Fsingle = {θ ∈ Θ | vθ = T
+π
+vθ} .
+We use the subscript single in the set above to accentuate
+that this task is solved by algorithms that operate in the space
+Θ. This means that only a single parameter is learned across
+learning. The two most notable algorithms operating in this
+space are the original TD algorithm without a delayed target
+network (Sutton, 1988), as well as the residual-gradient
+algorithm (Baird, 1995).
+In contrast, there exists a second class of algorithms in
+which learning is operated in a lifted space, namely Θ ×
+Θ. Chief among these algorithms is TD with a delayed
+target network which lies at the core of DQN (Mnih et al.,
+2015), Rainbow (Hessel et al., 2018), and related deep-RL
+algorithms. The value-function approximation component
+of these algorithms could be viewed as finding a pair of
+parameters in the following set:
+Fpair = {θ ∈ Θ, w ∈ Θ | vw = T
+π
+vθ and θ = w} .
+The bootstrapping step in these algorithms, which is performed by using Bellman lookahead (Sutton & Barto, 2018),
+is designed to handle the first constraint vw = T
+πvθ. Meanwhile, these algorithms also perform a parameter duplication step, θ ← w, which ensures the second constraint. We
+connect the two sets Fsingle and Fpair using our first claim:
+Claim 1: θ ∈ Fsingle if and only if (θ, θ) ∈ Fpair .
+Prior work established the benefits of operating in Fpair by
+maintaining a pair of parameters when learning the value
+function (Mnih et al., 2015). However, does the set Fpair
+capture all valid solutions to the original value-function
+approximation problem?
+To answer this question, we need to understand the solutions that are excluded based on each individual constraint
+forming Fpair. Clearly, (θ, w) must satisfy vw = T
+πvθ.
+However, it is not clear why (θ, w) must also satisfy the
+second constraint θ = w.
+Notice that eliminating the constraint θ = w can violate the
+notion of learning a single value function. However, forcing
+
+Learning the Target Network in Function Space
+the two parameters to be equivalent is an overkill provided
+that our true goal is to just obtain a single value function.
+Instead, we propose to achieve this goal by substituting
+the parameter-based constraint with a direct function-space
+constraint, namely vθ = vw. This leads us to a new characterization of the solution set:
+Fvalue = {θ ∈ Θ, w ∈ Θ | vw = T
+π
+vθ and vθ = vw} .
+Comparing the two sets Fpair and Fvalue, notice that
+Fvalue does not necessarily require the two parameters to be
+equivalent (θ = w), merely that the two parameters should
+provide a single value function (vθ = vw). To further highlight the difference between the two sets, suppose that we
+have found a pair of parameters θ ̸= w that jointly satisfies
+vw = T
+πvθ and vθ = vw. Then, we arguably have found a
+perfectly valid solution to the original task of value-function
+approximation, but such a pair is excluded from Fpair just
+because θ ̸= w. Conversely, any point in Fpair is actually
+included in Fvalue as we highlight below. The set Fvalue is
+therefore constituting a more inclusive solution characterization for the original value-function approximation task.
+Claim 2: Fpair ⊂ Fvalue.
+Combining Claims 1 and 2, we can conclude that if θ ∈
+Fsingle, then (θ, θ) ∈ Fvalue. Moreover, the set Fpair can
+exclude a large number of perfectly valid solutions to the
+original value-function approximation task. We quantify
+this gap below.
+Claim 3: |Fpair| ≤ |Fvalue| ≤ |Fpair|
+2
+.
+The lower bound follows immediately from Claim 2. To
+prove the upper bound, suppose that only a single value
+function can satisfy the Bellman Equation. Then, choose
+(with repetition) any two parameters θ and w from Fsingle.
+We know that vθ = vw because there is only one fixed-point.
+We also know that vw = T
+πvθ since otherwise θ and w
+cannot be in Fsingle. Therefore, (θ, w) ∈ Fvalue. Now,
+since we chose with repetition, we have |Fsingle|
+2
+such
+pairs of parameters. We conclude the upper bound in light
+of the fact that |Fpair| = |Fsingle| due to Claim 1.
+4. Lookahead-Replicate
+Having explained the advantage of Fvalue, we now desire to
+develop a practical algorithm that finds a solution in Fvalue.
+Our first step is to convert each individual constraint in
+Fvalue into a loss function. A natural choice is to employ
+the least-square difference between the two sides of the
+equations, leading us to the pair of loss functions
+H(θ, w) = ∥vw − T π
+vθ∥
+2
+D and G(θ, w) = ∥vθ − vw∥
+2
+D .
+Here, ∥x∥D =
+√
+x⊤Dx and D is a diagonal matrix with
+entries d
+π
+(s1), ..., dπ
+(sn), and n = |S|. An ideal pair (θ, w)
+is one that fully optimizes the two losses H and G. We now
+present our algorithm, which we refer to as LookaheadReplicate, that is designed to exactly achieve this goal.
+Algorithm 1 Lookahead-Replicate (LR)
+1: Input: θ
+0
+, w0
+, T, KL, KR, α, β
+2: for t = 0, 1, . . . , T − 1 do
+3: w
+t+1 ← Lookahead(θ
+t
+, wt
+, α, KL)
+4: θ
+t+1 ← Replicate(w
+t+1, θt
+, β, KR)
+5: end for
+6: Return (θ
+T
+, wT
+)
+As the name indicates, Lookahead-Replicate is comprised of
+two individual operations per each iteration. Starting from
+the Lookeahead operation, we use the Bellman operator
+and the target network θ to lookahead. We then employ
+multiple (KL) steps of gradient descent to minimize the
+discrepancy between the resultant target T
+πvθ and vw. The
+Lookahead operation is at the core of numerous existing
+RL algorithms, such as TD (Sutton, 1988) and Fitted Value
+Iteration (Gordon, 1995; Ernst et al., 2005).
+Lookahead(θ, w, α, K)
+1: w
+0 ← w
+2: for k = 0, 1, . . . , K − 1 do
+3: compute ∇wH(θ, wk
+)=∇w ∥vwk − T πvθ∥
+2
+D
+4: w
+k+1 ← w
+k − α · ∇wH
+5: end for
+6: return w
+K
+Replicate(w, θ, β, K)
+1: θ
+0 ← θ
+2: for k = 0, 1, . . . , K − 1 do
+3: compute ∇θG(θ
+k
+, w)=∇θ ∥vθ
+k − vw∥
+2
+D
+4: θ
+k+1 ← θ
+k − β · ∇θF
+5: end for
+6: return θ
+K
+However, the Replicate operation is where we deviate from
+common RL algorithms. Specifically, the traditional way
+to update the target network is to simply copy the parameters of the online network into the target network, using
+either a frequency-based (θ ← w every couple of steps) or
+Polyak-based (θ ← (1 − τ )θ + τw) updates. Recall that
+these parameter-based updates are performed to achieve the
+second constraint in the set Fpair, namely θ = w. However,
+our new solution characterization Fvalue is agnostic to this
+parameter equivalence. Our Replicate step is free to find
+any pair of parameters (θ, w) so long as vθ = vw. To this
+end, we use gradient descent to minimize the discrepancy
+between the value functions provided by the target and the
+3
+Learning the Target Network in Function Space
+online networks directly in the function space. This could
+be viewed as replicating, rather than duplicating or copying,
+the online network.
+Note that it is straightforward to extend the LR algorithm to
+the setting where the agent learns the value function from
+environmental interactions. In this case, we just estimate
+the gradients of the two loss functions, ∇wH and ∇θG,
+from environmental interactions (line 3 in both Lookahead
+and Replicate). Similarly, LR can easily be extended to the
+full control setting by using the Bellman optimality operator. Moreover, we may not necessarily use least-squares
+loss when performing either the Lookeahed or the Replicate
+steps. Rather we can employ, for instance, a distributional
+loss. Indeed in our experiments we present an extension of
+LR to the online RL setting where we use a distributional
+loss akin to the C51 algorithm (Bellemare et al., 2017). In
+this sense, similar to TD, LR could be viewed as a fundamental algorithm that can naturally facilitate the integration
+of many of the existing extensions and techniques that are
+popular in the RL literature (Hessel et al., 2018).
+4.1. An Illustrative Example
+In this section, we provide an illustrative example to visualize the sequence of parameters and value functions found
+by the LR algorithm during learning. The example serves as
+a demonstration that the LR algorithm is indeed capable of
+achieving the value equivalence vθ = vw, as desired, but it is
+agnostic to parameter-equivalence θ = w. More concretely,
+in this example LR converges to a pair (θ, w) ∈ Fvalue that
+does not belong to Fpair since θ ̸= w.
+In this simple prediction example (no actions), we just have
+two states S = {s1, s2} and the transition matrix P = 
+0.6 0.4
+0.2 0.8
+
+, γ = 1/2, and reward is always 1. The true
+value is 2 in both states. We construct state feature vectors
+ϕ(s1) = [1, 2, 1]⊤, ϕ(s2) = [1, 1, 2]⊤ and use linear value
+function approximation, i.e. vθ(s) = ϕ(s)
+⊤θ and vw(s) =
+ϕ(s)
+⊤w.
+In Figure 1, we show the actual iterations of θ, w in the
+parameter space and their corresponding value functions
+vθ and vw under the LR algorithm. While the two parameters θ and w converge to different points, their resultant
+value functions nevertheless converge to the true values:
+v(s1) = v(s2) = 2. See Appendix B.1 for more detail.
+Also notice that the value functions can even be parameterized differently, that is using two completely separate
+hypothesis spaces. This stands in contrast to TD-like algorithms where we must use the same hypothesis space for the
+two networks in light of the parameter duplication step. See
+Appendix B.2 for such an example.
+4.2. Convergence Analysis
+In this subsection, we formally prove that the LookaheadReplicate algorithm converges to a pair of parameters
+(θ, w) ∈ Fvalue. We first state our assumptions, which
+we later make use of when proving the result.
+Assumption 4.1. For all θ ∈ Θ, vθ is differentiable and
+Lipschitz-continuous. Formally, given θ1, θ2 ∈ Θ, we have
+∥vθ1 − vθ2 ∥ ≤ κ1 ∥θ1 − θ2∥ for some κ1 > 0.
+Following recent work (Asadi et al., 2023b), we also assume
+that the loss function in the Lookahead step, H(θ, w) =
+∥vw − T πvθ∥
+2
+D, satisfies the following three assumptions:
+Assumption 4.2.
+1. For all θ1, θ2, there exists Fθ > 0 such that:
+∥∇wH(θ1, w) − ∇wH(θ2, w)∥ ≤ Fθ∥θ1 − θ2∥ .
+2. There exists an L > 0 such that:
+∥∇wH(θ, w1) − ∇wH(θ, w2)∥ ≤ L∥w1 − w2∥ .
+3. The function H(θ, w) is Fw-strongly convex in w, i.e.,
+for all w1, w2 we have
+
+∇wH(θ, w1) − ∇wH(θ, w2)
+⊤
+(w1 − w2)
+≥ Fw∥w1 − w2∥
+2
+.
+Note that these assumptions are satisfied in the linear
+case (Lee & He, 2019) and even in some cases beyond
+the linear setting (Asadi et al., 2023b).
+We are now ready to state the main theoretical result of our
+paper:
+Theorem 4.3. Let {(θ
+t
+, wt
+)}t∈N
+be a sequence of parameters generated by the Lookahead-Replicate algorithm. Assume Fw > max{Fθ, 7κ
+2
+1
+,
+4κ
+2
+1
+1−ζ
+}. Given appropriate settings of step-sizes (α, β), where α, β, ζ explained in the
+Appendix:
+
+(θ
+t+1, wt+1) − (θ
+⋆
+, w⋆
+)
+
+ ≤ σ
+
+(θ
+t
+, wt
+) − (θ
+⋆
+, w⋆
+)
+
+ ,
+for some σ < 1. In particular, the pair (θ
+⋆
+, w⋆
+) ∈ Fvalue.
+Appendix A includes a more detailed statement of the theorem as well as the individual lemmas and steps used to
+prove the theorem.
+Corollary 4.4. Under the condition of Theorem 4.3, as
+t → ∞,
+∥vθ
+t − vwt ∥ ≤ √
+2κ1σ
+t−1
+
+(θ
+0
+, w0
+) − (θ
+⋆
+, w⋆
+)
+
+ → 0.
+In addition, we also have
+∥vwt − T vθ
+t ∥ ≤ √
+2κ1σ
+t−1
+
+(θ
+0
+, w0
+) − (θ
+⋆
+, w⋆
+)
+
+ → 0.
+Corollary 4.4, at the value level, shows that (θ
+t
+, wt
+) converges to a point in Fvalue.
+
+Learning the Target Network in Function Space
+2 3 4 5
+v(s1)
+2
+3
+4
+v(s
+2)
+v
+vw
+0
+1
+1
+2
+0.0
+0.5
+1.0 w
+Figure 1. A sample trial of the LR algorithm on the Markov chain. The iterations of vθ and vw in the value space (left), and the iterations
+of the two parameters θ and w in the parameter space (right). Notice that LR converges to a pair of points where the value functions are
+equivalent vθ = vw despite the fact that θ ̸= w.
+5. Experiments
+To evaluate LR in a large-scale setting, we now test it on the
+Atari benchmark (Bellemare et al., 2013). Our baseline is
+Rainbow (Hessel et al., 2018), which is viewed as a combination of important techniques in value-function approximation. We used the implementation of Rainbow from the
+Dopamine (Castro et al., 2018), and followed Dopamine’s
+experimental protocol to carry out our experiments.
+We ran Rainbow with two common target-network updates,
+namely the hard frequency-based update, which is the default choice in Rainbow, as well as the soft Polyak update.
+We used the default hyperparameters from Dopamine. We
+reasonably tuned the hyper-parameters associated with each
+update. We noticed that tuning the frequency parameter has
+minimal effect on Rainbow’s performance. This is consistent with the recent findings of Asadi et al. (2023a) who
+noticed that the performance of Rainbow is flat with respect to the frequency parameter. In the case of Rainbow
+with Polyak update (θ ← τw + (1 − τ )θ), we tuned the τ
+parameter and found that τ = 0.005 performs best.
+Moving to LR, we used KL = 2000 in the Lookahead operation as the choice of frequency hyper-parameter in Rainbow.
+Notice that the Replicate step introduces two new hyperparameters, specifically the number of optimizer updates to
+the target network KR and the learning rate of the optimizer
+itself. In this case, we used the same learning rate as we
+did for optimizing the online network in Rainbow namely
+6.25 × 10−5
+(again, the default choice in the Dopamine).
+We did not tune this parameter. We also chose the Adam
+optimizer to update the target network, which is again the
+default optimizer used to train the online network in the
+Rainbow implementation from Dopamine. This allowed
+us to only focus on tuning the KR parameter. We did not
+modify other hyper-parameters.
+Following the distributional perspective presented by Bellemare et al. (2017), Rainbow approximates the distribution of
+returns rather than the expected return (Hessel et al., 2018).
+This means that the neural network outputs a distribution of
+the return instead of a single value. As described by Bellemare et al. (2017), define a set of atoms zi for 1 ≤ i ≤ N,
+then the state-action value function is represented as follows qθ(s, a) = PN
+i=1 zi
+· pi(s, a; θ). Thus, to adapt our
+approach to this setting, the Replicate operation employs
+gradient-descent steps to learn a parameter θ that minimizes
+the cross-entropy loss between the distributions p(s, a; θ)
+and p(s, a; w), i.e., minθ CE(p(s, a; θ), p(s, a; w)). In practice, this minimization is performed on a batch of states and
+actions sampled from the replay buffer.
+Moreover, two natural choices exist when selecting which
+state-action pairs to use in our updates. In the first case, we
+can update θ by minimizing the loss CE on state-actions
+⟨s, a⟩ sampled from the replay buffer. In the second case,
+we only sample states from the replay buffer ⟨s⟩ and then
+perform the minimization on all actions across the sampled
+states. These two variations are referred to as one action
+and all action variants of LR in our experiments. These
+results are shown in Figure 2. We present these results on 6
+games to keep the number of experiments manageable and
+later present comprehensive results on all 55 games. We
+also used 5 random seeds and present confidence intervals.
+We can clearly see in Figure 2 that the two LR variants
+are outperforming their Rainbow counterparts on all but
+one game. Interestingly, we also see that the Polyak update is roughly as effective as the frequency-based update.
+Moreover, the all-action variant of LR is able to outperform
+the one-action counterpart. Thus, we will be using this
+all-action version for the rest of our experiments.
+We are also interested in understanding the effect of chang5
+Learning the Target Network in Function Space
+0 60 120
+Training Frames (Million)
+0
+25000
+50000
+75000
+100000
+125000
+Asterix
+LR (one action)
+LR (all action)
+Rainbow
+Rainbow (Polyak)
+0 60 120
+Training Frames (Million)
+5000
+10000
+15000
+20000
+BeamRider
+0 60 120
+Training Frames (Million)
+0
+100
+200
+300
+400
+500
+Breakout
+0 60 120
+Training Frames (Million)
+0
+10000
+20000
+30000
+Gopher
+0 60 120
+Training Frames (Million)
+0
+50000
+100000
+150000
+200000
+250000
+Phoenix
+0 60 120
+Training Frames (Million)
+0
+5000
+10000
+15000
+Seaquest
+Figure 2. A comparison between two variations of LR (blue and red) with Rainbow under the default frequency-based (black) and
+Polyak-based (green) updates. The first variation of LR (blue) performs the Replicate step by sampling states and actions from the replay
+buffer and minimizing the value difference between the target and online network. The second variation of LR (red) only samples states
+from the replay buffer and minimizes the value difference for all actions in each sampled state. Results are averaged over 5 random seeds.
+0 60 120
+Training Frames (Million)
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+KR = 20
+LR (one action)
+LR (all action)
+Rainbow
+Rainbow (Polyak)
+0 60 120
+Training Frames (Million)
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+KR = 100
+0 60 120
+Training Frames (Million)
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+KR = 200
+0 60 120
+Training Frames (Million)
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+KR = 500
+0 60 120
+Training Frames (Million)
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+KR = 1000
+Figure 3. A Comparison between Rainbow and LR with different values of KR which is the number of gradient updates to the target
+network before updating the online network. The y-axis is the median of human-normalized performance across the 6 games. We are
+using 5 random seeds to aggregate the results. Higher is better.
+ing KR on the overall performance of the LR algorithm. To
+this end, we repeated the previous experiment, exploring a
+range of different values for this parameter. These results are
+shown in Figure 3. To aggregate all games, we first compute
+the human-normalized score, defined as ScoreAgent−ScoreRandom
+ScoreHuman−ScoreRandom
+,
+and then compute the median across 6 games akin to previous work (Wang et al., 2016).
+To further distill these results, we present the area under
+the curve for the two variants of Rainbow, and for LR as a
+function of KR. Notice from Figure 4 that an inverted-U
+shape manifests itself, meaning that LR with an intermediate
+value of KR performs best. To explain this phenomenon,
+notice that performing a tiny number of updates (small KR)
+would mean not changing the target network too much, and
+6
+Learning the Target Network in Function Space
+therefore not appropriately handling the constraint vθ = vw.
+On the other extreme, we can fully handle the constraint
+vθ = vw by using very large KR, but then doing so can
+have the external effect of significantly violating the other
+constraint namely vw = T vθ. Therefore, a trade-off exists,
+so an intermediate value of KR performs best.
+20 200 500 1000
+KR
+2
+3
+4
+5
+6
+Rainbow (Polyak)
+Rainbow
+LR (all action)
+LR (one action)
+Figure 4. Performance of the LR agent as a function of KR the
+number of updates to the target network in the Replicate step.
+Higher is better. Notice that an intermediate value of KR performs
+best.
+The above ablations clearly display the benefit of LR over
+standard target network updates. We hypothesize that by
+updating the target network via a cross-entropy loss and
+gradient-based optimizer, it also benefits from the implicit
+regularization effect of stochastic gradient descent. To verify
+this hypothesis, we examine the norm of target and online
+Q networks’s parameters in LR and Rainbow. As Figure
+5 shows, LR reduced both the online and target network’s
+norm, which may serve as an implicit regularization on the
+Q networks. Notice the difference in the magnitude of the
+norm of the online and the target network in LR, which
+indicates that LR typically finds a solution where w ̸= θ.
+0 60 120
+Training Frames (Million)
+50
+100
+150
+Mean of weights norm
+Norm of LR Online Network
+Norm of LR Target Network
+Norm of Rainbow Online/Target Network
+Figure 5. Parameter norm of target and online Q network in different algorithms, averaged over 6 games in Figure 2.
+We finally would like to evaluate LR beyond these 6 games.
+To this end, we fix KR = 800 = 0.1·KL and also chose the
+all action implementation of LR. We then ran LR and Rainbow on all 55 Atari games. The aggregate learning curve
+and the final asymptotic comparison between the two agents
+are presented in Figures 6 and 7, respectively. Overall, LR
+can outperform Rainbow by both measures.
+0 60 120
+Training Frames (Million)
+0.5
+1.0
+1.5
+2.0
+median
+Lookahead-Replicate
+Rainbow
+Figure 6. A comparison in terms of human-normalized median
+across 55 games and 5 seeds between LR and Rainbow based on
+the number of frames on the x-axis (Top). Here the two agents use
+the same amount of data per each point on the x-axis but note that
+Rainbow is taking slightly lower number of gradient steps (9% less)
+per a fixed number of training frames due to the additional steps in
+updating the target network by LR. To ensure a fair comparison
+in terms of computation, we also report the same result but with
+the total number of optimizer steps on the x-axis (Bottom). Here
+Rainbow is using slightly more data than LR for any given point
+on the x-axis. LR is outperforming Rainbow in both cases.
+Note that in updating the target network, LR takes additional
+gradient steps, unlike Rainbow and given the same amount
+of data, the total number of gradient steps taken by LR
+is slightly higher than the number of gradient steps taken
+by Rainbow. To account for this discrepancy, we provide
+an alternative presentation of Figure 6 (Bottom) where on
+the x-axis we report the number of gradient steps taken by
+each agent, and on the y-axis we present the performance
+of the corresponding agent having performed the number of
+gradient steps on x-axis. This would ensure that we are not
+giving any computational advantage to LR.
+Observe that under this comparison, LR is still outperforming Rainbow. We also would like to highlight that in this
+comparison, given a point on the x-axis, LR has experienced
+7
+Learning the Target Network in Function Space
+a 9% lower amount of data relative to Rainbow. To understand where this number comes from, recall that we always
+perform one step of online network update per 4 frames. We
+repeat this for some time, and then perform 200 updates to
+the target network. Therefore, after T number of overall
+updates, we have performed roughly (0.91) ∗ T updates to
+the online network (due to the ratio 2000/(2000 + 200)),
+and therefore we have seen only 91% of the amount of interaction experienced by Rainbow. It therefore means that
+under this comparison we are fair in terms of compute, but
+we have now given more data to Rainbow over LR. That
+said we still observe that LR is the more superior agent
+overall.
+- 100% - 10% 0% 10% 50% 300%
+YarsRevenge
+Asteroids
+Zaxxon
+Gravitar
+Hero
+BattleZone
+MontezumaRevenge
+PrivateEye
+Berzerk
+Seaquest
+Robotank
+AirRaid
+Frostbite
+Riverraid
+Bowling
+Solaris
+Enduro
+Atlantis
+RoadRunner
+FishingDerby
+Freeway
+Pong
+VideoPinball
+Kangaroo
+Boxing
+JourneyEscape
+BankHeist
+Venture
+Jamesbond
+Pitfall
+TimePilot
+Carnival
+StarGunner
+Breakout
+MsPacman
+Krull
+Qbert
+NameThisGame
+CrazyClimber
+Amidar
+Tutankham
+Alien
+Assault
+BeamRider
+IceHockey
+Pooyan
+KungFuMaster
+Gopher
+ChopperCommand
+DemonAttack
+WizardOfWor
+UpNDown
+SpaceInvaders
+Asterix
+Phoenix
+Figure 7. A comparison between the asymptotic performance of
+LR and Rainbow on 55 Atari games.
+6. Related Work
+In this work we emphasized that it is necessary for online
+and target networks to be equivalent only in the function
+space, not in the parameter space. To the best of our knowledge this is a significant deviation from all of the existing
+work. Nonetheless, there are a few examples in the literature
+where learning the value function is operated based on some
+information related to the function space. For instance Dabney & Thomas (2014) and Knight & Lerner (2018) use
+natural gradient to perform value-function optimization by
+considering the geometry of the parameter space. Still, using
+a different parameterization for online and target networks is
+absent in these efforts. A similar trend exists when learning
+the policy in RL. In this case, the natural gradient can be
+employed to perform distribution-aware updates (Kakade,
+2001; Peters & Schaal, 2008). Using variations of naturalgradient policy optimization along with trust regions has
+recently become quite popular leading to a number of competitive baselines in the deep RL setting (Schulman et al.,
+2015; 2017; Abdolmaleki et al., 2018; Fakoor et al., 2020).
+Our primary algorithmic contribution was to present the
+Lookahead-Replicate (LR) algorithm, which updates the
+target network in a manner that is fundamentally different than standard updates. In deep RL, it is common to
+update the target network using one of two strategies: either hard frequency-based (copying or duplicating θ into
+w every couple of steps) or Polyak (θ = τw + (1 − τ )θ
+at every step, also known as soft updates). The frequencybased update is commonly applied in value-function-only
+approaches to RL such as DQN (Mnih et al., 2015), Double
+Q-learning (Van Hasselt et al., 2016), C51 (Bellemare et al.,
+2017), Rainbow (Hessel et al., 2018), DQN Pro (Asadi et al.,
+2022), and is particularly effective in MDPs with discrete
+actions. On the other hand, Polyak is predominantly used
+in actor-critic algorithms such as DDPG (Lillicrap et al.,
+2016), SAC (Haarnoja et al., 2018), TD3 (Fujimoto et al.,
+2018), D4PG (Barth-Maron et al., 2018), etc., and is mainly
+effective with continuous-action MDPs. Both updates could
+be viewed as achieving the goal of learning a single value
+function by forcing θ = w. Enforcing this parameter-based
+equivalence is an overkill so long as we have the alternative
+value-space equivalence proposed in this paper.
+Numerous works have studied ways to better utilize the
+target network during learning. This line of work includes
+using a proximal term between target and online network
+parameters to improve the performance (Asadi et al., 2022),
+normalizing the target network to improve efficiency and
+stability (Hasselt et al., 2016), and applying regularization (Shao et al., 2022). Conversely, some works aimed
+to remove the target network from while not affecting (Kim
+et al., 2019) or even improving performance (Bhatt et al.,
+2020; Shao et al., 2022).
+8
+Learning the Target Network in Function Space
+On the more theoretical side, classical temporal difference
+(TD) learning analysis (Tsitsiklis & Van Roy, 1996; Melo
+et al., 2008; Bhandari et al., 2018) usually focuses on TD in
+absence of a target parameter. Recently Lee & He (2019)
+studied TD with delayed target updates under the linear
+setting. Asadi et al. (2023b) provided novel convergence
+guarantees that went beyond the linear setting and worked
+with any setting of the frequency of updates for the target parameter. Convergence of TD was also studied in
+presence of regularization (Liu et al., 2012; Zhang et al.,
+2021). There are also recent studies on TD in the overparameterized setting (Cai et al., 2019; Xiao et al., 2021;
+Lyle et al., 2021) where the focus of the studies is on the
+original TD algorithm, which unlike Lookahead-Replicate
+(LR), enforces the online-target parameter equivalence. Our
+Lookahead-Replicate algorithm is specifically designed to
+leverage overparameterization by finding two parameters
+whose corresponding value functions are equivalent. Last
+but not least, the pioneer works (Maei et al., 2010; Maei &
+Sutton, 2010) considers the (Projected) square Bellman error
+objective with the “two time scale” update for the parameters under the linear structure. Our framework essentially
+reformulates the fixed-point Bellman equation into a bilevel
+formulation (with the desired solution of the bilevel formulation being Fvalue) that allows flexibility for parameters θ
+and w.
+7. Conclusion
+We presented an alternative formulation for value-function
+approximation, a problem which lies at the core of numerous
+approaches to RL. Value-function approximation algorithms
+commonly maintain two parameters during training. In this
+context, we showed that it is not necessary, and arguably undesirable, to enforce an equivalence between the parameters.
+This equivalence is usually enforced to ensure that a single
+value function is learned. But, we demonstrated a more
+direct approach to achieving this goal, namely to update
+the two parameters while ensuring that their provided valuefunctions are equivalent. Algorithmically, we proposed the
+new Lookahead-Replicate (LR) algorithm that updates the
+target parameter in a fashion that is fundamentally different
+than existing work. In particular, rather than copying the
+the online parameter, we update the target parameter using
+gradient-descent steps to minimize the value-difference between the target and the online networks. This new style of
+update, while simple to understand and implement, led to
+improved performance in the context of deep RL and on the
+Atari benchmark. These results demonstrated the benefits
+of our reformulation as well as our proposed LR algorithm
+that is designed to solve the reformulated problem.
+8. Future Work
+An important area for future work is to understand the behavior of LR and TD when we scale up the capacity of the
+neural network. An interesting observation is that the gap
+between the sizes of the two sets Fpair and Fvalue grows
+as we increase the expressiveness of the function approximator. Therefore, it would be interesting to see if the LR
+algorithm is more conducive to scaling than existing algorithms such as TD. Notice that we designed LR to search for
+a solution in the larger set Fvalue, whereas TD and similar
+algorithms were designed to search for a solution in the set
+Fpair. Therefore, our current conjecture is that LR may better harness the power of scaling. It would be very interesting
+to test the validity of this conjecture in future work.
+Notice that the constraint vθ = vw is agnostic to the specific
+function class chosen for the value-function approximation
+task. It would be interesting to define two separate function classes to represent the online and the target networks.
+In this paper, we mainly focused on the setting where we
+operate using the same parameter space for both networks
+(Θ × Θ), but in general these two spaces could be different.
+Indeed, we show an example of running LR in this setting in
+Appendix B. Notice that TD-like algorithms are inapplicable
+in this setting because the parameter-space equivalence is
+meaningless to enforce when we have different hypothesis
+spaces. A question for future work is to identify scenarios
+in which using different parameter spaces is fruitful. One
+such case, inspired by supervised learning, is the area of
+network distillation (Hinton et al., 2015; Rusu et al., 2015)
+where the goal is to imitate a first teacher network by using
+an often smaller student network. This direction is beyond
+the scope of this paper, but is really interesting to explore in
+future.
+It is well-known that TD can exhibit misbehavior when
+used in conjunction with bootstrapping, arbitrary function
+approximators, and off-policy updates, the so-called deadly
+triad (Sutton & Barto, 2018). An important question for
+future work is to compare the LR algorithm with TD as
+it pertains to convergence guarantees on simple counter
+examples as well as the more general cases. The LR algorithm updates the target network in a different fashion
+than TD, therefore, it would be interesting to understand
+the impact of this new style of target update on existing
+convergence guarantees of TD and related algorithms. More
+generally, numerous questions about the TD algorithm have
+been studied in the RL literature. Some of these questions
+are well-understood while others still remain open. In light
+of our new LR algorithm, these questions can be revisited
+and addressed in a broader scope. In this paper, we just laid
+the foundation and set the stage for such questions to be
+studied in future.
+9
+Learning the Target Network in Function Space
+Impact Statement
+This paper presents a technical work whose goal is to advance the field of reinforcement learning. While we understand this work to hold significant potential in terms of
+technical advancements, the scope of its societal impact
+remains limited at this point.
+References
+Abdolmaleki, A., Springenberg, J. T., Tassa, Y., Munos,
+R., Heess, N., and Riedmiller, M. Maximum a posteriori policy optimisation. In International Conference on
+Learning Representations, 2018.
+Asadi, K., Fakoor, R., Gottesman, O., Kim, T., Littman, M.,
+and Smola, A. J. Faster deep reinforcement learning with
+slower online network. In Advances in Neural Information Processing Systems, volume 35, pp. 19944–19955,
+2022.
+Asadi, K., Fakoor, R., and Sabach, S. Resetting the optimizer in deep rl: An empirical study. Advances in Neural
+Information Processing Systems, 2023a.
+Asadi, K., Sabach, S., Liu, Y., Gottesman, O., and Fakoor, R.
+Td convergence: An optimization perspective. Advances
+in Neural Information Processing Systems, 2023b.
+Baird, L. Residual algorithms: Reinforcement learning with
+function approximation. In Machine Learning. Elsevier,
+1995.
+Barth-Maron, G., Hoffman, M. W., Budden, D., Dabney,
+W., Horgan, D., TB, D., Muldal, A., Heess, N., and Lillicrap, T. Distributional policy gradients. In International
+Conference on Learning Representations, 2018.
+Barto, A. G., Sutton, R. S., and Anderson, C. W. Neuronlike
+adaptive elements that can solve difficult learning control problems. IEEE transactions on systems, man, and
+cybernetics, pp. 834–846, 1983.
+Beck, A. First-order methods in optimization. SIAM, 2017.
+Bellemare, M. G., Naddaf, Y., Veness, J., and Bowling, M.
+The arcade learning environment: An evaluation platform for general agents. Journal of Artificial Intelligence
+Research, 2013.
+Bellemare, M. G., Dabney, W., and Munos, R. A distributional perspective on reinforcement learning. In Proceedings of the 34th International Conference on Machine
+Learning, volume 70 of Proceedings of Machine Learning Research, pp. 449–458. PMLR, 2017.
+Bhandari, J., Russo, D., and Singal, R. A finite time analysis of temporal difference learning with linear function
+approximation. In Conference on learning theory, pp.
+1691–1692. PMLR, 2018.
+Bhatt, A., Argus, M., Amiranashvili, A., and Brox, T. Crossnorm: On normalization for off-policy reinforcement
+learning, 2020.
+Cai, Q., Yang, Z., Lee, J. D., and Wang, Z. Neural temporaldifference learning converges to global optima. Advances
+in Neural Information Processing Systems, 2019.
+Castro, P. S., Moitra, S., Gelada, C., Kumar, S., and Bellemare, M. G. Dopamine: A Research Framework for Deep
+Reinforcement Learning. arXiv, 2018.
+Dabney, W. and Thomas, P. Natural temporal difference
+learning. In Proceedings of the AAAI Conference on
+Artificial Intelligence, volume 28, 2014.
+Ernst, D., Geurts, P., and Wehenkel, L. Tree-based batch
+mode reinforcement learning. Journal of Machine Learning Research, 2005.
+Fakoor, R., Chaudhari, P., and Smola, A. J. P3o: Policyon policy-off policy optimization. In Proceedings of
+The 35th Uncertainty in Artificial Intelligence Conference, volume 115 of Proceedings of Machine Learning
+Research, pp. 1017–1027. PMLR, 22–25 Jul 2020.
+Fujimoto, S., van Hoof, H., and Meger, D. Addressing function approximation error in actor-critic methods.
+arXiv:1802.09477, 2018.
+Gordon, G. J. Stable function approximation in dynamic
+programming. In Machine learning. Elsevier, 1995.
+Haarnoja, T., Zhou, A., Abbeel, P., and Levine, S. Soft actorcritic: Off-policy maximum entropy deep reinforcement
+learning with a stochastic actor. arXiv:1801.01290, 2018.
+Hasselt, H. V., Guez, A., Hessel, M., Mnih, V., and Silver,
+D. Learning values across many orders of magnitude. In
+Neural Information Processing Systems, 2016.
+Hessel, M., Modayil, J., van Hasselt, H., Schaul, T., Ostrovski, G., Dabney, W., Horgan, D., Piot, B., Azar, M., and
+Silver, D. Rainbow: Combining improvements in deep
+reinforcement learning. In AAAI Conference on Artificial
+Intelligence, 2018.
+Hinton, G., Vinyals, O., and Dean, J. Distilling
+the knowledge in a neural network. arXiv preprint
+arXiv:1503.02531, 2015.
+Kakade, S. M. A natural policy gradient. Advances in neural
+information processing systems, 14, 2001.
+10
+Learning the Target Network in Function Space
+Kim, S., Asadi, K., Littman, M., and Konidaris, G. Deepmellow: removing the need for a target network in deep
+q-learning. In Proceedings of the twenty eighth international joint conference on artificial intelligence, 2019.
+Knight, E. and Lerner, O. Natural gradient deep q-learning,
+2018.
+Lee, D. and He, N. Target-based temporal-difference learning. In International Conference on Machine Learning,
+pp. 3713–3722. PMLR, 2019.
+Lillicrap, T. P., Hunt, J. J., Pritzel, A., Heess, N., Erez,
+T., Tassa, Y., Silver, D., and Wierstra, D. Continuous
+control with deep reinforcement learning. In Bengio, Y.
+and LeCun, Y. (eds.), 4th International Conference on
+Learning Representations, ICLR 2016,, 2016.
+Liu, B., Mahadevan, S., and Liu, J. Regularized off-policy
+TD-learning. Advances in Neural Information Processing
+Systems, 2012.
+Lyle, C., Rowland, M., Ostrovski, G., and Dabney, W. On
+the effect of auxiliary tasks on representation dynamics.
+In International Conference on Artificial Intelligence and
+Statistics, 2021.
+Maei, H. R. and Sutton, R. S. Gq (lambda): A general gradient algorithm for temporal-difference prediction learning
+with eligibility traces. In 3d Conference on Artificial General Intelligence (AGI-2010), pp. 100–105. Atlantis Press,
+2010.
+Maei, H. R., Szepesvari, C., Bhatnagar, S., and Sutton, ´
+R. S. Toward off-policy learning control with function
+approximation. In ICML, volume 10, pp. 719–726, 2010.
+Melo, F. S., Meyn, S. P., and Ribeiro, M. I. An analysis
+of reinforcement learning with function approximation.
+In Proceedings of the 25th international conference on
+Machine learning, 2008.
+Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A. A., Veness,
+J., Bellemare, M. G., Graves, A., Riedmiller, M., Fidjeland, A. K., Ostrovski, G., et al. Human-level control
+through deep reinforcement learning. Nature, 2015.
+Peters, J. and Schaal, S. Natural actor-critic. Neurocomputing, 71(7):1180–1190, 2008. ISSN 0925-2312. doi:
+https://doi.org/10.1016/j.neucom.2007.11.026. Progress
+in Modeling, Theory, and Application of Computational
+Intelligenc.
+Puterman, M. L. Markov Decision Processes: Discrete
+Stochastic Dynamic Programming. Wiley Series, 1994.
+Rusu, A. A., Colmenarejo, S. G., Gulcehre, C., Desjardins,
+G., Kirkpatrick, J., Pascanu, R., Mnih, V., Kavukcuoglu,
+K., and Hadsell, R. Policy distillation. arXiv preprint
+arXiv:1511.06295, 2015.
+Schulman, J., Levine, S., Abbeel, P., Jordan, M., and Moritz,
+P. Trust region policy optimization. In Proceedings of
+the 32nd International Conference on Machine Learning,
+volume 37 of Proceedings of Machine Learning Research,
+pp. 1889–1897. PMLR, 07–09 Jul 2015.
+Schulman, J., Wolski, F., Dhariwal, P., Radford, A., and
+Klimov, O. Proximal policy optimization algorithms.
+arXiv:1707.06347, 2017.
+Shao, L., You, Y., Yan, M., Yuan, S., Sun, Q., and Bohg,
+J. Grac: Self-guided and self-regularized actor-critic.
+In Proceedings of the 5th Conference on Robot Learning, volume 164 of Proceedings of Machine Learning
+Research, pp. 267–276. PMLR, 2022.
+Sutton, R. S. Learning to predict by the methods of temporal differences. Journal of Machine Learning Research,
+1988.
+Sutton, R. S. Dyna, an integrated architecture for learning,
+planning, and reacting. ACM Sigart Bulletin, 2(4):160–
+163, 1991.
+Sutton, R. S. and Barto, A. G. Reinforcement learning: An
+introduction. MIT press, 2018.
+Tsitsiklis, J. and Van Roy, B. Analysis of temporaldiffference learning with function approximation. Advances in neural information processing systems, 9, 1996.
+Van Hasselt, H., Guez, A., and Silver, D. Deep reinforcement learning with double q-learning. In Thirtieth AAAI
+Conference on Artificial Intelligence, 2016.
+Wang, Z., Schaul, T., Hessel, M., Hasselt, H., Lanctot, M.,
+and Freitas, N. Dueling network architectures for deep
+reinforcement learning. In International conference on
+machine learning, 2016.
+Watkins, C. J. and Dayan, P. Q-learning. Machine learning,
+8:279–292, 1992.
+Wu, Y. F., Zhang, W., Xu, P., and Gu, Q. A finite-time
+analysis of two time-scale actor-critic methods. Advances
+in Neural Information Processing Systems, 33:17617–
+17628, 2020.
+Xiao, C., Dai, B., Mei, J., Ramirez, O. A., Gummadi, R.,
+Harris, C., and Schuurmans, D. Understanding and leveraging overparameterization in recursive value estimation.
+In International Conference on Learning Representations,
+2021.
+11
+Learning the Target Network in Function Space
+Yang, Z., Zhang, K., Hong, M., and Bas¸ar, T. A finite sample
+analysis of the actor-critic algorithm. In 2018 IEEE conference on decision and control (CDC), pp. 2759–2764.
+IEEE, 2018.
+Yin, M. and Wang, Y.-X. Towards instance-optimal offline
+reinforcement learning with pessimism. Advances in
+neural information processing systems, 34:4065–4078,
+2021.
+Yin, M., Duan, Y., Wang, M., and Wang, Y.-X. Near-optimal
+offline reinforcement learning with linear representation:
+Leveraging variance information with pessimism. arXiv
+preprint arXiv:2203.05804, 2022.
+Zhang, S., Yao, H., and Whiteson, S. Breaking the deadly
+triad with a target network. In Proceedings of the 38th
+International Conference on Machine Learning, volume
+139 of Proceedings of Machine Learning Research, pp.
+12621–12631. PMLR, 2021.
+12
+Learning the Target Network in Function Space
+A. Proof of Theorem 4.3
+Here, we will prove the main theorem. The analysis to be developed now is inspired by the proof technique of the recent
+paper (Asadi et al., 2023b). However they focus on standard TD learning settings while we study a new value function
+learning algorithm.
+We first recall the pair of loss functions H(θ, w) = ∥vw − T vθ∥
+2
+D and R(θ, w) = ∥vθ − vw∥
+2
+D that are optimized in the
+Lookahead-Replicate algorithm. We will provide analysis for a general value functions vθ and vw as long as the pair of
+loss function satisfy Assumption 4.2. Therefore, when we differentiate the value function vθ, we get the Jacobian of vθ.
+Therefore, for the simplicity of the developments to come, we compute the relevant gradients of the loss functions:
+∇wH(θ, w) = 2∇vwD (vw − T vθ) and ∇θG(θ, w) = 2∇vθD (vθ − vw). (1)
+It should also be noted that whenever (θ
+⋆
+, w⋆
+) ∈ Fvalue, we have that (using (1))
+∇wH (θ
+⋆
+, w⋆
+) = 2∇vw⋆D (vw⋆ − T vθ
+⋆ ) = 0, (2)
+where the last equality follows from the constraint that vw⋆ = T vθ
+⋆ .
+Now we begin our proof with the following useful lemmas.
+Lemma A.1. Let {(θ
+t
+, wt
+)}t∈N
+be a sequence generated by the Lookahead Replicate algorithm. Then, for all t ∈ N and
+0 ≤ k ≤ KL − 1, we have
+H
+
+θ
+t
+, w⋆
+
+− H
+
+θ
+t
+, wt,k
+≤
+F
+2
+θ
+2Fw
+
+θ
+t − θ
+⋆
+
+
+2
+−
+
+1
+α
+−
+L
+2
+
+
+w
+t,k+1 − w
+t,k
+
+2
+.
+Proof. Let t ∈ N. From the Fw-strong convexity of w 7→ H(θ
+t
+, w), we obtain that
+H(θ
+t
+, wt,k+1) ≥ H(θ
+t
+, w⋆
+) + ⟨∇wH(θ
+t
+, w⋆
+), wt,k+1 − w
+⋆
+⟩ +
+Fw
+2
+∥wt,k+1 − w
+⋆
+∥
+2
+,
+which implies
+H(θ
+t
+, w⋆
+) − H(θ
+t
+, wt,k+1) ≤ ⟨∇wH(θ
+t
+, w⋆
+), w⋆ − w
+t,k+1⟩ − Fw
+2
+∥w
+t,k+1 − w
+⋆
+∥
+2
+. (3)
+Moreover, following (2) we can use the condition that ∇wH(θ
+⋆
+, w⋆
+) = 0, to obtain
+⟨∇wH(θ
+t
+, w⋆
+), w⋆ − w
+t,k+1⟩ = ⟨∇wH(θ
+t
+, w⋆
+) − ∇wH(θ
+⋆
+, w⋆
+), w⋆ − w
+t,k+1⟩
+≤
+1
+2Fw
+∥∇wH(θ
+t
+, w⋆
+) − ∇wH(θ
+⋆
+, w⋆
+)∥
+2 +
+Fw
+2
+∥w
+t,k+1 − w
+⋆
+∥
+2
+≤
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2 +
+Fw
+2
+∥w
+t,k+1 − w
+⋆
+∥
+2
+. (4)
+Here, the first inequality follows from the fact that for any two vectors a and b we have ⟨a, b⟩ ≤ (1/2d)∥a∥
+2 + (d/2)∥b∥
+2
+for any d > 0. In this case, we chose d = Fw. Also the last inequality follows from the Fθ-Lipschitz property of ∇wH,
+which is our Assumption 4.2. Now, by combining (3) with (4), we obtain that
+H(θ
+t
+, w⋆
+) − H(θ
+t
+, wt,k+1) ≤
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2
+(5)
+From the Lipschitz assumption we can write, due to the Descent Lemma (Beck, 2017) applied to the function w → H(θ
+t
+, w),
+that
+H(θ
+t
+, wt,k+1) − H(θ
+t
+, wt,k) ≤ ⟨∇wH(θ
+t
+, wt,k), wt,k+1 − w
+t,k⟩ +
+L
+2
+∥w
+t,k+1 − w
+t,k∥
+2
+.
+Now, notice that using the main step of the Lookahead operation (see step 3) we have w
+t,k+1 = w
+t,k − α∇wH(θ
+t
+, wt,k),
+and so we can write:
+H(θ
+t
+, wt,k+1) − H(θ
+t
+, wt,k) ≤
+1
+α
+⟨w
+t,k − w
+t,k+1, wt,k+1 − w
+t,k⟩ +
+L
+2
+∥w
+t,k+1 − w
+t,k∥
+2
+= −
+
+1
+α
+−
+L
+2
+
+∥w
+t,k+1 − w
+t,k∥
+2
+. (6)
+
+Learning the Target Network in Function Space
+Adding both sides of (5) with (6) yields
+H(θ
+t
+, w⋆
+) − H(θ
+t
+, wt,k) ≤
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2 −
+
+1
+α
+−
+L
+2
+
+∥w
+t,k+1 − w
+t,k∥
+2
+,
+which proves the desired result.
+Based on this result, we can now state and prove the following result.
+Lemma A.2. Let {(θ
+t
+, wt
+)}t∈N
+be a sequence generated by the Lookahead Replicate algorithm. Choose α = 1/L. Then,
+for all t ∈ N and 0 ≤ k ≤ KL − 1, we have
+
+w
+t,k+1 − w
+⋆
+
+
+2
+≤
+
+1 −
+Fw
+L
+
+
+w
+t,k − w
+⋆
+
+
+2
++
+F
+2
+θ
+LFw
+
+θ
+t − θ
+⋆
+
+
+2
+.
+Proof. Let t ∈ N. From the main step of the Lookahead operation (see step 3), that is, w
+t,k+1 = w
+t,k − α∇wH(θ
+t
+, wt,k),
+we obtain for any 0 ≤ k ≤ KL − 1 that
+
+w
+t,k+1 − w
+⋆
+
+
+2
+=
+
+
+
+w
+t,k − w
+⋆
+
+− α∇wH
+
+θ
+t
+, wt,k
+
+2
+=
+
+w
+t,k − w
+⋆
+
+
+2
++ 2α
+
+
+∇wH
+
+θ
+t
+, wt,k
+, w⋆ − w
+t,k
++
+
+α∇wH
+
+θ
+t
+, wt,k
+
+2
+=
+
+w
+t,k − w
+⋆
+
+
+2
++ 2α
+
+
+∇wH
+
+θ
+t
+, wt,k
+, w⋆ − w
+t,k
++
+
+w
+t,k+1 − w
+t,k
+
+2
+. (7)
+Using the Fw-strong convexity of w → H(θ
+t
+, w), we have
+H(θ
+t
+, w⋆
+) ≥ H(θ
+t
+, wt,k) + ⟨∇wH(θ
+t
+, wt,k), w⋆ − w
+t,k⟩ +
+Fw
+2
+∥w
+t,k − w
+⋆
+∥
+2
+. (8)
+Combining (7) and (8), we get
+
+w
+t,k+1 − w
+⋆
+
+
+2
+≤
+
+w
+t,k − w
+⋆
+
+
+2
++ 2α
+
+H
+
+θ
+t
+, w⋆
+
+− H
+
+θ
+t
+, wt,k
+−
+Fw
+2
+
+w
+t,k − w
+⋆
+
+
+2
+
++
+
+w
+t,k+1 − w
+t,k
+
+2
+= (1 − αFw)
+
+w
+t,k − w
+⋆
+
+
+2
++ 2α
+
+H
+
+θ
+t
+, w⋆
+
+− H
+
+θ
+t
+, wt,k +
+
+w
+t,k+1 − w
+t,k
+
+2
+.
+Hence, from Lemma A.1, we obtain
+
+w
+t,k+1 − w
+⋆
+
+
+2
+≤ (1 − αFw)
+
+w
+t,k − w
+⋆
+
+
+2
++ 2α
+
+F
+2
+θ
+2Fw
+
+θ
+t − θ
+⋆
+
+
+2
+−
+
+1
+α
+−
+L
+2
+
+
+w
+t,k+1 − w
+t,k
+
+2
+
++
+
+w
+t,k+1 − w
+t,k
+
+2
+= (1 − αFw)
+
+w
+t,k − w
+⋆
+
+
+2
++
+αF2
+θ
+Fw
+
+θ
+t − θ
+⋆
+
+
+2
+− (1 − αL)
+
+w
+t,k+1 − w
+t,k
+
+2
+.
+Moreover, by choosing the step-size as α = 1/L we obtain that
+∥w
+t,k+1 − w
+⋆
+∥
+2 ≤
+
+1 −
+Fw
+L
+
+∥w
+t,k − w
+⋆
+∥
+2 +
+F
+2
+θ
+LFw
+∥θ
+t − θ
+⋆
+∥
+2
+.
+This concludes the proof of this result.
+Lemma A.3. Let {(θ
+t
+, wt
+)}t∈N
+be a sequence generated by the Lookahead-Replicate algorithm. Choose α = 1/L. Then,
+for all t ∈ N, we have
+
+w
+t+1 − w
+⋆
+
+
+2
+≤ a
+
+w
+t − w
+⋆
+
+
+2
++ η
+2
+(1 − a)
+
+θ
+t − θ
+⋆
+
+
+2
+, (9)
+where a := (max(1 − κ, 0))KL with κ := L
+−1Fw and η := F
+−1
+Learning the Target Network in Function Space
+Proof. Recall that from Lemma A.2 we have that (recall that α = 1/L),
+
+w
+t,k+1 − w
+⋆
+
+
+2
+≤
+
+1 −
+Fw
+L
+
+
+w
+t,k − w
+⋆
+
+
+2
++
+F
+2
+θ
+LFw
+
+θ
+t − θ
+⋆
+
+
+2
+= (1 − κ)
+
+w
+t,k − w
+⋆
+
+
+2
++ κη2
+
+θ
+t − θ
+⋆
+
+
+2
+≤ (1 − κ)+
+
+w
+t,k − w
+⋆
+
+
+2
++ κη2
+
+θ
+t − θ
+⋆
+
+
+2
+,
+(10)
+where (·)+ means max(0, ·), i.e. lower clipping the value by zero.
+Then for any t ∈ N, considering the fact that w
+t+1 = w
+t,KL , we have
+
+w
+t+1 − w
+⋆
+
+
+2
+=
+
+w
+t,KL − w
+⋆
+
+
+2
+≤ (1 − κ)+
+
+w
+t,KL−1 − w
+⋆
+
+
+2
++ η
+2κ
+
+θ
+t − θ
+⋆
+
+
+2
+≤ (1 − κ)+
+h
+(1 − κ)
+
+w
+t,KL−2 − w
+⋆
+
+
+2
++ η
+2κ
+
+θ
+t − θ
+⋆
+
+
+2
+i
++ η
+2κ
+
+θ
+t − θ
+⋆
+
+
+2
+= (1 − κ)
+2
++
+
+w
+t,KL−2 − w
+⋆
+
+
+2
++ η
+2κ(1 + (1 − κ)+)
+
+θ
+t − θ
+⋆
+
+
+2
+≤ · · ·
+≤ (1 − κ)
+KL
++
+
+w
+t,0 − w
+⋆
+
+
+2
++ η
+2κ
+K
+XL−1
+k=0
+(1 − κ)
+k
++
+
+θ
+t − θ
+⋆
+
+
+2
+= (1 − κ)
+KL
++
+
+w
+t − w
+⋆
+
+
+2
++ η
+2κ
+K
+XL−1
+k=0
+(1 − κ)
+k
++
+
+θ
+t − θ
+⋆
+
+
+2
+= (1 − κ)
+KL
++
+
+w
+t − w
+⋆
+
+
+2
++ η
+2
+
+1 − (1 − κ)
+KL
++
+ 
+θ
+t − θ
+⋆
+
+
+2
+.
+The last step above comes from the classical geometric series formula, as we can write:
+η
+2κ
+K
+XL−1
+k=0
+(1 − κ)
+k
++ = η
+2κ
+1 − (1 − κ)
+KL
++
+1 − (1 − κ)+
+= η
+2
+
+1 − (1 − κ)
+KL
++
+
+,
+which completes the desired result.
+Lemma A.4. Let {(θ
+t
+, wt
+)}t∈N
+be a sequence of parameters generated by the Lookahead-Replicate algorithm with KR = 1.
+Set learning rates α =
+1
+L
+and β0:KR−1 =
+1
+κ
+2
+1
+·
+A−1
+B+
+√
+B2−8A2
+, where A = η
+2
+(1 − a), B = (κ
+2
+1
+)
+−1Fw − A, η = F
+−1
+w Fθ and
+a = (max(1 − L
+−1Fw, 0))KL . Assume Fw > max{Fθ, 7κ
+2
+1}. Then,
+
+(θ
+t+1, wt+1) − (θ
+⋆
+, w⋆
+)
+
+ ≤ σ
+
+(θ
+t
+, wt
+) − (θ
+⋆
+, w⋆
+)
+
+ ,
+for some constant σ < 1. In particular, the pair (θ
+⋆
+, w⋆
+) ∈ Fvalue.
+Proof. According to Algorithm Replicate(w, θ, β0:KR−1, KR) and the assumption that KR = 1, we have that θ
+t+1 =
+θ
+t − 2β · ∇vθ
+tD(vθ
+t − vwt+1 ). Using this relation yields the following
+
+θ
+t+1 − θ
+⋆
+
+
+2
+=
+
+θ
+t − θ
+⋆ − 2β · ∇vθ
+tD(vθ
+t − vwt+1 )
+
+
+2
+=
+
+θ
+t − θ
+⋆
+
+
+2
+− 4β(θ
+t − θ
+⋆
+)
+⊤∇vθ
+tD(vθ
+t − vwt+1 ) + 4β
+2
+∥∇vθ
+tD(vθ
+t − vwt+1 )∥
+2
+=
+
+θ
+t − θ
+⋆
+
+
+2
+− 4β(θ
+t − θ
+⋆
+)
+⊤∇vθ
+tD(vθ
+t − vθ
+⋆ ) − 4β(θ
+t − θ
+⋆
+)
+⊤∇vθ
+tD(vw⋆ − vwt+1 )
++ 4β
+2
+∥∇vθ
+tD(vθ
+t − vwt+1 )∥
+2
+, (11)
+where the last equality follows from the fact that vθ
+⋆ = vw⋆ since (θ
+⋆
+, w⋆
+) ∈ Fvalue. Next, we first bound the three terms
+on the right hand side separately, and plug them back later.
+15
+Learning the Target Network in Function Space
+Now, using the Fw-strong convexity of the function w → H(θ
+⋆
+, w), yields
+Fw
+
+θ
+t − θ
+⋆
+
+
+2
+≤
+
+∇wH
+
+θ
+⋆
+, θt
+
+− ∇wH (θ
+⋆
+, θ⋆
+)
+⊤
+θ
+t − θ
+⋆
+
+= ∇wH
+
+θ
+⋆
+, θt
+⊤
+θ
+t − θ
+⋆
+
+= 2(θ
+t − θ
+⋆
+)
+⊤∇vθ
+tD(vθ
+t − vθ
+⋆ ), (12)
+where the first equality follows from the fact that ∇wH (θ
+⋆
+, θ⋆
+) = 2∇vθ
+⋆D(vθ
+⋆ − T vθ
+⋆ ) = 2∇vθ
+⋆D(vw⋆ − T vθ
+⋆ ) = 0,
+since (θ
+⋆
+, w⋆
+) ∈ Fvalue and vw⋆ = T vθ
+⋆ . The second equal sign comes from ∇wH (θ
+⋆
+, θt
+) = 2∇vθ
+t · D(vθ
+t − T vθ
+⋆ ).
+Next, recall that from Assumption 4.1 we have ∥vθ1 − vθ2 ∥ ≤ κ1 ∥θ1 − θ2∥ for all θ1, θ2 ∈ Θ, and the diagonal of D is a
+probability distribution, hence now
+4β(θ
+t − θ
+⋆
+)
+⊤∇vθ
+t · D(vw⋆ − vwt+1 ) ≤ 4β
+
+θ
+t − θ
+⋆
+
+ · κ
+2
+1
+
+w
+t+1 − w
+⋆
+
+ ≤ 2βκ2
+1
+(
+
+θ
+t − θ
+⋆
+
+
+2
++
+
+w
+t+1 − w
+⋆
+
+
+2
+), (13)
+where the second inequality uses the simple fact that 2ab ≤ a
+2 + b
+2
+for any a, b ∈ R. Furthermore,
+4β
+2
+∥∇vθ
+tD(vθ
+t − vwt+1 )∥
+2 ≤ 8β
+2
+(∥∇vθ
+tD(vθ
+t − vθ
+⋆ )∥
+2 + ∥∇vθ
+tD(vw⋆ − vwt+1 )∥
+2
+)
+≤ 8β
+2κ
+4
+1
+(
+
+θ
+t − θ
+⋆
+
+
+2
++
+
+w
+t+1 − w
+⋆
+
+
+2
+), (14)
+where the first inequality uses (a + b)
+2 ≤ 2a
+2 + 2b
+2
+. Therefore, by integrating the bounds found in (12), (13), and (14)
+back into (11), we obtain
+
+θ
+t+1 − θ
+⋆
+
+
+2
+=
+
+θ
+t − θ
+⋆
+
+
+2
+− 4β(θ
+t − θ
+⋆
+)
+⊤∇vθ
+tD(vθ
+t − vθ
+⋆ ) − 4β(θ
+t − θ
+⋆
+)
+⊤∇vθ
+tD(vw⋆ − vwt+1 )
++ 4β
+2
+∥∇vθ
+tD(vθ
+t − vwt+1 )∥
+2
+≤
+
+θ
+t − θ
+⋆
+
+
+2
+− 2βFw
+
+θ
+t − θ
+⋆
+
+
+2
++ (2βκ2
+1 + 8β
+2κ
+4
+1
+)
+
+θ
+t − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t+1
+
+2
+
+=
+
+1 − 2βFw + 2βκ2
+1 + 8β
+2κ
+4
+1
+ 
+θ
+t − θ
+⋆
+
+
+2
++
+
+8κ
+4
+1β
+2 + 2κ
+2
+1β
+ 
+w
+t+1 − w
+⋆
+
+
+2
+≤
+
+1 − 2βFw + 2βκ2
+1 + 8β
+2κ
+4
+1
+ 
+θ
+t − θ
+⋆
+
+
+2
++
+
+8κ
+4
+1β
+2 + 2κ
+2
+1β
+
+
+a
+
+w
+t − w
+⋆
+
+
+2
++ η
+2
+(1 − a)
+
+θ
+t − θ
+⋆
+
+
+2
+
+=
+
+1 − 2βFw + 2βκ2
+1
+(1 + 4βκ2
+1
+)[1 + η
+2
+(1 − a)] 
+θ
+t − θ
+⋆
+
+
+2
++ 2aκ2
+1β
+
+1 + 4βκ2
+1
+ 
+w
+t − w
+⋆
+
+
+2
+, (15)
+where the second inequality follows from Lemma A.3. Combining (9) with (15), we obtain that
+
+θ
+t+1 − θ
+⋆
+
+
+2
++
+
+w
+t+1 − w
+⋆
+
+
+2
+≤ E
+
+θ
+t − θ
+⋆
+
+
+2
++ G
+
+w
+t − w
+⋆
+
+
+2
+(16)
+where
+E := 1 − 2βFw + 2βκ2
+1
+[1 + η
+2
+(1 − a)] + 8β
+2κ
+4
+1
+[1 + η
+2
+(1 − a)] + η
+2
+(1 − a) (17)
+and
+G := 8aκ4
+1β
+2 + 2aκ2
+1β + a (18)
+We will show that, if Fw ≥ max{6κ
+2
+1
+, Fθ, L} and β =
+η
+2
+(1−a)
+Fw−κ
+2
+1−κ
+2
+1
+η2(1−a)+q
+(Fw−κ
+2
+1−κ
+2
+1
+η2(1−a))
+2−8κ
+4
+1
+(1+η2(1−a))2
+, we
+have that 0 < E, G < 1 holds. Then we can complete the proof of contraction by letting σ = max(E, G).
+Now we first prove 0 < E < 1. For simplicity, we first define some constant:
+x := βκ2
+1
+(19)
+A := 1 + η
+2
+(1 − a) (20)
+B :=
+Fw
+κ
+2
+1
+− A =
+Fw
+κ
+2
+1
+− 1 − η
+2
+(1 − a) (21)
+With the definition of A (20) and B (21), we can simplify our chosen value of β as:
+β =
+η
+2
+(1 − a)
+Fw − κ
+2
+1 − κ
+2
+1
+η
+2(1 − a) + q
+(Fw − κ
+2
+1 − κ
+2
+1
+η
+2(1 − a))2 − 8κ
+4
+1
+(1 + η
+2(1 − a))2
+=
+1
+κ
+2
+1
+·
+A − 1
+B +
+√
+B
+Learning the Target Network in Function Space
+It is straightforward to check the following properties about η, a, A, B, which will be useful in the later parts of the proof.
+0 <
+Fθ
+Fw
+= η =
+Fθ
+Fw
+< 1 (22)
+0 ≤ max(1 − κ, 0)KL = a = max(1 − κ, 0)KL < 1 (23)
+1 < A < 2 (24)
+B ≥ 7 − A > 6 > 3A (25)
+x = βκ2
+1 =
+A − 1
+B +
+√
+B2 − 8A2
+<
+2 − 1
+7 + A
+<
+1
+8
+(26)
+As we can see B2 − 8A2 > A2 > 0, our set value to β is real and positive.
+By the definition of A (20), B (21), and x (26), we can rewrite E (17) as:
+E = 8Ax2 − 2Bx + A = 8A
+
+x −
+B
+8A
+2
++ A −
+B2
+8A
+=
+1
+8A
+h
+(B − 8Ax)
+2 −
+
+B
+2 − 8A
+2
+
+i
+Notice that B − 8Ax > 0. In order to upper and lower bound the whole term E, we only need to lower and upper bound
+8Ax. Now we first upper bound 8Ax. Notice that A < 2,
+8Ax =
+8A(A − 1)
+B +
+√
+B2 − 8A2
+<
+8A2
+B +
+√
+B2 − 8A2
+=
+(B +
+√
+B2 − 8A2)(B −
+√
+B2 − 8A2)
+B +
+√
+B2 − 8A2
+= B −
+p
+B2 − 8A2
+The second to last equation comes from (B −
+√
+B2 − 8A2)(B +
+√
+B2 − 8A2) = 8A2
+at the same time.
+Now we plug this back to the expression of E. Notice that B − 8Ax > B − (B −
+√
+B2 − 8A2) > 0, thus
+(B − 8Ax)
+2 −
+
+B
+2 − 8A
+2
+
+>
+
+B −
+
+B −
+p
+B2 − 8A2
+2
+−
+
+B
+2 − 8A
+2
+
+=
+p
+B2 − 8A2
+2
+−
+
+B
+2 − 8A
+2
+
+= 0
+Thus E > 0.
+Now we try to lower bound 8Ax,
+8Ax =
+8A(A − 1)
+B +
+√
+B2 − 8A2
+>
+8A(A − 1)
+B +
+√
+B2 − 8A2 + 8A
+=
+(B +
+√
+B2 − 8A2 + 8A)(B −
+√
+B2 − 8A2 + 8A)
+B +
+√
+B2 − 8A2 + 8A
+= B −
+p
+B2 − 8A2 + 8A
+The second to last equation comes from (B +
+√
+B2 − 8A2 + 8A)(B −
+√
+B2 − 8A2 + 8A) = 8A2 − 8A = 8A(A − 1).
+Learning the Target Network in Function Space
+Now we plug this back to the expression of E. Because B − (B −
+√
+B2 − 8A2 + 8A) > B − 8Ax > 0, we have that
+E − 1 =
+1
+8A
+h
+(B − 8Ax)
+2 −
+
+B
+2 − 8A
+2 + 8A
+
+i
+<
+1
+8A
+
+B − (B −
+p
+B2 − 8A2 + 8A)
+2
+−
+
+B
+2 − 8A
+2 + 8A
+
+
+=
+1
+8A
+p
+B2 − 8A2 + 8A
+2
+−
+
+B
+2 − 8A
+2 + 8A
+
+
+= 0
+This finishes the proof of 0 < E < 1.
+Now we are going to prove that 0 < G < 1. By definition, it is straightforward to see G > 0. In order to show G < 1, we
+need to prove
+8ax2 + 2ax < 1 − a
+8ax2 + 2ax =
+8a(A − 1)2
+
+B +
+√
+B2 − 8A2
+2 +
+2a(A − 1)
+
+B +
+√
+B2 − 8A2
+
+<
+8a(A − 1)2
+
+6 + √
+9A2 − 8A2
+2 +
+2a(A − 1)
+
+6 + √
+9A2 − 8A2
+
+=
+8a(A − 1)2
+49
++
+2a(A − 1)
+7
+=
+8aη4
+(1 − a)
+2
+49
++
+2aη2
+(1 − a)
+7
+<
+8(1 − a)
+49
++
+2(1 − a)
+7
+=
+22(1 − a)
+49
+< 1 − a
+Thus we finish the proof of 0 < G < 1. Taking that σ = max(E, G) < 1 finishes the proof of theorem statement.
+Theorem A.5 (Restatement of Theorem 4.3 in the main paper). Let {(θ
+t
+, wt
+)}t∈N
+be a sequence of parameters generated
+by the Lookahead-Replicate algorithm. Set learning rates α =
+1
+L
+and β0 =
+1
+κ
+2
+1
+·
+A−1
+B+
+√
+B2−8A2
+, where A = η
+2
+(1 − a),
+B = (κ
+2
+1
+)
+−1Fw − A, η = F
+−1
+w Fθ and a = (max(1 − L
+−1Fw, 0))KL . For 1 ≤ k ≤ KR − 1, set βk =
+1
+κ
+2
+1
+3J+
+√
+J2−32
+32 ,
+where J = 2Fw(1 − ζ)/κ2
+1 − 2 and ζ = max{a, η2
+(1 − a)} < 1. Assume Fw > max{Fθ, 7κ
+2
+1
+,
+4κ
+2
+1
+1−ζ
+}. Then,
+
+(θ
+t+1, wt+1) − (θ
+⋆
+, w⋆
+)
+
+ ≤ σ
+
+(θ
+t
+, wt
+) − (θ
+⋆
+, w⋆
+)
+
+ ,
+for some constant σ < 1. In particular, the pair (θ
+⋆
+, w⋆
+) ∈ Fvalue.
+Proof. According to Algorithm Replicate(w, θ, β0:K−1, K), we have that θ
+t,k+1 = θ
+t,k − 2βk · ∇vθ
+t,kD(vθ
+t,k − vwt+1 ).
+Using this relation yields the following
+
+θ
+t,k+1 − θ
+⋆
+
+
+2
+=
+
+θ
+t,k − θ
+⋆ − 2βk · ∇vθ
+t,kD(vθ
+t,k − vwt+1 )
+
+
+2
+=
+
+θ
+t,k − θ
+⋆
+
+
+2
+− 4βk(θ
+t,k − θ
+⋆
+)
+⊤∇vθ
+t,kD(vθ
+t,k − vwt+1 ) + 4β
+2
+k ∥∇vθ
+t,kD(vθ
+t,k − vwt+1 )∥
+2
+=
+
+θ
+t,k − θ
+⋆
+
+
+2
+− 4βk(θ
+t,k − θ
+⋆
+)
+⊤∇vθ
+t,kD(vθ
+t,k − vθ
+⋆ ) − 4βk(θ
+t,k − θ
+⋆
+)
+⊤∇vθ
+t,kD(vw⋆ − vwt+1 )
++ 4β
+2
+k ∥∇vθ
+t,kD(vθ
+t,k − vwt+1 )∥
+2
+, (
+Learning the Target Network in Function Space
+where the last equality follows from the fact that vθ
+⋆ = vw⋆ since (θ
+⋆
+, w⋆
+) ∈ Fvalue. Next, we first bound the three terms
+on the right hand side separately, and plug them back later.
+Now, using the Fw-strong convexity of the function w → H(θ
+⋆
+, w), yields
+Fw
+
+θ
+t,k − θ
+⋆
+
+
+2
+≤
+
+∇wH
+
+θ
+⋆
+, θt,k
+− ∇wH (θ
+⋆
+, θ⋆
+)
+⊤
+θ
+t,k − θ
+⋆
+
+= ∇wH
+
+θ
+⋆
+, θt,k⊤
+θ
+t,k − θ
+⋆
+
+= 2(θ
+t,k − θ
+⋆
+)
+⊤∇vθ
+t,kD(vθ
+t,k − vθ
+⋆ ), (28)
+where the first equality follows from the fact that ∇wH (θ
+⋆
+, θ⋆
+) = 2∇vθ
+⋆D(vθ
+⋆ − T vθ
+⋆ ) = 2∇vθ
+⋆D(vw⋆ − T vθ
+⋆ ) = 0,
+since (θ
+⋆
+, w⋆
+) ∈ Fvalue and vw⋆ = T vθ
+⋆ . The second equal sign comes from ∇wH
+
+θ
+⋆
+, θt,k
+= 2∇vθ
+t,k ·D(vθ
+t,k −T vθ
+⋆ ).
+Next, recall that from Assumption 4.1 we have ∥vθ1 − vθ2
+∥ ≤ κ1 ∥θ1 − θ2∥ for all θ1, θ2 ∈ Θ, and the diagonal of D is a
+probability distribution, hence now
+4βk(θ
+t,k − θ
+⋆
+)
+⊤∇vθ
+t,k · D(vw⋆ − vwt+1 ) ≤ 4βk
+
+θ
+t,k − θ
+⋆
+
+ · κ
+2
+1
+
+w
+t+1 − w
+⋆
+
+
+≤2βkκ
+2
+1
+(
+
+θ
+t,k − θ
+⋆
+
+
+2
++
+
+w
+t+1 − w
+⋆
+
+
+2
+)
+(29)
+where the second inequality uses the simple fact that 2ab ≤ a
+2 + b
+2
+for any a, b ∈ R. Furthermore,
+4β
+2
+k ∥∇vθ
+t,kD(vθ
+t,k − vwt+1 )∥
+2 ≤ 8β
+2
+k
+(∥∇vθ
+t,kD(vθ
+t,k − vθ
+⋆ )∥
+2 + ∥∇vθ
+t,kD(vw⋆ − vwt+1 )∥
+2
+)
+≤ 8β
+2
+kκ
+4
+1
+(
+
+θ
+t,k − θ
+⋆
+
+
+2
++
+
+w
+t+1 − w
+⋆
+
+
+2
+), (30)
+where the first inequality uses (a + b)
+2 ≤ 2a
+2 + 2b
+2
+. Next, we prove for any k ∈ [KR − 1], it holds that
+
+θ
+t,k − θ
+⋆
+
+
+2
++
+
+w
+t+1 − w
+⋆
+
+
+2
+≤ σk(
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+t − w
+⋆
+
+
+2
+) (31)
+for some σk < 1.
+We prove this by induction. For k = 1, by Lemma A.4 and the choice of β0 we have the conclusion holds true. Now assume
+that the above holds true for a iteration number k, then for k + 1, by integrating the bounds found in (12), (13), and (14)
+back into (11), we obtain
+
+θ
+t,k+1 − θ
+⋆
+
+
+2
+=
+
+θ
+t,k − θ
+⋆
+
+
+2
+− 4βk(θ
+t,k − θ
+⋆
+)
+⊤∇vθ
+t,kD(vθ
+t,k − vθ
+⋆ ) − 4βk(θ
+t − θ
+⋆
+)
+⊤∇vθ
+tD(vw⋆ − vwt+1 )
++ 4β
+2
+k ∥∇vθ
+t,kD(vθ
+t,k − vwt+1 )∥
+2
+≤
+
+θ
+t,k − θ
+⋆
+
+
+2
+− 2βkFw
+
+θ
+t,k − θ
+⋆
+
+
+2
++ (2βkκ
+2
+1 + 8β
+2
+kκ
+4
+1
+)
+
+θ
+t,k − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t+1
+
+2
+
+≤
+
+θ
+t,k − θ
+⋆
+
+
+2
+− 2βkFw
+
+θ
+t,k − θ
+⋆
+
+
+2
++ (2βkκ
+2
+1 + 8β
+2
+kκ
+4
+1
+)
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+
+where the second inequality uses induction hypothesis. The above is equivalent to
+
+θ
+t,k+1 − θ
+⋆
+
+
+2
+≤
+
+θ
+t,k − θ
+⋆
+
+
+2
+− 2βkFw
+
+θ
+t,k − θ
+⋆
+
+
+2
++ (2βkκ
+2
+1 + 8β
+2
+kκ
+4
+1
+)
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+
+⇔
+
+θ
+t,k+1 − θ
+⋆
+
+
+2
++ (1 − 2βkFw)
+
+w
+⋆ − w
+t+1
+
+2
+≤ (1 − 2βkFw)[
+
+θ
+t,k − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t+1
+
+2
+]
++(2βkκ
+2
+1 + 8β
+2
+kκ
+4
+1
+)
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+
+⇔
+
+θ
+t,k+1 − θ
+⋆
+
+
+2
++ (1 − 2βkFw)
+
+w
+⋆ − w
+t+1
+
+2
+≤ (1 − 2βkFw + 2βkκ
+2
+1 + 8β
+2
+kκ
+4
+1
+)
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+
+⇔
+
+θ
+t,k+1 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t+1
+
+2
+≤ (1 − 2βkFw + 2βkκ
+2
+1 + 8β
+2
+kκ
+4
+1
+)
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+
++2βkFw
+
+a
+
+w
+t − w
+⋆
+
+
+2
++ η
+2
+(1 − a)
+
+θ
+t − θ
+⋆
+
+
+2
+
+,
+(32)
+where the last inequality uses Lemma A.3. Now, let ζ = max{a, η2
+(1 − a)} < 1, then above implies
+
+θ
+t,k+1 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t+1
+
+2
+≤ (1 − 2βkFw(1 − ζ) + 2βkκ
+2
+1 + 8β
+2
+kκ
+4
+1
+)
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+Learning the Target Network in Function Space
+Denote x := βkκ
+2
+1
+and J = 2Fw(1 − ζ)/κ2
+1 − 2, then above is equivalent to
+
+θ
+t,k+1 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t+1
+
+2
+≤ (1 − Jx + 8x
+2
+)
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+
+(33)
+It remains to show
+0 < 1 − Jx + 8x
+2 < 1. (34)
+Since Fw ≥
+4κ
+2
+1
+1−ζ
+, this implies J ≥ 6 which further implies J
+2 − 32 ≥ 0. Next, since x > 0, the above is equivalent to
+J +
+√
+J
+2 − 32
+16
+< x <
+J
+8
+. (35)
+By our choice
+βk =
+1
+κ
+2
+1
+3J +
+√
+J
+2 − 32
+32
+⇔ x =
+1
+2
+
+J +
+√
+J
+2 − 32
+16
++
+J
+8
+!
+,
+then (35) is satisfied. Finally, combine (33) and (34), by induction we receive the conclusion that
+
+θ
+t,k − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t+1
+
+2
+≤ σk
+
+θ
+t,0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+
+where σ1 is defined in Lemma A.4 and σk := 1 − Jx + 8x
+2 < 1 for all 2 ≤ k ≤ KR with x =
+3J+
+√
+J2−32
+32 . In particular,
+choose k = KR − 1 and σ
+2 = σKR , we have
+
+θ
+t+1 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t+1
+
+2
+≤ σ
+2
+
+θ
+t − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+
+where we used θ
+t,KR−1 = θ
+t+1 and θ
+t,0 = θ
+t
+. This is exactly our claim.
+Remark A.6. We do emphasize the theoretical convergence analysis is for the population update (where we assume the
+access to H that contains the population operator T ), where the in practice the algorithm work in the data-driven fashion. To
+incorporate this perspective, we could conduct the finite sample analysis that is similar to (Yang et al., 2018; Wu et al., 2020)
+for actor-critic algorithms and (Yin & Wang, 2021; Yin et al., 2022) for offline RL. We leave these data-driven analysis for
+future work.
+Corollary A.7. As t → ∞,
+∥Vθ
+t − Vwt ∥ ≤ √
+2κ1σ
+t−1
+q
+∥θ
+0 − θ
+⋆∥
+2 + ∥w⋆ − w0∥
+2 → 0.
+In addition, we also have
+∥Vwt − T Vθ
+t ∥ ≤ √
+2κ1σ
+t−1
+q
+∥θ
+0 − θ
+⋆∥
+2 + ∥w⋆ − w0∥
+2 → 0.
+Proof. For the first part of the proof, notice Vθ
+⋆ = Vw⋆ , we have
+∥Vθ
+t − Vwt ∥
+2 = ∥Vθ
+t − Vθ
+⋆ + Vw⋆ − Vwt ∥
+2 ≤ 2(∥Vθ
+t − Vθ
+⋆ ∥
+2 + ∥Vw⋆ − Vwt ∥
+2
+)
+≤2κ
+2
+1
+(
+
+θ
+t − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+) ≤ 2κ
+2
+1σ
+2
+(
+
+θ
+t−1 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t−1
+
+
+2
+)
+≤2κ
+2
+1
+(σ
+2
+)
+t−1
+(
+
+θ
+0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+0
+
+
+2
+) → 0.
+where the last two inequalities use Theoerem 4.3. For the second part of the proof,
+∥Vwt − T Vθ
+t ∥ = ∥Vwt − Vw⋆ + T Vθ
+⋆ − T Vθ
+t ∥ ≤ 2(∥T Vθ
+t − T Vθ
+⋆ ∥
+2 + ∥Vw⋆ − Vwt ∥
+2
+)
+≤2κ
+2
+1
+(γ
+2
+
+θ
+t − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+) ≤ 2κ
+2
+1
+(
+
+θ
+t − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t
+
+
+2
+)
+≤2κ
+2
+1σ
+2
+(
+
+θ
+t−1 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+t−1
+
+
+2
+)
+≤2κ
+2
+1
+(σ
+2
+)
+t−1
+(
+
+θ
+0 − θ
+⋆
+
+
+2
++
+
+w
+⋆ − w
+0
+
+
+2
+) → 0.
+20
+Learning the Target Network in Function Space
+B. Numerical simulation details in illustrative examples
+B.1. Numerical simulation with a single parameter space
+In this section, we provide the details of the numerical simulation study, as an illustrative example of the algorithm
+convergence in Section 4. We consider a Markov Chain M = (S, P, γ, r) with two states S = {s1, s2} and the transition
+matrix P =
+
+0.6 0.4
+0.2 0.8
+
+, e.g. P(s1|s1) = 0.6. γ =
+1
+2
+. Let r =
+
+1
+1
+
+. The true value v
+∗ = (I − γP)
+−1
+r =
+
+2
+2
+
+.
+Next, we parametrize the function class vθ and vw differently. We set the linear function class vθ(s) = ϕθ(s)
+⊤θ where
+ϕθ(·), θ ∈ R
+3 with ϕθ(s1) =
+1 2 1⊤
+and ϕθ(s2) =
+1 1 2⊤
+. The stationary distribution for P is ρ = (1/3, 2/3).
+In Figure 1, we set the initial point θ
+0 = [1.2, 2, 0.5], w = [0.1, 2, 0.5], T = 800, KL = 400, KR = 1. The parameter θ
+converges to θ
+T = [0.663, 0.445, 0.445], the parameter w converges to w
+T = [−0.236, 0.745, 0.745] and both the value
+functions converge to vwT = vθT = v
+∗ = [2, 2].
+B.2. Numerical simulation with different parameter spaces
+1.200
+1.225
+1.250 0.0
+0.1
+0.2
+0.25
+0.30
+0.35
+(a) Path of θ in θ-parameter space
+0.3 0.4 0.5 0.6 0.7
+0.60
+0.62
+0.64
+0.66 w
+(b) Path of w in w-parameter space
+1.6 1.8 2.0
+V(s1)
+1.25
+1.50
+1.75
+2.00
+V(s
+2)
+v
+vw
+(c) Path of vθ and vw in value function space
+Figure 8. A simulation of the convergence for Algorithm 1 with different parameterization. Parameter θ ∈ R
+3
+, and parameter w ∈ R
+2
+.
+Although in main paper we only discuss the case of both θ and w are in the same parameter space Θ, our algorithm and
+analysis can naturally apply to the case when there are two different ways of parameterization for vθ and vw. Here we
+provide an numerical simulation of such setting.
+The MRP as well as vθ is the same as described in the single parameter space example, except that we use a different
+parameterization for vw. We set the linear function class vw(s) = ϕw(s)
+⊤w where ϕw(·), w ∈ R
+2 with ϕw(s1) =
+1 2⊤
+and ϕw(s2) =
+2 1⊤
+. In Figure 8, we set the initial point θ
+0 = [1.2, 0, 0.3], w = [0.3, 0.6], T = 800, KL = 400, KR = 1.
+The parameter θ converges to θ
+T = [1.264, 0.245, 0.245], the parameter w converges to w
+T = [2/3, 2/3] and both the value
+functions converge to vwT = vθT = v
+∗ = [2, 2].

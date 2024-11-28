@@ -1,0 +1,2002 @@
+TD Convergence: An Optimization Perspective
+Kavosh Asadi∗
+Amazon
+Shoham Sabach∗
+Amazon & Technion
+Yao Liu
+Amazon
+Omer Gottesman
+Amazon
+Rasool Fakoor
+Amazon
+Abstract
+We study the convergence behavior of the celebrated temporal-difference (TD)
+learning algorithm. By looking at the algorithm through the lens of optimization,
+we first argue that TD can be viewed as an iterative optimization algorithm where
+the function to be minimized changes per iteration. By carefully investigating
+the divergence displayed by TD on a classical counter example, we identify two
+forces that determine the convergent or divergent behavior of the algorithm. We
+next formalize our discovery in the linear TD setting with quadratic loss and prove
+that convergence of TD hinges on the interplay between these two forces. We extend this optimization perspective to prove convergence of TD in a much broader
+setting than just linear approximation and squared loss. Our results provide a theoretical explanation for the successful application of TD in reinforcement learning.
+1 Introduction
+Temporal-difference (TD) learning is arguably one of the most important algorithms in reinforcement learning (RL), and many RL algorithms are based on principles that TD embodies. TD is at
+the epicenter of some of the recent success examples of RL [1, 2], and has influenced many areas of
+science such as AI, economics, and neuroscience. Despite the remarkable success of TD in numerous settings, the algorithm is shown to display divergent behavior in contrived examples [3, 4, 5].
+In practice, however, divergence rarely manifests itself even in situations where TD is used in conjunction with complicated function approximators. Thus, it is worthwhile to obtain a deeper understanding of TD, and to generalize existing convergence results to explain its practical success.
+In this paper, our desire is to study TD through the lens of optimization. We argue that TD could
+best be thought of as an iterative optimization algorithm, which proceeds as follows:
+θ
+t+1 ≈ arg min
+w
+H(θ
+t
+, w) . (1)
+Here, the objective H is constructed by a) choosing a function approximator such as a neural network
+and b) defining a discrepancy measure between successive predictions, such as the squared error. We
+will discuss more examples later.
+This process involves two different parameters, namely the target parameter θ
+t
+that remains fixed at
+each iteration t, and the optimization parameter w that is adjusted during each iteration to minimize
+the corresponding loss function. Using the more familiar deep-RL terminology, θ
+t
+corresponds to
+the parameters of the target network, whereas w corresponds to the parameters of the online network.
+Many RL algorithms can be described by this iterative process with the main difference being the
+approach taken to (approximately) perform the minimization. At one side of the spectrum lies the
+original TD algorithm [6], which proceeds by taking a single gradient-descent step to adjust w and
+immediately updating θ. More generally, at each iteration t we can update the w parameter K times
+∗Equal contribution
+37th Conference on Neural Information Processing Systems (NeurIPS 2023).
+using gradient-descent while freezing θ, a common technique in deep RL [1]. Finally, Fitted Value
+Iteration [7] lies at the other extreme and solves each iteration exactly when closed-form solutions
+exist. Therefore, a deeper understanding of the iterative optimization process (1) can facilitate a
+better understanding of TD and related RL algorithms.
+The iterative process (1) is well-studied in the setting where H is constructed using linear function
+approximation and squared error. In particular, with K = 1, meaning TD without frozen target
+network, the most notable result is due to the seminal work of Tsitsiklis and Van Roy [3] that proved
+the convergence of the algorithm. More recently, Lee and He [8] focused on the more general case
+of K ≥ 1. While they took a major step in understanding the role of a frozen target-network in deep
+RL, they leaned on the more standard optimization tools to show that gradient-descent with a fixed
+K can be viewed as solving each iteration approximately. Therefore, in their analysis, each iteration
+results in some error. This error is accumulated per iteration and needs to be accounted for in the
+final result. Therefore, Lee and He [8] fell short of showing convergence to the TD fixed-point, and
+managed to show that the final iterate will be in the vicinity of the fixed-point defined by the amount
+of error accumulated over the iterations.
+In this work, our primary contribution is to generalize and improve existing results on TD convergence. In particular, in our theory, we can support the popular technique of employing frozen target
+networks with general K ≥ 1, and we also support the use of a family of function approximators
+and error-measure pairs that includes linear function-approximation and squared error as a special
+case. To the best of our knowledge, this is the first contraction result that does not restrict to the case
+of K = 1, and can also generalize the well-explored linear case with quadratic error.
+To build intuition, we start by taking a deeper dive into one of the classical examples where TD
+displays divergent behavior [3]. In doing so, we identify two key forces, namely a target force
+and an optimization force, whose interplay dictates whether TD is guaranteed to converge or that a
+divergent behavior may manifest itself. If the optimization force can dominate the target force, the
+process is convergent even when we operate in the famous deadly triad [5], namely in the presence
+of bootstrapping, function approximation, and off-policy updates. Overall, our results demonstrate
+that TD is a sound algorithm in a much broader setting than understood in previous work.
+2 Problem Setting
+Reinforcement learning (RL) is the study of artificial agents that can learn through trial and error [5].
+In this paper, we focus on the setting where the agent is interested in predicting the long-term goodness or the value of its states. Referred to as the prediction setting, this problem is mathematically
+formulated by the Markov reward process (MRP) [9]. In this paper, we consider the discounted
+infinite-horizon case of MRPs, which is specified by the tuple ⟨S, R,P, γ⟩, where S is the set of
+states. The function R : S → R denotes the reward when transitioning out of a state. For any set,
+we denote the space of probability distributions over it by ∆. The transition P : S → ∆(S) defines
+the conditional probabilities over the next states given the current state, and is denoted by P(s
+′
+| s).
+Finally, the scalar γ ∈ (0, 1) geometrically discounts rewards that are received in the future steps.
+The primary goal of this paper is to understand the behavior of RL algorithms that learn to approximate the state value function defined as v(s) := E
+P∞
+t=0 γ
+t
+rt
+
+s0 = s
+
+. To this end, we define the
+Bellman operator T as follows:
+
+T v
+
+(s) := R(s) +X
+s
+′∈S
+γ P(s
+′
+| s)v(s
+′
+) ,
+which we can write compactly as: T v := R + γP v. In large-scale RL problems the number of
+states |S| is enormous, which makes it unfeasible to use tabular approaches. We focus on the setting
+where we have a parameterized function approximator, and our desire is to find a parameter θ for
+which the learned value function v(s; θ) results in a good approximation of the value function v(s).
+A fundamental and quite popular approach to finding a good approximation of the value function
+is known as temporal difference (TD) learning [6]. Suppose that a sample ⟨s, r, s′
+⟩ is given where
+s
+′ ∼ P(·|s). In this case, TD learning algorithm updates the parameters of the approximate value
+function as follows:
+θ
+t+1 ← θ
+t + α
+
+r + γv(s
+′
+; θ
+t
+) − v(s; θ
+t
+)
+
+∇θv(s; θ
+t
+) , (2)
+where θ
+t denotes the parameters of our function approximator at iteration t. Also, by ∇θv(s; θ
+t
+)
+we are denoting the partial gradient of v(s; θ) with respect to the parameter θ. Note that TD uses
+
+the value estimate obtained by one-step lookahead
+r + γv(s
+′
+; θ
+t
+)
+
+to update its approximate value
+function v(s; θ
+t
+) in the previous step. This one-step look-ahead of TD could be thought of as a
+sample of the right-hand-side of the Bellman equation. Our focus on TD is due to the fact that many
+of the more modern RL algorithms are designed based on the principles that TD embodies. We
+explain this connection more comprehensively in section 3.
+To understand the existing results on TD convergence, we define the Markov chain’s
+stationary state distribution d(·) as the unique distribution with the following property:
+∀s
+′ P
+s∈S d(s)P(s
+′
+| s) = d(s
+′
+). Then, Tsitsiklis and Van Roy show in [3] that, under linear function approximation, TD will be convergent if the states s are sampled from the stationary-state
+distribution. We will discuss this result in more detail later on in section 5.
+However, it is well-known that linear TD can display divergent behavior if states are sampled from an
+arbitrary distribution rather than the stationary-state distribution of the Markov chain. A simple yet
+classical counter example of divergence of linear TD is shown in Figure 1 and investigated in section
+4. First identified in [3], this example is a very simple Markov chain with two non-terminal states
+and zero rewards. Moreover, little is known about convergence guarantees of TD under alternative
+function approximators, or even when the update rule of TD is modified slightly.
+In this paper, we focus on the Markov reward process (MRP) setting which could be thought of as a
+Markov decision process (MDP) with a single action. TD can display divergence even in the MRP
+setting [3, 5], which indicates that the presence of multiple actions is not the core reason behind TD
+misbehavior [5] — Divergence can manifest itself even in the more specific case of single action.
+Our results can naturally be extended to multiple actions with off-policy updates where in update (2)
+of TD, actions are sampled according to a target policy but states are sampled according to a behavior
+policy. That said, akin to Tsitsiklis and Van Roy [3], as well as chapter 11 in the book of Sutton and
+Barto [5], we focus on MRPs to study the root cause of TD in the most clear setting.
+3 TD Learning as Iterative Optimization
+In this section, we argue that common approaches to value function prediction can be viewed as
+iterative optimization algorithms where the function to be minimized changes per iteration. To
+this end, we recall that for a given experience tuple ⟨s, r, s′
+⟩, TD performs the update presented
+in (2). A common augmentation of TD is to decouple the parameters to target (θ) and optimization
+(w) parameters [1] and update θ less frequently. In this case, at a given iteration t, the algorithm
+performs multiple (K) gradient steps as follows:
+w
+t,k+1 ← w
+t,k + α
+
+r + γv(s
+′
+; θ
+t
+) − v(s; w
+t,k)
+
+∇θv(s; w
+t,k) , (3)
+and then updates the target parameter θ
+t+1 ← w
+t,K before moving to the next iteration t + 1. Here
+K is a hyper-parameter, where K = 1 takes us back to the original TD update (2). Observe that
+the dependence of v(s
+′
+; θ
+t
+) to our optimization parameter w is ignored in this update, despite the
+fact that an implicit dependence is present due to the final step θ
+t+1 ← w
+t,K. This means that the
+objective function being optimized is made up of two separate input variables2
+. We now define:
+H(θ, w) = 1
+2
+X
+s
+d(s)
+
+Er,s′ [r + γv(s
+′
+; θ)] − v(s; w)
+2
+,
+where we allow d(·) to be an arbitrary distribution, not just the stationary-state distribution of the
+Markov chain. Observe that the partial gradient of H with respect to the optimization parameters
+w is equivalent to the expectation of the update in (3). Therefore, TD, DQN, and similar algorithms could best be thought of as learning algorithms that proceed by approximately solving for the
+following sequence of optimization problems:
+θ
+t+1 ≈ arg min
+w
+H(θ
+t
+, w) ,
+using first-order optimization techniques. This optimization perspective is useful conceptually because it accentuates the unusual property of this iterative process, namely that the first argument
+of the objective H hinges on the output of the previous iteration. It also has important practical
+ramifications when designing RL optimizers [11]. Moreover, the general form of this optimization
+2
+In fact, [10] shows that there cannot exist any objective function J(θ) with a single input variable whose
+gradient would take the form of the TD update.
+process allows for using alternative forms of loss functions such as the Huber loss [1], the logistic
+loss [12], or the entropy [13], as well as various forms of function approximation such as linear
+functions or deep neural networks. Each combination of loss functions and function approximators
+yields a different H, but one that is always comprised of a function H with two inputs.
+A closely related optimization process is one where each iteration is solved exactly:
+θ
+t+1 ← arg min
+w
+H(θ
+t
+, w) , (4)
+akin to Fitted Value Iteration [7, 14]. Exact optimization is doable in problems where the model
+of the environment is available and that the solution takes a closed form. A pseudo-code of both
+algorithms is presented in Algorithms 1 and 2.
+Algorithm 1 Value Function Optimization with
+Exact Updates
+Input: θ
+0
+, T
+for t = 0 to T − 1 do
+θ
+t+1 ← arg minw H(θ
+t
+, w)
+end for
+Return θ
+T
+Algorithm 2 Value Function Optimization with
+Gradient Updates
+Input: θ
+0
+, T, K, α
+for t = 0 to T − 1 do
+w
+t,0 ← θ
+t
+for k = 0 to K − 1 do
+w
+t,k+1 ← w
+t,k − α∇wH(θ
+t
+, wt,k)
+end for
+θ
+t+1 ← w
+t,K
+end for
+Return θ
+T
+In terms of the difference between the two algorithms, notice that in Algorithm 1 we assume that we
+have the luxury of somehow solving each iteration exactly. This stands in contrast to Algorithm 2
+where we may not have this luxury, and resort to gradient updates to find a rough approximation of
+the actual solution. Thus, Algorithm 1 is more difficult to apply but easier to understand, whereas
+Algorithm 2 is easier to apply but more involved in terms of obtaining a theoretical understanding.
+Note that if convergence manifests itself in each of the two algorithms, the convergence point denoted by θ
+⋆ must have the following property:
+∇wH(θ
+⋆
+, θ⋆
+) = 0 . (5)
+This fixed-point characterization of TD has been explored in previous work [15, 16]. Whenever
+it exists, we refer to θ
+⋆
+as the fixed-point of these iterative algorithms. However, convergence to
+the fixed-point is not always guaranteed [5] even when we have the luxury of performing exact
+minimization akin to Algorithm 1. In this paper, we study both the exact and inexact version of
+the optimization process. In doing so, we identify two forces that primarily influence convergence.
+To begin our investigation, we study a counter example to build intuition on why divergence can
+manifest itself. We present a formal analysis of the convergence of the two algorithms in section 6.
+4 Revisiting the Divergence Example of TD
+In this section, we focus on a simple counter example where TD is known to exhibit divergence.
+First identified by [3], investigating this simple example enables us to build some intuition about the
+root cause of divergence in the most clear setting.
+Shown in Figure 1, this example is a Markov chain with two non-terminal states and zero rewards. A
+linear function approximation, v(s; θ) = ϕ(s)θ, is employed with a single feature where ϕ(s1) = 1
+and ϕ(s2) = 2. The third state is a terminal one whose value is always zero. The true value function
+(0 in all states) is realizable with θ = 0.
+To build some intuition about the root cause of divergence, we discuss the convergence of exact TD
+with a few state distributions in this example. We desire to update all but the terminal state with
+non-zero probability. However, to begin with, we focus on a particular extreme case where we put
+all of our update probability behind the second state:
+θ
+t+1 ← arg min
+w
+H(θ
+t
+, w) = arg min
+w
+1
+2
+
+(1 − ϵ)(γ2θ
+t
+) − 2w
+2
+.
+We thus have ∇wH(θ
+t
+, w) = 2
+2w − (1 − ϵ)γ2θ
+t
+
+, and since ∇wH(θ
+t
+, θt+1) = 0, we can write:
+θ
+t+1 ← (2)−1
+(1 − ϵ)γ2θ
+t
+. The process converges to the fixed-point θ = 0 for all values of γ < 1
+and ϵ ∈ [0, 1]. This is because the target force of θt (namely
+(1 − ϵ)γ2)
+is always dominated by
+the optimization force of w (namely 2). Note that updating this state is thus not problematic at all,
+and that the update becomes even more conducive to convergence when γ is smaller and ϵ is larger.
+Figure 1: Divergence example of TD [3].
+We now juxtapose the first extreme case with the second one where
+we put all of our update probability behind the first state, in which
+case at a given iteration t we have:
+θ
+t+1 ← arg min
+w
+H(θ
+t
+, w) = arg min
+w
+1
+2
+(γ2θ
+t − w)
+2
+.
+We thus have ∇wH(θ
+t
+, w) = (w − γ2θ
+t
+) and so θ
+t+1 ←
+(1)−1γ2θ
+t
+. Unlike the first extreme case, convergence is no longer
+guaranteed. Concretely, to ensure convergence, we require that the
+target force of θ
+t
+(namely γ2) be larger than the optimization force
+of w (namely 1).
+To better understand why divergence manifests itself, note that the
+two states s1 and s2 have very similar representations (in the form
+of a single feature). Note also that the value of the feature is larger
+for the target state than it is for the source state, ϕ(s2) > ϕ(s1). This means that any change in
+the value of the source state s1, would have the external effect of changing the value of the target
+state s2. Further, the change is in the same direction (due to the positive sign of the feature in both
+states) and that it is exactly 2γ larger for the target state relative to the source state. Therefore, when
+γ > 1/2, the function H will be more sensitive to the target parameter θ relative to the optimization
+parameter w. This is the root cause of divergence.
+Moving to the case where we update both states with non-zero probability, first note that if the two
+updates were individually convergent, then the combination of the two updates would also have
+been convergent in a probability-agnostic way. Stated differently, convergence would have been
+guaranteed regardless of the probability distribution d and for all off-policy updates. However, in
+light of the fact that the optimization force of s1 does not dominate its target force, we need to
+choose d(s1) small enough so as to contain the harmful effect of updating this state.
+We compute the overall update (under the case where we update the two states with equal probability) by computing the sum of the two gradients in the two extreme cases above:
+(w − γ2θ
+t
+) + 2(2w − γ2(1 − ϵ)θ
+t
+) = 0 ,
+and so θ
+t+1 ← (5)−1γ(6 − 4ϵ)θ
+t
+. Note that even with a uniform update distribution, the two states
+are contributing non-uniformly to the overall update, and the update in the state s2 is more influential
+because of the higher magnitude of the feature in this state (ϕ(s2) = 2 against ϕ(s1) = 1).
+To ensure convergence, we need to have that γ < 5
+6−4ϵ
+. Notice, again, that we are combining the
+update in a problematic state with the update in the state that is conducive for convergence. We can
+contain the negative effect of updating the first state by ensuring that our update in the second state
+is even more conducive for convergence (corresponding to a larger ϵ). In this case, the update of s2
+can serve as a mitigating factor.
+We can further characterize the update with a general distribution. In this case, we have:
+d(s1)
+
+(w − γ2θ
+t
+)
+
++
+
+1 − d(s1)
+2(2w − γ2(1 − ϵ)θ
+t
+)
+
+= 0 ,
+which gives us a convergent update if: d(s1) <
+4−4γ(1−ϵ)
+3+γ2−4γ(1−ϵ)
+. Both the denominator and the
+numerator are always positive, therefore regardless of the values of ϵ and γ, there always exists a
+convergent off-policy update, but one that needs to assign less probability to the problematic state
+as we increase γ and decrease ϵ.
+This means that using some carefully chosen off-policy distributions is not only safe, but that doing
+so can even speed up convergence. This will be the case if the chosen distribution makes the objective function H more sensitive to changes in its first argument (target parameter θ) than its second
+argument (the optimization parameter w). We next formalize this intuition
+5 Convergence of Linear TD with Quadratic Loss
+We now focus on the case of TD with linear function approximation. In this case, the expected TD
+update (2) could be written as the composition of two separate operators (with vt = Φθt):
+vt+1 ← ΠD
+
+T (vt)
+
+,
+where the projection operator ΠD and the Bellman operator T are defined as follows:
+ΠD = Φ(Φ⊤DΦ)−1Φ
+⊤D, and T (v) = R + γP v .
+Here, D is a diagonal matrix with diagonal entries d(s1), ..., d(sn), where n is the number of states.
+The projection operator ΠD is non-expansive under any distribution d. However, the Bellman operator is a γ-contraction under a specific d, namely the stationary-state distribution of the Markov
+chain specified by the transition matrix P as shown by Tsitsiklis and Van Roy [3]. Therefore, the
+composition of the two operators is a γ-contraction when the distribution d is the stationary-state
+distribution of the Markov chain.
+In light of this result, one may think that TD is convergent in a very narrow sense, specifically when
+the updates are performed using the stationary-state distribution. But, as we saw with the counter
+example, in general there may exist many other distributions d that are in fact very conducive for TD
+convergence. In these cases, the proof technique above cannot provide a tool to ensure convergence
+because of the reliance of the non-expansive and contraction properties of these operators. Is this
+a limitation of the TD algorithm itself, or a limitation of this specific operator perspective of TD?
+Further, if this operator perspective is limited, is there a different perspective that can give rise to a
+more general understanding of TD convergence?
+Our goal for the rest of the paper is to develop an alternative optimization perspective that can be
+applied in a broader setting relative to the operator perspective. To this end, our first task is to show
+that the optimization perspective can give us new insights even in the linear case and with squared
+loss functions. We generalize our optimization view of TD in the counter example by defining the
+objective function H for this case:
+H(θ, w) = 1
+2
+∥R + γPΦθ − Φw∥
+2
+D , (6)
+where ||x||D =
+√
+x⊤Dx . Recall that in the exact case, the TD algorithm could succinctly be
+written as: θ
+t+1 ← arg minw H(θ
+t
+, w). Following the steps taken with the counter example, we
+first compute the gradient to derive the target and optimization forces:
+∇wH(θ, w) = Φ⊤D(Φw − R − γPΦθ) = Φ⊤DΦ | {z }
+Mw
+w − γΦ
+⊤DPΦ
+| {z }
+Mθ
+θ − Φ
+⊤DR . (7)
+Here we have similar dynamics between θ and w except that in this more general case, rather than
+scalar forces as in the counter example, we now have the two matrices Mw and Mθ. Note that Mw
+is a positive definite matrix, λmin(Mw) = minx x
+⊤Mwx/||x||2 > 0, if Φ is full rank. Below we
+can conveniently derive the update rule of linear TD by using these two matrices. All proofs are in
+the appendix.
+Proposition 1. Let {θ
+t}t∈N be a sequence of parameters generated by Algorithm 1. Then, for the
+fixed-point θ
+⋆
+and any t ∈ N, we have
+θ
+t+1 − θ
+⋆ = M−1
+w Mθ
+
+θ
+t − θ
+⋆
+
+.
+This proposition characterizes the evolution of the difference between the parameter θ
+t
+and the
+fixed-point θ
+⋆
+. Similarly to our approach with the counter example, we desire to ensure that this
+difference converges to 0. The following corollary gives us a condition for convergence [17].
+Corollary 2. Let {θ
+t}t∈N be a sequence of parameters generated by Algorithm 1. Then, {θ
+t}t∈N
+converges to the fixed-point θ
+⋆
+if and only if the spectral radius of M−1
+w Mθ satisfies ρ(M−1
+w Mθ) < 1.
+We can employ this Corollary to characterize the convergence of TD in the counter example from
+the previous section. In this case, we have Mw = 5 and Mθ = γ(6 − 4ϵ), which give us
+(5)−1γ(6 − 4ϵ) < 1. This is exactly the condition obtained in the previous section.
+Notice that if d is the stationary-state distribution of the Markov chain then ρ(M−1
+w Mθ) < 1 [3], and
+so the algorithm is convergent. However, as demonstrated in the counter example, the condition can
+also hold for many other distributions. The key insight is to ensure that the distribution puts more
+weight behind states where the optimization force of w is dominating the target force due to θ.
+Note that the operator view of TD becomes inapplicable as we make modifications to H, because it
+will be unclear how to write the corresponding RL algorithm as a composition of operators. Can we
+demonstrate that in these cases the optimization perspective is still well-equipped to provide us with
+new insights about TD convergence? We next answer this question affirmatively by showing that the
+optimization perspective of TD convergence naturally extends to a broader setting than considered
+here, and therefore, is a more powerful perspective than the classical operator perspective.
+6 Convergence of TD with General H
+Our desire now is to show convergence of TD without limiting the scope of our results to linear
+approximation and squared loss. We would like our theoretical results to support alternative ways
+of constructing H than the one studied in existing work as well as our previous section. In doing so,
+we again show that convergence of TD hinges on the interplay between the two identified forces.
+Before presenting our main theorem, we discuss important concepts from optimization that will be
+used at the core of our proofs. We study convergence of Algorithms 1 and 2 with a general function
+H : R
+n × R
+n → R that satisfies the following two assumptions:
+I. The partial gradient ∇wH, is Fθ-Lipschitz:
+∀θ1, ∀θ2 ∥∇wH(θ1, w) − ∇wH(θ2, w)∥ ≤ Fθ∥θ1 − θ2∥ .
+II. The function H(θ, w) is Fw-strongly convex in w:
+∀w1, ∀w2
+
+∇wH(θ, w1) − ∇wH(θ, w2)
+⊤
+(w1 − w2) ≥ Fw∥w1 − w2∥
+2
+.
+Note that, in the specific linear case and quadratic loss (our setting in the previous section) these
+assumptions are easily satisfied [8]. More specifically, in that case Fθ = λmax(Mθ) and Fw =
+λmin(Mw). But the assumptions are also satisfied in a much broader setting than before. We
+provide more examples in section 6.3. We are now ready to present the main result of our paper:
+Theorem 3. Let {θ
+t}t∈N be a sequence generated by either Algorithm 1 or 2. If Fθ < Fw, then the
+sequence {θ
+t}t∈N converges to the fixed-point θ
+⋆
+.
+In order to prove the result, we tackle the two cases of Algorithm 1 and 2 separately. We first start
+by showing the result for Algorithm 1 where we can solve each iteration exactly. This is an easier
+case to tackle because we have the luxury of performing exact minimization, which is more stringent
+and difficult to implement but easier to analyze and understand. This would be more pertinent to
+Fitted Value Iteration and similar algorithms. We then move to the case where we approximately
+solve each iteration (Algorithm 2) akin to TD and similar algorithms. The proof in this case is more
+involved, and partly relies on choosing small steps when performing gradient descent.
+6.1 Exact Optimization (Algorithm 1)
+In this case, convergence to the fixed-point θ
+⋆
+can be obtained as a corollary of the following result:
+Proposition 4. Let {θ
+t}t∈N be a sequence generated by Algorithm 1. Then, we have:
+∥θ
+t+1 − θ
+⋆
+∥ ≤ F
+−1
+w Fθ∥θ
+t − θ
+⋆
+∥ .
+From this result, we immediately obtain that the relative strength of the two forces, namely the conducive force Fw due to optimization and the detrimental target force Fθ, determines if the algorithm
+is well-behaved. The proof of Theorem 3 in this case follows immediately from Proposition 4.
+6.2 Inexact Optimization (Algorithm 2)
+So far we have shown that the optimization process is convergent in the presence of exact optimization. This result supports the soundness of algorithms such as Fitted Value Iteration, but not TD yet,
+because in the case of TD we only roughly approximate the minimization step. Can this desirable
+
+convergence result be extended to the more general setting of TD-like algorithms where we inexactly solve each iteration by a few gradient steps, or is exact optimization necessary for obtaining
+convergence? Answering this question is very important because in many settings it would be a
+stringent requirement to have to solve the optimization problem exactly.
+We now show that indeed convergence manifests itself in the inexact case as well. In the extreme
+case, we can show that all we need is merely one single gradient update at each iteration. This means
+that even the purely online TD algorithm, presented in update (2), is convergent with general H if
+the optimization force can dominate the target force.
+However, it is important to note that because we are now using gradient information to crudely
+approximate each iteration, we need to ensure that the step-size parameter α is chosen reasonably.
+More concretely, in this setting we need an additional assumption, namely that there exists an L > 0
+such that:
+∀w1, ∀w2 ∥∇wH(θ, w1) − ∇wH(θ, w2)∥ ≤ L∥w1 − w2∥ .
+Notice that such an assumption is quite common in the optimization literature (see, for instance,
+[18]). Moreover, it is common to choose α = 1/L, which we also employ in the context of Algorithm 2. We formalize this in the proposition presented below:
+Proposition 5. Let {θ
+t}t∈N be a sequence generated by Algorithm 2 with the step-size α = 1/L.
+Then, we have:
+∥θ
+t+1 − θ
+⋆
+∥ ≤ σK∥θ
+t − θ
+⋆
+∥ ,
+where:
+σ
+2
+K ≡ (1 − κ)
+K
+1 − η
+2
+
++ η
+2
+.
+with κ ≡ L
+−1Fw and η ≡ F
+−1
+w Fθ.
+Notice that κ, which is sometimes referred to as the inverse condition number in the optimization
+literature, is always smaller than 1. Therefore, we immediately conclude Theorem 3. Indeed, since
+the optimization force dominates the target force (meaning η < 1), Algorithm 2 is convergent.
+Notice that a surprisingly positive consequence of this theorem is that we get convergent updates
+even if we only perform one gradient step per iteration (K = 1). In deep-RL terminology, this
+corresponds to the case where we basically have no frozen target network, and that we immediately
+use the new target parameter θ for the subsequent update.
+To further situate this result, notice that as K approaches ∞ then σK approaches η, which is exactly
+the contraction factor from Proposition 4 where we assumed exact optimization. So this proposition
+should be thought of as a tight generalization of Proposition 4 for the exact case. With a finite K we
+are paying a price for the crudeness of our approximation.
+Moreover, another interesting reduction of our result is to the case where the target force due to
+bootstrapping in RL is absent, meaning that Fθ ≡ 0. In this case, the contraction factor σK reduces
+to (1 − κ)
+K/2
+, which is exactly the known convergence rate for the gradient-descent algorithm in
+the strongly convex setting [18].
+6.3 Examples
+We focus on two families of loss functions where our assumptions can hold easily. To explain the
+first family, recall that TD could be written as follows:
+θ
+t+1 ← arg min
+w
+H(θ
+t
+, w).
+Now suppose we can write the function H(θ, w) as the sum of two separate functions H(θ, w) =
+G(θ, w) + L(w), where the function L(w) is strongly convex with respect to w. This setting is akin
+to using ridge regularization [19], which is quite common in deep learning (for example, the very
+popular optimizer AdamW [20]). This allows us to now work with functions G that are only convex
+(in fact, weakly convex is enough) with respect to w. We provide two examples:
+• Suppose we would like to stick with linear function approximation. Then, the function G
+could be constructed using any convex loss where ∇wG(θ, w) is Lipschitz-continuous with
+respect to θ. Examples that satisfy this include the Huber loss [1] or the Logistic loss [12].
+
+• Suppose we want to use the more powerful convex neural networks [21]. We need the error
+to be convex and monotonically increasing so that G is still convex. This is due to the
+classical result on the composition of convex functions. One example is the quadratic error
+where we restrict the output of the function approximator to positive values. Such neural
+nets are also Lipschitz continuous given proper activation functions such as ReLU.
+Beyond this family, we have identified a second family, namely the control setting where a greedification operator is needed for bootstrapping. For example, with the quadratic error we could have:
+H(θ, w) = 1
+2
+X
+s
+d(s)
+X
+a
+π(a|s)(Es
+′ [r + γ max
+a′
+q(s
+′
+, a′
+, θ)] − q(s, a, w))2
+,
+where q is the state-action value function parameterized by either θ or w.
+We again need the two assumptions, namely strong-convexity with respect to w and Lipschitzness of
+∇wH(θ, w) with respect to θ to hold. Actually, Lee and He [8] already showed the strong convexity
+with respect to w, but we need to still show the Lipschitz property of ∇wH(θ, w) with respect to θ.
+Note that they showed the Lipschitz property only with respect to w and not with respect to θ. We
+are now able to show this result. Please see Proposition 8 and its proof in the appendix. Our proof
+also supports other greedification operators, such as softmax [22], so long as its non-expansive.
+7 Related Work
+In this paper, we studied convergence of TD through the lens of optimization. The underlying principles of TD are so central to RL that a large number of RL algorithms can be thought of as versions
+of TD, and the availability of convergence results varies between different types of algorithms. We
+chose a setting we believe is as elementary as possible to highlight key principles of TD convergence. Closest to our work is the work of Tsitsiklis and Van Roy [3] who proved convergence of
+TD with linear function approximation, squared error, and the stationary-state distribution of the
+Markov chain. Later work, especially that of Bhandari et al. [23], further analyzed the case of TD
+with stochastic gradients and non-iid samples in the on-policy case. Extensions to the control setting
+also exist [24, 25].
+In particular, Melo et al. [24] presented a condition in their equation (7) which may look similar to
+our condition at first glance, but it is in fact quite different than the condition identified in our paper.
+In their equation (7), they require that the eigenvalues of Σπ, the policy-conditioned covariance
+matrix Φ
+⊤DΦ, dominate the eigenvalues of a second matrix γ
+2Σ
+⋆
+π
+(θ). Here Σ
+⋆
+π
+(θ) is a similar
+covariance matrix for features, but one that is computed based on the action-greedification step.
+We believe to be the first paper to show a exact contraction for TD with frozen target network and
+general K. To the best of our knowledge, existing results prior to Lee and He [8] mainly considered
+the case where we either never freeze the target network (corresponding to the value of K = 1),
+or the somewhat unrealistic case where we can exactly solve each iteration. Lee and He showed
+guarantees pertaining to K > 1, but notice that, while their result is quite innovative, they leaned on
+the more standard optimization tools for ensuring that gradient descent with a fixed K can only solve
+each iteration approximately. Therefore, each iteration results in some error. In their theory, this
+error is accumulated per iteration and needs to be accounted for in the final result. Therefore, they
+fell short of showing 1) contraction and 2) exact convergence to the TD fixed-point, and only show
+that the final iterate is in the vicinity of the fixed-point defined by the amount of error accumulated
+over the trajectory. With finite K, they need to account for errors in solving each iteration (denoted
+by ϵk in their proofs such as in Theorem 3), which prevent them from obtaining a clean convergence
+result. In contrast, we can show that even approximately solving each iteration (corresponding to
+finite K) is enough to obtain contraction (without any error), because we look at the net effect of K
+updates to the online network and the single update to the target network, and show that this effect
+is on that always take us closer to the fixed-point irregardless of the specific value of K.
+Modifications of TD are presented in prior work that are more conducive to convergence analysis [26, 27, 28, 29, 30]. They have had varying degrees of success both in terms of empirical
+performance [31], and in terms of producing convergent algorithms [32]. TD is also studied under over-parameterization [33, 34], with learned representations [35], proximal updates [36], and
+auxiliary tasks [37]. Also, the quality of TD fixed-point has been studied in previous work [16].
+A large body of literature focuses on finding TD-like approaches that are in fact true gradient-descent
+approaches in that they follow the gradient of a stationary objective function [38, 15, 39, 40, 41, 42].
+9
+In these works, the optimization problem is formulated in such a way that the minimizer of the loss
+will be the fixed-point of the standard TD. Whereas TD has been extended to large-scale settings,
+these algorithms have not been as successful as TD in terms of applications.
+A closely related algorithm to TD is that of Baird, namely the residual gradient algorithm [4, 43].
+This algorithm has a double-sampling issue that needs to be addressed either by assuming a model
+of the environment or by learning the variance of the value function [43, 44]. However, even with
+deterministic MDPs, in which the double sampling issue is not present [45], the algorithm often
+finds a fixed-point that has a lower quality than that of the TD algorithm [46]. This is attributed to
+the fact that the MDP might still look stochastic in light of the use of function approximation [38].
+TD could be thought of as an incremental approach to approximate dynamic programming and Fitted
+Value Iteration [7] for which various convergence results based on the operator view exits [14, 47,
+48]. Also, these algorithm are well-studied in terms of their error-propagation behavior [49, 50, 51].
+Many asymptotic or finite-sample results on Q-learning (the control version of TD) with function
+approximation make additional assumptions on the problem structure, with a focus on the exploration problems [52, 53, 54, 55, 56]. Like mentioned before, our focus was on the prediction setting
+where exploration is not relevant.
+8 Open Questions
+To foster further progress in this area we identify key questions that still remain open.
+I. We showed that TD converges to the fixed-point θ
+⋆
+characterized by ∇wH(θ
+⋆
+, θ⋆
+) = 0
+and so the sequence {∥∇wH(θ
+t
+, θt
+)∥}t∈N converges to 0. Can we further show that
+this sequence monotonically decreases with t, namely that |∥∇wH(θ
+t+1, θt+1)∥ ≤
+∥∇wH(θ
+t
+, θt
+)∥ for all t ∈ N? Interestingly, a line of research focused on inventing new
+algorithms (often called gradient TD algorithms) that possess this property [57]. However,
+if true, this result would entail that when our assumptions hold the original TD algorithm
+gives us this desirable property for free.
+II. Going back to the counter example, we can show convergent updates by constraining the
+representation as follows: ϕ(s) ≤ γϕ(s
+′
+) whenever P(s
+′
+| s) > 0. This result can easily be
+extended to all MDPs with a single-dimensional feature vector. A natural question then is
+to identify a multi-dimensional representation, given a fixed MDP and update distribution
+D, leads into convergent updates. Similarly, we can pose this question in terms of fixing
+the MDP and the representation matrix Φ, and identifying a set of distributions that lead
+into convergent updates. Again, we saw from the counter example that putting more weight
+behind states whose target force is weak (such as states leading into the terminal state) is
+conducive to convergence. How do we identify such distributions systematically?
+III. We studied the setting of deterministic updates. To bridge the gap with RL practice, we
+need to study TD under stochastic-gradient updates. The stochasticity could for instance
+be due to using a minibatch or using non-iid samples. Bhandari et al. [23] tackle this for
+the case of K = 1. Can we generalize our convergence result to this more realistic setting?
+IV. We have characterized the optimization force using the notion of strong convexity. It would
+be interesting to relax this assumption to handle neural networks and alternative loss functions. This can serve as a more grounded explanation for the empirical success of TD in
+the context of deep RL. Can we generalize our result to this more challenging setting?
+9 Conclusion
+In this paper, we argued that the optimization perspective of TD is more powerful than the wellexplored operator perspective of TD. To demonstrate this, we generalized previous convergence
+results of TD beyond the linear setting and squared loss functions. We believe that further exploring
+this optimization perspective can be a promising direction to design convergent RL algorithms.
+Our general result on the convergent nature of TD is consistent with the empirical success and the
+attention that this algorithm has deservedly received. The key factor that governs the convergence of
+TD is to ensure that the optimization force of the algorithm is well-equipped to dominate the more
+harmful target force. This analogy is one that can be employed to explain the convergent nature of
+TD even in the presence of the three pillar of the deadly triad.
+10
+References
+[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A Rusu, Joel Veness, Marc G
+Bellemare, Alex Graves, Martin Riedmiller, Andreas K Fidjeland, Georg Ostrovski, et al.
+Human-level control through deep reinforcement learning. Nature, 2015.
+[2] David Silver, Aja Huang, Chris J Maddison, Arthur Guez, Laurent Sifre, George Van
+Den Driessche, Julian Schrittwieser, Ioannis Antonoglou, Veda Panneershelvam, Marc Lanctot, et al. Mastering the game of go with deep neural networks and tree search. Nature, 2016.
+[3] John Tsitsiklis and Benjamin Van Roy. Analysis of temporal-diffference learning with function
+approximation. Advances in neural information processing systems, 1996.
+[4] Leemon Baird. Residual algorithms: Reinforcement learning with function approximation. In
+Machine Learning. Elsevier, 1995.
+[5] Richard S Sutton and Andrew G Barto. Reinforcement learning: An introduction. MIT press,
+2018.
+[6] Richard S Sutton. Learning to predict by the methods of temporal differences. Journal of
+Machine Learning Research, 1988.
+[7] Geoffrey J Gordon. Stable function approximation in dynamic programming. In Machine
+learning. Elsevier, 1995.
+[8] Donghwan Lee and Niao He. Target-based temporal-difference learning. In International
+Conference on Machine Learning, 2019.
+[9] Martin L Puterman. Markov decision processes: discrete stochastic dynamic programming.
+John Wiley & Sons, 2014.
+[10] Hamid Reza Maei. Gradient temporal-difference learning algorithms. PhD thesis, University
+of Alberta, 2011.
+[11] Kavosh Asadi, Rasool Fakoor, and Shoham Sabach. Resetting the optimizer in deep RL: An
+empirical study. Advances in Neural Information Processing Systems, 2023.
+[12] Joan Bas-Serrano, Sebastian Curi, Andreas Krause, and Gergely Neu. Logistic Q-learning. In
+International Conference on Artificial Intelligence and Statistics, 2021.
+[13] Doina Precup and Richard S Sutton. Exponentiated gradient methods for reinforcement learning. In International Conference on Machine Learning, 1997.
+[14] Damien Ernst, Pierre Geurts, and Louis Wehenkel. Tree-based batch mode reinforcement
+learning. Journal of Machine Learning Research, 2005.
+[15] Hamid Reza Maei, Csaba Szepesvari, Shalabh Bhatnagar, and Richard S Sutton. Toward off- ´
+policy learning control with function approximation. International Conference on Machine
+Learning, 2010.
+[16] J Kolter. The fixed points of off-policy td. Advances in Neural Information Processing Systems,
+2011.
+[17] Carl D Meyer. Matrix analysis and applied linear algebra. SIAM, 2000.
+[18] Amir Beck. First-order methods in optimization. SIAM, 2017.
+[19] Robert Tibshirani. Regression shrinkage and selection via the lasso. Journal of the Royal
+Statistical Society. Series B (Methodological), 1996.
+[20] Ilya Loshchilov and Frank Hutter. Decoupled weight decay regularization. In International
+Conference on Learning Representations, 2019.
+[21] Brandon Amos, Lei Xu, and J Zico Kolter. Input convex neural networks. In International
+Conference on Machine Learning, 2017.
+[22] Kavosh Asadi and Michael L Littman. An alternative softmax operator for reinforcement
+learning. In International Conference on Machine Learning, 2017.
+11
+[23] Jalaj Bhandari, Daniel Russo, and Raghav Singal. A finite time analysis of temporal difference
+learning with linear function approximation. In Conference on learning theory, 2018.
+[24] Francisco S Melo, Sean P Meyn, and M Isabel Ribeiro. An analysis of reinforcement learning
+with function approximation. In Proceedings of the 25th international conference on Machine
+learning, 2008.
+[25] Shaofeng Zou, Tengyu Xu, and Yingbin Liang. Finite-sample analysis for sarsa with linear
+function approximation. Advances in neural information processing systems, 2019.
+[26] Richard S Sutton, A Rupam Mahmood, and Martha White. An emphatic approach to the
+problem of off-policy temporal-difference learning. Journal of Machine Learning Research,
+2016.
+[27] Shangtong Zhang, Hengshuai Yao, and Shimon Whiteson. Breaking the deadly triad with a
+target network. In International Conference on Machine Learning, 2021.
+[28] Raghuram Bharadwaj Diddigi, Chandramouli Kamanchi, and Shalabh Bhatnagar. A convergent off-policy temporal difference algorithm. arXiv, 2019.
+[29] Han-Dong Lim, Do Wan Kim, and Donghwan Lee. Regularized Q-learning. arXiv, 2022.
+[30] Sina Ghiassian, Andrew Patterson, Shivam Garg, Dhawal Gupta, Adam White, and Martha
+White. Gradient temporal-difference learning with regularized corrections. In International
+Conference on Machine Learning, 2020.
+[31] Sina Ghiassian, Banafsheh Rafiee, and Richard S Sutton. A first empirical study of emphatic
+temporal difference learning. arXiv, 2017.
+[32] Gaurav Manek and J Zico Kolter. The pitfalls of regularization in off-policy TD learning.
+Advances in Neural Information Processing Systems, 2022.
+[33] Qi Cai, Zhuoran Yang, Jason D Lee, and Zhaoran Wang. Neural temporal-difference learning
+converges to global optima. Advances in Neural Information Processing Systems, 2019.
+[34] Chenjun Xiao, Bo Dai, Jincheng Mei, Oscar A Ramirez, Ramki Gummadi, Chris Harris, and
+Dale Schuurmans. Understanding and leveraging overparameterization in recursive value estimation. In International Conference on Learning Representations, 2021.
+[35] Dibya Ghosh and Marc G Bellemare. Representations for stable off-policy reinforcement
+learning. In International Conference on Machine Learning, 2020.
+[36] Kavosh Asadi, Rasool Fakoor, Omer Gottesman, Taesup Kim, Michael Littman, and Alexander J Smola. Faster deep reinforcement learning with slower online network. Advances in
+Neural Information Processing Systems, 2022.
+[37] Clare Lyle, Mark Rowland, Georg Ostrovski, and Will Dabney. On the effect of auxiliary
+tasks on representation dynamics. In International Conference on Artificial Intelligence and
+Statistics, 2021.
+[38] Richard S Sutton, Hamid Reza Maei, Doina Precup, Shalabh Bhatnagar, David Silver, Csaba
+Szepesvari, and Eric Wiewiora. Fast gradient-descent methods for temporal-difference learn- ´
+ing with linear function approximation. In International Conference on Machine Learning,
+2009.
+[39] Bo Liu, Sridhar Mahadevan, and Ji Liu. Regularized off-policy TD-learning. Advances in
+Neural Information Processing Systems, 2012.
+[40] Bo Liu, Ji Liu, Mohammad Ghavamzadeh, Sridhar Mahadevan, and Marek Petrik. Proximal
+gradient temporal difference learning algorithms. In International Joint Conferences on Artificial Intelligence, 2016.
+[41] Bo Liu, Ji Liu, Mohammad Ghavamzadeh, Sridhar Mahadevan, and Marek Petrik. Finitesample analysis of proximal gradient TD algorithms. arXiv, 2020.
+[42] Yihao Feng, Lihong Li, and Qiang Liu. A kernel loss for solving the Bellman equation. Advances in Neural Information Processing Systems, 2019.
+12
+[43] Andras Antos, Csaba Szepesv ´ ari, and R ´ emi Munos. Learning near-optimal policies with ´
+Bellman-residual minimization based fitted policy iteration and a single sample path. Journal of Machine Learning Research, 2008.
+[44] Bo Dai, Albert Shaw, Lihong Li, Lin Xiao, Niao He, Zhen Liu, Jianshu Chen, and Le Song.
+Sbeed: Convergent reinforcement learning with nonlinear function approximation. In International Conference on Machine Learning, 2018.
+[45] Ehsan Saleh and Nan Jiang. Deterministic Bellman residual minimization. In Proceedings of
+Optimization Foundations for Reinforcement Learning Workshop at NeurIPS, 2019.
+[46] Michail G Lagoudakis and Ronald Parr. Least-squares policy iteration. Journal of Machine
+Learning Research, 2003.
+[47] Daniel Lizotte. Convergent fitted value iteration with linear function approximation. Advances
+in Neural Information Processing Systems, 2011.
+[48] Jianqing Fan, Zhaoran Wang, Yuchen Xie, and Zhuoran Yang. A theoretical analysis of deep
+Q-learning. In Learning for Dynamics and Control, 2020.
+[49] Remi Munos. Performance bounds in l ´ p-norm for approximate value iteration. SIAM journal
+on control and optimization, 2007.
+[50] Remi Munos and Csaba Szepesv ´ ari. Finite-time bounds for fitted value iteration. ´ Journal of
+Machine Learning Research, 2008.
+[51] Amir-massoud Farahmand, Csaba Szepesvari, and R ´ emi Munos. Error propagation for ap- ´
+proximate policy and value iteration. Advances in Neural Information Processing Systems,
+2010.
+[52] Chi Jin, Zhuoran Yang, Zhaoran Wang, and Michael I Jordan. Provably efficient reinforcement
+learning with linear function approximation. In Conference on Learning Theory, 2020.
+[53] Simon S Du, Yuping Luo, Ruosong Wang, and Hanrui Zhang. Provably efficient Q-learning
+with function approximation via distribution shift error checking oracle. Advances in Neural
+Information Processing Systems, 2019.
+[54] Simon S Du, Jason D Lee, Gaurav Mahajan, and Ruosong Wang. Agnostic Q-learning with
+function approximation in deterministic systems: Near-optimal bounds on approximation error
+and sample complexity. Advances in Neural Information Processing Systems, 2020.
+[55] Alekh Agarwal, Sham Kakade, Akshay Krishnamurthy, and Wen Sun. Flambe: Structural
+complexity and representation learning of low rank mdps. Advances in neural information
+processing systems, 2020.
+[56] Shuhang Chen, Adithya M Devraj, Fan Lu, Ana Busic, and Sean Meyn. Zap q-learning with
+nonlinear function approximation. Advances in Neural Information Processing Systems, 2020.
+[57] Richard S Sutton, Hamid Maei, and Csaba Szepesvari. A convergent ´ o(n) temporal-difference
+algorithm for off-policy learning with linear function approximation. Advances in neural information processing systems, 2008.
+13
+10 Appendix
+Proposition 1. Let {θ
+t}t∈N be a sequence of parameters generated by Algorithm 1. Then, for the
+fixed-point θ
+⋆
+and any t ∈ N, we have
+θ
+t+1 − θ
+⋆ = M−1
+w Mθ
+
+θ
+t − θ
+⋆
+
+.
+Proof. Since θ
+t+1 ← arg minw H(θ
+t
+, w), we have ∇wH(θ
+t
+, θt+1) = 0. Using (7) we have:
+Mwθ
+t+1 = Φ⊤DR + Mθθ
+t = (Mw − Mθ)θ
+⋆ + Mθθ
+t
+,
+where the last equality follows from θ
+⋆ being the fixed-point and therefore ∇wh(θ
+⋆
+, θ⋆
+) = 0, which
+in light of (7) translates to Φ
+⊤DR = (Mw − Mθ)θ
+⋆
+. Multiplying both sides by M−1
+w , we get:
+θ
+t+1 = (I − M−1
+w Mθ)θ
+⋆ + M−1
+w Mθθ
+t
+.
+Rearranging the equality leads into the desired result.
+Proposition 4. Let {θ
+t}t∈N be a sequence generated by Algorithm 1. Then, we have:
+∥θ
+t+1 − θ
+⋆
+∥ ≤ F
+−1
+w Fθ∥θ
+t − θ
+⋆
+∥ .
+Proof. First notice that θ
+t+1 ← arg minw H(θ
+t
+, w), so we have ∇wH(θ
+t
+, θt+1) = 0. Now, using
+the Fw-strong convexity of w → H(θ
+t
+, w), we get that
+Fw∥θ
+t+1 − θ
+⋆
+∥
+2 ≤ ⟨θ
+⋆ − θ
+t+1
+, ∇wH(θ
+t
+, θ⋆
+) − ∇wH(θ
+t
+, θt+1)⟩
+= ⟨θ
+⋆ − θ
+t+1
+, ∇wH(θ
+t
+, θ⋆
+)⟩ (from ∇wH(θ
+t
+, θt+1) = 0).
+Now, since θ
+⋆
+is a fixed-point, it follows that ∇wH(θ
+⋆
+, θ⋆
+) = 0. Therefore, we have:
+Fw∥θ
+t+1 − θ
+⋆
+∥
+2 ≤ ⟨θ
+⋆ − θ
+t+1
+, ∇wH(θ
+t
+, θ⋆
+) − ∇wH(θ
+⋆
+, θ⋆
+)⟩
+≤ ∥θ
+t+1 − θ
+⋆
+∥ · ∥∇wH(θ
+t
+, θ⋆
+) − ∇wH(θ
+⋆
+, θ⋆
+)∥
+≤ Fθ∥θ
+t+1 − θ
+⋆
+∥ · ∥θ
+t − θ
+⋆
+∥,
+where in the second line we used to Cauchy-Schwartz inequality, and the last inequality follows
+from the Fθ-Lipschitz property of ∇wH(·, θ⋆
+). Since this inequality holds true for any t ∈ N, we
+get that if θ
+t = θ
+⋆
+, then we also have that θ
+t+1 = θ
+⋆
+. Thus, if θ
+T = θ
+⋆
+for some T ∈ N, then
+θ
+t = θ
+⋆
+for any t ≥ T and so the algorithm has converged. On the other hand, if θ
+t ̸= θ
+⋆
+for all
+t ∈ N, the desired result follows after dividing both sides by ∥θ
+t+1 − θ
+⋆∥.
+1
+To prove Proposition 5 we need to provide two new Propositions to later make use of. We present
+these two proofs next, and then restate and prove Proposition 5.
+Proposition 6. Let {θ
+t}t∈N be a sequence generated by Algorithm 2. Then, for all t ∈ N and
+0 ≤ k ≤ K − 1, we have
+H(θ
+t
+, θ⋆
+) − H(θ
+t
+, wt,k) ≤
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2 −
+
+1
+α
+−
+L
+2
+
+∥w
+t,k+1 − w
+t,k∥
+2
+.
+Proof. Let t ∈ N. From the Fw-strong convexity of w → H(θ
+t
+, w), we obtain that
+H(θ
+t
+, wt,k+1) ≥ H(θ
+t
+, θ⋆
+) + ⟨∇wH(θ
+t
+, θ⋆
+), wt,k+1 − θ
+⋆
+⟩ +
+Fw
+2
+∥w
+t,k+1 − θ
+⋆
+∥
+2
+,
+which means that
+H(θ
+t
+, θ⋆
+) − H(θ
+t
+, wt,k+1) ≤ ⟨∇wH(θ
+t
+, θ⋆
+), θ⋆ − w
+t,k+1⟩ − Fw
+2
+∥w
+t,k+1 − θ
+⋆
+∥
+2
+. (8)
+Moreover, in light of the fixed-point characterization of TD, namely that ∇wH(θ
+⋆
+, θ⋆
+) = 0, we can
+write
+⟨∇wH(θ
+t
+, θ⋆
+), θ⋆ − w
+t,k+1⟩ = ⟨∇wH(θ
+t
+, θ⋆
+) − ∇wH(θ
+⋆
+, θ⋆
+), θ⋆ − w
+t,k+1⟩
+=
+
+∇wH(θ
+t
+, θ⋆
+) − ∇wH(θ
+⋆
+, θ⋆
+)
+⊤
+θ
+⋆ − w
+t,k+1
+≤
+1
+2Fw
+∥∇wH(θ
+t
+, θ⋆
+) − ∇wH(θ
+⋆
+, θ⋆
+)∥
+2 +
+Fw
+2
+∥w
+t,k+1 − θ
+⋆
+∥
+2
+≤
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2 +
+Fw
+2
+∥w
+t,k+1 − θ
+⋆
+∥
+2
+. (9)
+Here, the first inequality follows from the fact that for any two vectors a and b we have
+a
+⊤b ≤ (1/2d)∥a∥
+2 + (d/2)∥b∥
+2
+for any d > 0. In this case, we chose d = Fw. Also the last
+inequality follows from the Fθ-Lipschitz property of ∇wH, which is our assumption.
+Now, by combining (8) with (9) we obtain that
+H(θ
+t
+, θ⋆
+) − H(θ
+t
+, wt,k+1) ≤
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2 +
+Fw
+2
+∥w
+t,k+1 − θ
+⋆
+∥
+2 −
+Fw
+2
+∥w
+t,k+1 − θ
+⋆
+∥
+2
+=
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2
+. (10)
+From the Lipschitz assumption we can write, due to the Descent Lemma [18] applied to the function
+w → H(θ
+t
+, w), that:
+H(θ
+t
+, wt,k+1) − H(θ
+t
+, wt,k) ≤ ⟨∇wH(θ
+t
+, wt,k), wt,k+1 − w
+t,k⟩ +
+L
+2
+∥w
+t,k+1 − w
+t,k∥
+2
+Now, notice that according to Algorithm 2 we have w
+t,k+1 = w
+t,k − α∇wH(θ
+t
+, wt,k), and so we
+can write:
+H(θ
+t
+, wt,k+1) − H(θ
+t
+, wt,k) ≤
+1
+α
+⟨w
+t,k − w
+t,k+1, wt,k+1 − w
+t,k⟩ +
+L
+2
+∥w
+t,k+1 − w
+t,k∥
+2
+= −
+
+1
+α
+−
+L
+2
+
+∥w
+t,k+1 − w
+t,k∥
+2
+. (11)
+Adding both sides of (10) with (11) yields:
+H(θ
+t
+, θ⋆
+) − H(θ
+t
+, wt,k) ≤
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2 −
+
+1
+α
+−
+L
+2
+
+∥w
+t,k+1 − w
+t,k∥
+2
+,
+which proves the desired result.
+
+Now, we can prove the following result.
+Proposition 7. Let {θ
+t}t∈N be a sequence generated by Algorithm 2. Then, for all t ∈ N and
+0 ≤ k ≤ K − 1, we have
+∥w
+t,k+1 − θ
+⋆
+∥
+2 ≤ (1 − αFw) ∥w
+t,k − θ
+⋆
+∥
+2 +
+αF2
+θ
+Fw
+∥θ
+t − θ
+⋆
+∥
+2 − (2 − αL) ∥w
+t,k+1 − w
+t,k∥
+2
+.
+In particular, when α = 1/L, we have
+∥w
+t,k+1 − θ
+⋆
+∥
+2 ≤
+
+1 −
+Fw
+L
+
+∥w
+t,k − θ
+⋆
+∥
+2 +
+F
+2
+θ
+LFw
+∥θ
+t − θ
+⋆
+∥
+2
+.
+Proof. Let t ∈ N. From the definition of steps of Algorithm 2, that is, w
+t,k+1 = w
+t,k −
+α∇wH(θ
+t
+, wt,k), for any 0 ≤ k ≤ K − 1, we obtain that
+∥w
+t,k+1 − θ
+⋆
+∥
+2 = ∥(w
+t,k − θ
+∗
+) − α∇wH(θ
+t
+, wt,k)∥
+2
+= ∥w
+t,k − θ
+⋆
+∥
+2 + 2α⟨∇wH
+
+θ
+t
+, wt,k
+, θ⋆ − w
+t,k⟩ + ∥α∇wH(θ
+t
+, wt,k)∥
+2
+= ∥w
+t,k − θ
+⋆
+∥
+2 + 2α⟨∇wH
+
+θ
+t
+, wt,k
+, θ⋆ − w
+t,k⟩ + ∥w
+t,k+1 − w
+t,k∥
+2
+. (12)
+Using the Fw-strong convexity of w → H(θ
+t
+, w), we have
+H
+
+θ
+t
+, θ⋆
+
+≥ H
+
+θ
+t
+, wt,k
++ ⟨∇wH
+
+θ
+t
+, wt,k
+, θ⋆ − w
+t,k⟩ +
+Fw
+2
+∥w
+t,k − θ
+⋆
+∥
+2
+. (13)
+Combining (12) and (13), we get:
+∥w
+t,k+1 − θ
+⋆
+∥
+2 ≤ ∥w
+t,k − θ
+⋆
+∥
+2 + 2α
+
+H
+
+θ
+t
+, θ⋆
+
+− H
+
+θ
+t
+, wt,k
+−
+Fw
+2
+∥w
+t,k − θ
+⋆
+∥
+2
+
++ ∥w
+t,k+1 − w
+t,k∥
+2
+= (1 − αFw) ∥w
+t,k − θ
+⋆
+∥
+2 + 2α
+
+H
+
+θ
+t
+, θ⋆
+
+− H
+
+θ
+t
+, wt,k + ∥w
+t,k+1 − w
+t,k∥
+2
+.
+Hence, from Proposition 6, we obtain
+∥w
+t,k+1 − θ
+⋆
+∥
+2 ≤ (1 − αFw) ∥w
+t,k − θ
+⋆
+∥
+2 + 2α
+
+F
+2
+θ
+2Fw
+∥θ
+t − θ
+⋆
+∥
+2 −
+
+1
+α
+−
+L
+2
+
+∥w
+t,k+1 − w
+t,k∥
+2
+
++ ∥w
+t,k+1 − w
+t,k∥
+2
+= (1 − αFw) ∥w
+t,k − θ
+⋆
+∥
+2 +
+αF2
+θ
+Fw
+∥θ
+t − θ
+⋆
+∥
+2 − (2 − αL) ∥w
+t,k+1 − w
+t,k∥
+2
+,
+which completes the first desired result.
+Moreover, by specifically choosing the step-size α = 1/L we obtain that:
+∥w
+t,k+1 − θ
+⋆
+∥
+2 ≤
+
+1 −
+Fw
+L
+
+∥w
+t,k − θ
+⋆
+∥
+2 +
+F
+2
+θ
+LFw
+∥θ
+t − θ
+⋆
+∥
+2 − ∥w
+t,k+1 − w
+t,k∥
+2
+≤
+
+1 −
+Fw
+L
+
+∥w
+t,k − θ
+⋆
+∥
+2 +
+F
+2
+θ
+LFw
+∥θ
+t − θ
+⋆
+∥
+2
+.
+This concludes the proof of this propos
+Using these two results, we are ready to present the proof of Proposition 5
+Proposition 5. Let {θ
+t}t∈N be a sequence generated by Algorithm 2 with the step-size α = 1/L.
+Then, we have:
+∥θ
+t+1 − θ
+⋆
+∥ ≤ σK∥θ
+t − θ
+⋆
+∥ ,
+where:
+σ
+2
+K ≡ (1 − κ)
+K
+1 − η
+2
+
++ η
+2
+.
+with κ ≡ L
+−1Fw and η ≡ F
+−1
+w Fθ.
+Proof. Let t ∈ N. From Proposition 7 (recall that α = 1/L) and the fact that θ
+t+1 = w
+t,K, we have
+∥θ
+t+1 − θ
+⋆
+∥
+2 = ∥w
+t,K − θ
+⋆
+∥
+2
+≤ (1 − κ) ∥w
+t,K−1 − θ
+⋆
+∥
+2 + η
+2κ∥θ
+t − θ
+⋆
+∥
+2
+≤ (1 − κ)
+
+(1 − κ) ∥w
+t,K−2 − θ
+⋆
+∥
+2 + η
+2κ∥θ
+t − θ
+⋆
+∥
+2
+
++ η
+2κ∥θ
+t − θ
+⋆
+∥
+2
+= (1 − κ)
+2
+∥w
+t,K−2 − θ
+⋆
+∥
+2 + η
+2κ (1 + (1 − κ)) ∥θ
+t − θ
+⋆
+∥
+2
+≤ . . .
+≤ (1 − κ)
+K ∥w
+t,0 − θ
+⋆
+∥
+2 + η
+2κ
+K
+X−1
+k=0
+(1 − κ)
+k
+∥θ
+t − θ
+⋆
+∥
+2
+= (1 − κ)
+K ∥θ
+t − θ
+⋆
+∥
+2 + η
+2κ
+K
+X−1
+k=0
+(1 − κ)
+k
+∥θ
+t − θ
+⋆
+∥
+2
+,
+where the last inequality follows from the fact that w
+t,0 = θ
+t
+. Because κ ∈ [0, 1], the geometric
+series on the right hand side is convergent, and so we can write:
+(1 − κ)
+K +η
+2κ
+K
+X−1
+k=0
+(1 − κ)
+k = (1 − κ)
+K +η
+2κ
+1 − (1 − κ)
+K
+1 − (1 − κ)
+= (1 − κ)
+K +η
+2
+
+1 − (1 − κ)
+K
+
+,
+which completes the desired result.
+1
+Now, following our discussion in Section 6.3 about examples of loss functions that satisfy our assumption, we recall that here we focus on the following loss
+H (θ, w) = 1
+2
+X
+s
+d(s)
+X
+a
+π(a|s)
+
+Es
+′
+h
+r + γ max
+a′
+q (s
+′
+, a′
+, θ)
+i
+− q (s, a, w)
+2
+.
+As mentioned in Section 6.3 all is left is to show that Lipschitzness of ∇wH(θ, w) with respect to
+θ.
+Proposition 8. Assume that for any (s, a), the function θ → q (s, a, θ) is Lq(s, a)-Lipschitz. Then,
+there exists Fθ > 0 such that
+∀θ1, ∀θ2 ∥∇wH(θ1, w) − ∇wH(θ2, w)∥ ≤ Fθ∥θ1 − θ2∥.
+Proof. First, we compute the gradient ∇wH:
+∇wH (θ, w) = X
+s
+d(s)
+X
+a
+π(a|s)
+
+q (s, a, w) − Es
+′
+h
+r + γ max
+a′
+q (s
+′
+, a′
+, θ)
+i ∇q (s, a, w).
+For the simplicity of the proof, we denote Q(θ1, θ2) = maxa′ q (s
+′
+, a′
+, θ2) − maxa′ q (s
+′
+, a′
+, θ1).
+Hence
+∥∇wH(θ1, w) − ∇wH(θ2, w)∥ = γ
+
+
+
+
+
+X
+s
+d(s)
+X
+a
+π(a|s) (Es
+′ [Q(θ1, θ2)]) ∇q (s, a, w)
+
+
+
+
+
+≤ γ
+X
+s
+d(s)
+X
+a
+π(a|s)|Es
+′ [Q(θ1, θ2)]| ∥∇q (s, a, w)∥ ,
+where we first cancelled the common parts in both gradient terms and the inequality follows immediately from the Cauchy-Schwartz inequality. Now, by using Jensen’s inequality on the expectation,
+we obtain that
+∥∇wH(θ1, w) − ∇wH(θ2, w)∥ ≤ γ
+X
+s
+d(s)
+X
+a
+π(a|s)Es
+′ [|Q(θ1, θ2)|] ∥∇q (s, a, w)∥ .
+Moreover, without the loss of generality we can assume that maxa′ q (s
+′
+, a′
+, θ2) ≥
+maxa′ q (s
+′
+, a′
+, θ1), which means that we can remove the absolute value and obtain the following
+∥∇wH(θ1, w) − ∇wH(θ2, w)∥ ≤ γ
+X
+s
+d(s)
+X
+a
+π(a|s)Es
+′ [Q(θ1, θ2)] ∥∇q (s, a, w)∥ .
+Now, by using a simple property of the maximum operation, we obviously have that
+max
+a′
+q (s
+′
+, a′
+, θ2) − max
+a′
+q (s
+′
+, a′
+, θ1) ≤ max
+a′
+(q (s
+′
+, a′
+, θ2) − q (s
+′
+, a′
+, θ1)).
+Since the function θ → q (s
+′
+, a′
+, θ) is Lipschitz, we have that
+q (s
+′
+, a′
+, θ2) − q (s
+′
+, a′
+, θ1) ≤ Lq(s
+′
+, a′
+)∥θ1 − θ2∥.
+It is also well-known that for such functions the gradient is bounded and therefore ∥∇q (s, a, w)∥ ≤
+Lq(s, a). Combining all these facts yield
+∥∇wH(θ1, w) − ∇wH(θ2, w)∥ ≤ γ
+X
+s
+d(s)
+X
+a
+π(a|s)Es
+′ [Q(θ1, θ2)] ∥∇q (s, a, w)∥
+≤ γ
+X
+s
+d(s)
+X
+a
+π(a|s)Es
+′
+h
+max
+a′
+(q (s
+′
+, a′
+, θ2) − q (s
+′
+, a′
+, θ1))i
+∥∇q (s, a, w)∥
+≤ γ
+X
+s
+d(s)
+X
+a
+π(a|s)Es
+′
+h
+max
+a′
+Lq(s
+′
+, a′
+)∥θ1 − θ2∥
+i
+Lq(s, a)
+≤ γ∥θ1 − θ2∥Es
+′
+h
+max
+a′
+Lq(s
+′
+, a′
+)
+2
+iX
+s
+d(s)
+X
+a
+π(a|s)
+= γ∥θ1 − θ2∥Es
+′
+h
+max
+a′
+Lq(s
+′
+, a′
+)
+2
+i
+,
+where the last equality follows from the basic properties of the distribution matrix D. This proves
+the desired result.

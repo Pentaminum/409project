@@ -1,0 +1,9 @@
+(Question Number, Deducted Points): Explanation
+- (Q2.2, 2): It should be \nicefrac{1}{\episilon} other than \nicefrac{1}{\episilon^2}.
+- (Q3.4, 10): Did not upper bound \frac{\nabla^2 f(w)}_{f(w)} properly.
+- (Q4.1, 3): c should be the denominator.
+- (Q6.4, 5): Wrong proof.
+- (Q7.1, 5): Computing of L is incorrect.
+- (Q7.2 & Q7.3, 5): Did not track the oracle calls.
+- (Q7.4, 5): Did not plot all the reuqired figures.
+

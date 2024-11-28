@@ -7,3 +7,5 @@ rich
 unstructured
 tiktoken
 beautifulsoup4
+flask
+flask-cors

@@ -82,10 +82,8 @@ class CLI:
 
         while True:
             try:
-                # Get user input
                 query = Prompt.ask("\n[bold green]You")
                 
-                # Handle commands
                 if query.lower() in ['exit', 'quit']:
                     console.print("[yellow]Goodbye! 👋[/yellow]")
                     break
@@ -95,6 +93,10 @@ class CLI:
                     continue
                 elif query.lower() == 'help':
                     self.display_welcome()
+                    continue
+                elif query.lower() == 'new':
+                    self.chat_interface.reset_conversation()
+                    console.print("[yellow]Starting new conversation...[/yellow]")
                     continue
                 
                 # Show thinking spinner

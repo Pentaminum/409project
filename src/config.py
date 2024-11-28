@@ -17,8 +17,14 @@ DOCUMENT_TYPES = {
                  "presentation_guideline.txt", "final_project_report_guideline.txt"]
     },
     "project": {
-        "description": "Project reference papers and title",
-        "files": ["title.txt", "ref_*.txt"]
+        "description": "Project reference papers and our project title",
+        "files": [
+            "title.txt", 
+            "ref_A Finite Time Analysis of Temporal Difference Learning With Linear Function Approximation_latex.txt",
+            "ref_Learning the Target Network in Function Space.txt",
+            "ref_Proximal Gradient Temporal Difference Learning: Stable Reinforcement Learning with Polynomial Sample Complexity.txt",
+            "ref_TD Convergence: An Optimization Perspective.txt"
+        ]
     },
     "a1": {
         "description": "Assignment 1 materials",

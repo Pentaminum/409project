@@ -18,6 +18,26 @@ body {
     padding: 1rem;
     text-align: center;
     border-bottom: 1px solid #4E4F60;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h1 {
+    margin: 0;
+    flex-grow: 1;
+}
+
+#new-chat-btn {
+    background-color: #444654;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#new-chat-btn:hover {
+    background-color: #4E4F60;
 }
 
 .chat-messages {

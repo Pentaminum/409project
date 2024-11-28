@@ -38,5 +38,13 @@ def chat():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/new-chat', methods=['POST'])
+def new_chat():
+    try:
+        cli.chat_interface.reset_conversation()
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)

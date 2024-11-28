@@ -23,18 +23,25 @@ class DocumentLoader:
             return UnstructuredFileLoader(file_path)
 
     def load_directory(self, directory=None):
+        """Load documents from a specific directory"""
         documents = []
-        base_path = self.data_dir
-        if directory:
-            base_path = os.path.join(self.data_dir, directory)
+        base_path = self.data_dir if directory is None else os.path.join(self.data_dir, directory)
         
         for root, _, files in os.walk(base_path):
+            rel_path = os.path.relpath(root, self.data_dir)
+            doc_type = rel_path.split(os.path.sep)[0] if rel_path != "." else "other"
+            
             for file in files:
-                file_path = os.path.join(root, file)
-                try:
-                    if file.startswith('.') or file.endswith(('.pyc', '.git')):
-                        continue
+                if file.startswith('.') or file.endswith(('.pyc', '.git')):
+                    continue
                     
+                file_path = os.path.join(root, file)
+                
+                # Check if file is in DOCUMENT_TYPES
+                if doc_type in DOCUMENT_TYPES and file not in DOCUMENT_TYPES[doc_type].get("files", []):
+                    continue
+                
+                try:
                     loader = self.get_appropriate_loader(file_path)
                     docs = loader.load()
                     
@@ -42,13 +49,16 @@ class DocumentLoader:
                     for doc in docs:
                         doc.metadata.update({
                             "source": file_path,
-                            "directory": os.path.relpath(root, self.data_dir),
+                            "directory": rel_path,
                             "file_type": os.path.splitext(file)[1],
-                            "doc_type": next((k for k, v in DOCUMENT_TYPES.items() 
-                                            if k in os.path.relpath(root, self.data_dir)), "other")
+                            "doc_type": doc_type
                         })
                     documents.extend(docs)
                 except Exception as e:
                     print(f"Error loading {file_path}: {e}")
         
         return self.text_splitter.split_documents(documents)
+
+    def load_documents(self):
+        """Load all documents from the data directory"""
+        return self.load_directory()

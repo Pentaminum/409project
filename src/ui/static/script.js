@@ -87,11 +87,11 @@ function handleKeyPress(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
         sendMessage();
-    }
-    // Reset textarea height after sending message
-    if (event.key === 'Enter') {
+        // Reset textarea height only after sending
         setTimeout(() => {
-            document.getElementById('user-input').style.height = 'auto';
+            const textarea = document.getElementById('user-input');
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
         }, 0);
     }
 }
@@ -114,3 +114,30 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(autoResizeTextarea, 0);
     });
 });
+
+async function startNewChat() {
+    try {
+        const response = await fetch('/api/new-chat', {
+            method: 'POST'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // Clear message history
+        messageHistory = [];
+        localStorage.removeItem('chatHistory');
+        
+        // Clear chat messages
+        const messagesDiv = document.getElementById('chat-messages');
+        messagesDiv.innerHTML = '';
+        
+        // Show notification
+        appendMessage("Starting new conversation...", false);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        appendMessage(`Error: ${error.message}`, false);
+    }
+}

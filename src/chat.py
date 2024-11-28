@@ -25,7 +25,7 @@ class ChatInterface:
         If you don't know the answer, just say that you don't know, don't try to make up an answer.
         
         When discussing assignments:
-        - Help explain concepts and provide direct solutions
+        - Help explain concepts and try to provide direct solutions
         - When the materials are insufficient, supplement your responses with your own knowledge of optimization and machine learning principles.
         
         When discussing the project:
@@ -66,3 +66,10 @@ class ChatInterface:
                 "answer": f"An error occurred: {str(e)}",
                 "source_documents": []
             }
+
+    def reset_conversation(self):
+        self.memory = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=True,
+            output_key="answer"
+        )

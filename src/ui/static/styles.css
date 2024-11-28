@@ -61,6 +61,10 @@ textarea {
     background-color: #40414F;
     color: #ECECF1;
     resize: none;
+    min-height: 24px;
+    max-height: 200px;
+    overflow-y: auto;
+    line-height: 1.5;
 }
 
 button {

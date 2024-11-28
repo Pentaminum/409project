@@ -88,6 +88,29 @@ function handleKeyPress(event) {
         event.preventDefault();
         sendMessage();
     }
+    // Reset textarea height after sending message
+    if (event.key === 'Enter') {
+        setTimeout(() => {
+            document.getElementById('user-input').style.height = 'auto';
+        }, 0);
+    }
 }
 
-document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
+function autoResizeTextarea() {
+    const textarea = document.getElementById('user-input');
+    // Reset height to auto to get the correct scrollHeight
+    textarea.style.height = 'auto';
+    // Set new height based on scrollHeight
+    textarea.style.height = textarea.scrollHeight + 'px';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadFromLocalStorage();
+    
+    const textarea = document.getElementById('user-input');
+    textarea.addEventListener('input', autoResizeTextarea);
+    // Also handle paste events
+    textarea.addEventListener('paste', () => {
+        setTimeout(autoResizeTextarea, 0);
+    });
+});
